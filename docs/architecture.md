@@ -1,0 +1,19 @@
+# Architecture and implementation boundaries
+
+KaziForce uses Django templates for presentation, Django apps for application logic and PostgreSQL for persistence. Each page has a descriptive template filename. Shared navigation, footers and repeated interface elements belong in `templates/components`.
+
+Views coordinate requests. Forms validate submitted input. Models describe records and database constraints. Services contain CV processing and matching operations, independent of HTTP requests. Introduce modules when they have real responsibilities rather than filling the project with empty files.
+
+The custom user model is established before the first migration. Its role describes the product role. Django staff and superuser permissions separately control admin access; assigning an administrator role alone does not grant admin access.
+
+Chapter 4 of the supplied proposal defines the detailed feature requirements. The supplied mockups define the visual direction. Rankings support human decisions. Scores must exclude personal identity attributes and preserve input, ESCO and matching configuration provenance. CV data belongs in protected storage and must never be served as public static assets.
+
+The scoring formula, skill priority scale, CV format and size limits, application status transitions and evaluation metrics still need explicit implementation decisions. Do not invent claims of matching accuracy before evaluation.
+
+## Delivery stages
+
+1. Foundation and configuration.
+2. Approved public pages, video hero, registration and sign-in.
+3. Profiles, reviewed CV extraction, jobs and applications with ownership checks.
+4. Versioned ESCO catalogue, reproducible scoring, explanations and top-ten results.
+5. Workflow, access-control, matching evaluation and browser verification.

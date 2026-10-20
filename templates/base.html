@@ -1,0 +1,18 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}KaziForce{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  {% include 'components/navigation.html' %}
+  <main id="main">{% block content %}{% endblock %}</main>
+  {% include 'components/footer.html' %}
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

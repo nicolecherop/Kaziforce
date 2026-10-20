@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Talent matching | KaziForce{% endblock %}
+{% block content %}
+<section class="intro">
+  <p class="eyebrow">Talent matching</p>
+  <h1>Your skills deserve<br>the right opportunity.</h1>
+  <p>Discover jobs that fit your profile, understand your match and take your next step with confidence.</p>
+  <a class="button" href="{% url 'accounts:create_account' %}">Find opportunities &rarr;</a>
+</section>
+<section class="overview">
+  <h2>A clearer view of your next move.</h2>
+  <div class="steps">
+    <article><span>01</span><h3>Build your profile</h3><p>Showcase your skills, experience and qualifications.</p></article>
+    <article><span>02</span><h3>Explore your matches</h3><p>Find opportunities aligned with your recorded skills.</p></article>
+    <article><span>03</span><h3>Apply with confidence</h3><p>Understand your matched skills and areas to develop.</p></article>
+  </div>
+</section>
+{% endblock %}
