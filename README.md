@@ -4,7 +4,7 @@ A Django candidate–job matching application under development. The matching en
 
 ## Current stage
 
-The public pages and account flows are connected. Candidates have a workspace overview, profile display and a separate profile editor. Profiles support a headline, location, summary, skills, education, certifications, work experience and optional portfolio links. CV processing, recruiter job tools, applications and matching are the next stages.
+Candidates enter their professional information manually, including skills, education, certifications, work experience and portfolio links. CVs, degree documents and certificates are private attachments for recruiters to read. Candidates can start each job application with their saved profile, tailor an independent copy, save a private draft and choose attachments before submitting. Recruiters can publish, edit and close jobs, read submitted applications and update their statuses. ESCO standardization, skill priorities and matching are still to be implemented.
 
 ## Local setup on Windows
 
@@ -16,7 +16,7 @@ python -m venv .venv
 Copy-Item .env.example .env
 ```
 
-Set a random `DJANGO_SECRET_KEY` in `.env`. For PostgreSQL, create a database and user matching the `POSTGRES_*` settings and supply the password. PostgreSQL is the default. For a local prototype without PostgreSQL, explicitly set `DATABASE_ENGINE=sqlite` in `.env`.
+Set a random `DJANGO_SECRET_KEY` in `.env`. PostgreSQL is the default. The local project uses database `kaziforce`, login `kaziforce_app` and test database `test_kaziforce`. See [PostgreSQL setup and table names](docs/postgresql.md) for the connection, transfer tools, backups and test instructions. For a separate SQLite-only prototype, explicitly set `DATABASE_ENGINE=sqlite` in `.env`.
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py migrate
@@ -48,9 +48,9 @@ Candidate pages are `templates/candidates/dashboard.html`, `profile.html` and `p
 
 - `config`: project configuration and root routes.
 - `accounts`: user identity, authentication and roles.
-- `candidates`: profile models, forms, ownership checks, page views and database migrations. CV processing will be added separately.
-- `jobs`: recruiter information, postings and skill requirements, to be implemented.
-- `applications`: submissions and status tracking, to be implemented.
+- `candidates`: manually entered profiles, private CV/degree/certificate documents, forms and ownership checks.
+- `jobs`: recruiter-owned vacancies, candidate job browsing and search.
+- `applications`: independent profile copies, private drafts, immutable submitted attachments and status tracking.
 - `matching`: independent preprocessing, ESCO mapping and scoring services, to be implemented.
 - `pages`: public page routes.
 - `templates`: one named template per page plus shared components.
@@ -62,7 +62,11 @@ Candidate pages are `templates/candidates/dashboard.html`, `profile.html` and `p
 
 The profile editor uses the signed-in account as its owner and rejects related entries from other profiles. It validates every section before saving everything in one transaction. Blank new entries are ignored. Skill names are unique per profile without case differences. Dates must be consistent, and external links accept HTTP or HTTPS only.
 
-Run `manage.py migrate` after updating to create candidate tables. ESCO mapping, CV upload and scoring are not implemented yet.
+Run `manage.py migrate` after updating to create candidate and CV tables. ESCO mapping and scoring are not implemented yet.
+
+CVs accept PDF/DOCX, including scanned documents. Degree and certificate evidence accepts PDF/JPG/PNG. Files are limited to 5 MB, with up to 20 library documents and 10 attachments per application. File validation checks formats and signatures without extracting text. The extraction feature and parser dependencies have been removed. The replacement migration preserves existing CV originals and removes extraction-only database fields.
+
+Documents use the Git-ignored `private_uploads/` directory; never expose it through a public media route. Candidates choose which files to share for a job. The recruiter owning that job can read submitted copies, while candidate drafts remain private. See [manual profiles and applications](docs/manual-applications.md) for source organization, ownership, snapshots, storage and deployment notes.
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py check
@@ -72,4 +76,4 @@ Run `manage.py migrate` after updating to create candidate tables. ESCO mapping,
 
 If Node.js is available, run `node --test tests/video.test.cjs` to check reduced-motion, save-data, background playback and failure fallbacks. Node is only needed for these front-end checks; the application runs on Django.
 
-Run database tests against PostgreSQL before release. SQLite checks alone do not establish PostgreSQL compatibility.
+For PostgreSQL, run `manage.py test tests --keepdb` using the pre-created `test_kaziforce` database. The dedicated application login does not have database-creation privileges. Tests include PostgreSQL concurrency verification; SQLite skips that test.

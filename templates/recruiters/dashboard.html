@@ -1,4 +1,10 @@
-{% extends "accounts/workspace_base.html" %}
+{% extends "workspace/base.html" %}
+{% block title %}Recruiter workspace | KaziForce{% endblock %}
 {% block workspace_content %}
-    <p>Your recruiter account is ready. Job postings, candidate rankings and application management are the next features being built.</p>
+    <header class="page-heading">
+        <p class="eyebrow">Recruiter workspace</p>
+        <h1>Build your next team.</h1>
+        <p>Publish a role and review the profiles and documents candidates choose to send you.</p>
+    </header>
+    <section class="profile-introduction"><span class="section-kicker">Your vacancies</span><h2>Start with the role.</h2><p>Describe the work, the skills your team needs and the experience you are looking for.</p><div class="action-row"><a class="button" href="{% url 'jobs:create' %}">Post a job ↗</a><a href="{% url 'jobs:manage' %}">Manage jobs and applicants</a></div></section>
 {% endblock %}

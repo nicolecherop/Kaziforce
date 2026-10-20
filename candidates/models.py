@@ -1,11 +1,15 @@
 """Candidate-owned professional information, independent of account identity."""
 
+import uuid
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import models
 from django.db.models.functions import Lower
 from django.utils import timezone
+
+from .storage import PrivateDocumentStorage, document_upload_path
 
 
 def validate_past_date(value):
@@ -35,6 +39,9 @@ class CandidateProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        db_table = "candidate_profiles"
+
     def clean(self):
         if self.user_id and self.user.role != "candidate":
             raise ValidationError(
@@ -52,6 +59,7 @@ class CandidateSkill(models.Model):
     name = models.CharField(max_length=80)
 
     class Meta:
+        db_table = "candidate_skills"
         ordering = ["name", "pk"]
         constraints = [
             models.UniqueConstraint(
@@ -77,6 +85,7 @@ class Education(models.Model):
     currently_studying = models.BooleanField(default=False)
 
     class Meta:
+        db_table = "candidate_education"
         ordering = ["-pk"]
 
     def clean(self):
@@ -106,6 +115,7 @@ class Certification(models.Model):
     )
 
     class Meta:
+        db_table = "candidate_certifications"
         ordering = ["-pk"]
 
     def clean(self):
@@ -130,6 +140,7 @@ class WorkExperience(models.Model):
     description = models.TextField(max_length=2000, blank=True)
 
     class Meta:
+        db_table = "candidate_experience"
         ordering = ["-start_date", "-pk"]
 
     def clean(self):
@@ -155,7 +166,34 @@ class PortfolioLink(models.Model):
     )
 
     class Meta:
+        db_table = "candidate_portfolio_links"
         ordering = ["pk"]
 
     def __str__(self):
         return self.title
+
+
+class CandidateDocument(models.Model):
+    class Kind(models.TextChoices):
+        CV = "cv", "CV"
+        DEGREE = "degree", "Degree or qualification"
+        CERTIFICATE = "certificate", "Certificate"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="documents"
+    )
+    file = models.FileField(
+        storage=PrivateDocumentStorage(), upload_to=document_upload_path
+    )
+    kind = models.CharField(max_length=12, choices=Kind.choices, default=Kind.CV)
+    title = models.CharField(max_length=160, blank=True)
+    original_name = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "candidate_documents"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.title or self.original_name

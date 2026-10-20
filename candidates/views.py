@@ -1,14 +1,11 @@
 """Candidate-only endpoints. Ownership comes from the session, never a posted ID."""
 
-from functools import wraps
-
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
+from .access import candidate_required
 from .forms import (
     CertificationFormSet,
     EducationFormSet,
@@ -19,18 +16,6 @@ from .forms import (
 )
 from .models import CandidateProfile
 from .selectors import profile_for
-
-
-def candidate_required(view):
-    @login_required
-    @wraps(view)
-    def guarded(request, *args, **kwargs):
-        if request.user.role != "candidate":
-            raise PermissionDenied("This page is available to candidate accounts.")
-        return view(request, *args, **kwargs)
-
-    return guarded
-
 
 SECTIONS = [
     (

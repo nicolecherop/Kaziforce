@@ -65,10 +65,11 @@ else:
         "default": {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": os.getenv("POSTGRES_DB", "kaziforce"),
-            "USER": os.getenv("POSTGRES_USER", "kaziforce"),
+            "USER": os.getenv("POSTGRES_USER", "kaziforce_app"),
             "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
             "HOST": os.getenv("POSTGRES_HOST", "localhost"),
             "PORT": os.getenv("POSTGRES_PORT", "5432"),
+            "TEST": {"NAME": os.getenv("POSTGRES_TEST_DB", "test_kaziforce")},
         }
     }
 AUTH_USER_MODEL = "accounts.User"
@@ -89,6 +90,10 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+# Do not map this directory into a public web-server/media route.
+PRIVATE_DOCUMENT_ROOT = BASE_DIR / "private_uploads"
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "accounts:sign_in"
 LOGIN_REDIRECT_URL = "accounts:dashboard"

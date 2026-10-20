@@ -1,0 +1,18 @@
+{% extends "workspace/base.html" %}
+{% block title %}Application | KaziForce{% endblock %}
+{% block workspace_content %}
+    <header class="page-heading"><p class="eyebrow">{{ application.job_snapshot.company|default:application.job.company }}</p><h1>{{ application.job_snapshot.title|default:application.job.title }}</h1><span class="status-pill">{{ application.get_status_display }}</span>{% if application.submitted_at %}<p class="small-copy">Submitted {{ application.submitted_at|date:"j M Y, H:i" }}</p>{% endif %}</header>
+    {% if application.status == "draft" %}<div class="application-callout"><h2>Your draft is private.</h2><p>Continue editing your information and choose attachments before submitting to the recruiter.</p><a class="button"
+   href="{% url 'applications:edit' application.job_id %}">Continue draft ↗</a></div>{% else %}<div class="application-callout"><strong>{% if user.role == "recruiter" %}{{ application.candidate_name|default:application.candidate_email }}{% else %}Your submitted application{% endif %}</strong><p>This is the information and documents submitted for this role. Later changes to the candidate's main profile do not change this copy.</p>{% if user.role == "recruiter" %}<p>{{ application.candidate_email }}</p><form class="status-form"
+      method="post"
+      action="{% url 'applications:status' application.pk %}">{% csrf_token %}{% include "components/form_field.html" with field=status_form.status %}<button class="button button-secondary" type="submit">Update status</button></form>{% endif %}</div>{% endif %}
+    {% include "applications/components/snapshot.html" %}
+    <section class="profile-section">
+        <h2>Message to the recruiter</h2>
+        <p class="long-copy">{{ application.cover_letter|default:"No message added."|linebreaksbr }}</p>
+    </section>
+    <section class="profile-section"><h2>{% if application.status == "draft" %}Selected documents{% else %}Submitted documents{% endif %}</h2>
+    {% if application.status == "draft" %}{% for document in application.documents.all %}<p>{{ document.get_kind_display }}: {{ document.title|default:document.original_name }}</p>{% empty %}<p class="empty-state">No documents selected.</p>{% endfor %}{% else %}{% for attachment in application.attachments.all %}<article class="document-card"><div><h3>{{ attachment.title|default:attachment.original_name }}</h3><p class="small-copy">{{ attachment.original_name }}</p><div class="action-row"><a href="{% url 'applications:attachment_file' attachment.pk %}?view=1"
+   target="_blank"
+   rel="noopener">Open document ↗</a><a href="{% url 'applications:attachment_file' attachment.pk %}">Download</a></div></div></article>{% empty %}<p class="empty-state">No documents attached.</p>{% endfor %}{% endif %}</section>
+{% endblock %}

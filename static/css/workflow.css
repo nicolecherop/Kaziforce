@@ -1,0 +1,49 @@
+/* Manual profiles, private attachment libraries and independent applications. */
+.small-copy { font-size: 12px; color: #657994; overflow-wrap: anywhere; }
+.document-upload-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 50px; border: 1px solid #dfe7f4; border-radius: 20px; padding: 34px; background: linear-gradient(120deg, #f2f7ff, white 85%); margin-bottom: 36px; }
+.document-upload-panel h2 { font-size: 30px; }
+.document-upload-panel p { font-size: 14px; }
+.document-upload-panel form { min-width: 0; }
+input[type=file] { width: 100%; padding: 14px; border: 1px dashed #a4bbdf; border-radius: 9px; font-size: 12px; background: white; }
+input::file-selector-button { border: 0; border-radius: 6px; padding: 9px 12px; background: #eaf2ff; color: #225fbb; margin-right: 12px; cursor: pointer; }
+.document-card { display: flex; justify-content: space-between; gap: 28px; padding: 25px 0; border-top: 1px solid var(--line); }
+.document-card h3 { font-size: 19px; margin: 12px 0 7px; overflow-wrap: anywhere; }
+.document-card .action-row { font-size: 13px; }
+.document-delete { max-width: 220px; flex-shrink: 0; font-size: 12px; padding-top: 10px; }
+.document-delete summary { cursor: pointer; color: #92525b; }
+.danger-link { color: #92525b; padding: 0; }
+.status-pill { display: inline-block; font-size: 11px; color: #3764a0; padding: 5px 13px; border-radius: 20px; background: #eaf2ff; margin-bottom: 5px; }
+.job-card { padding: 30px; border: 1px solid var(--line); border-radius: 16px; margin-block: 24px; }
+.job-card h2 { font-size: 27px; margin-block: 10px 14px; overflow-wrap: anywhere; }
+.job-card h2 a { color: var(--ink); }
+.job-card p { font-size: 14px; }
+.job-card .action-row { font-size: 13px; }
+.job-search { display: flex; gap: 15px; margin-bottom: 32px; }
+.job-search input { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; font-size: 14px; }
+.application-callout { border-radius: 16px; background: #edf4ff; padding: 28px 32px; margin-block: 24px 34px; }
+.application-callout > strong { font-size: 20px; font-weight: 500; }
+.application-callout h2 { font-size: 28px; }
+.application-callout p { font-size: 14px; max-width: 730px; margin-block: 12px 0; }
+.application-callout .button { margin-top: 22px; }
+.document-selection .input-wrap > div { width: 100%; }
+.document-selection label { display: flex; gap: 12px; align-items: flex-start; padding: 13px 15px; border: 1px solid var(--line); border-radius: 9px; margin-bottom: 10px; color: #405b7f; font-size: 13px; overflow-wrap: anywhere; }
+.document-selection input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--blue); flex-shrink: 0; }
+.status-form { display: flex; gap: 16px; align-items: end; max-width: 500px; margin-top: 20px; }
+.status-form .field { flex: 1; margin: 0; }
+.status-form .button { margin: 0; }
+.notice-list .error-notice { color: #a8374a; }
+.profile-documents-links { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 30px; font-size: 13px; }
+@media (max-width: 1050px) { .document-upload-panel { grid-template-columns: 1fr; gap: 20px; } }
+@media (max-width: 760px) {
+  .workspace-navigation { flex-wrap: wrap; width: 100%; }
+  .candidate-sidebar > form { margin-top: 10px; }
+  .document-upload-panel { padding: 24px 20px; }
+  .document-card { flex-direction: column; gap: 15px; }
+  .document-delete { max-width: none; }
+  .job-card { padding: 24px 20px; }
+  .job-card h2 { font-size: 24px; }
+  .application-callout { padding: 25px 22px; }
+  .status-form { flex-direction: column; align-items: stretch; }
+  .job-search { gap: 10px; }
+  .profile-documents-links { gap: 13px; }
+}

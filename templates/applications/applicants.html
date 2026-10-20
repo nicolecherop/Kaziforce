@@ -1,0 +1,10 @@
+{% extends "workspace/base.html" %}
+{% block title %}Applicants for {{ job.title }} | KaziForce{% endblock %}
+{% block workspace_content %}
+    <header class="page-heading">
+        <p class="eyebrow">{{ job.company }} / Applicants</p>
+        <h1>{{ job.title }}</h1>
+        <p>Read each candidate's submitted profile and original attachments.</p>
+    </header>
+    {% for application in applications %}<article class="job-card"><span class="status-pill">{{ application.get_status_display }}</span><h2><a href="{% url 'applications:detail' application.pk %}">{{ application.candidate_name|default:application.candidate_email }}</a></h2><p>{{ application.profile_snapshot.profile.headline|default:"Candidate application" }}</p><p class="small-copy">Submitted {{ application.submitted_at|date:"j M Y" }}</p><a href="{% url 'applications:detail' application.pk %}">View profile and documents ↗</a></article>{% empty %}<p class="empty-state">Submitted applications will appear here. Candidate drafts stay private.</p>{% endfor %}
+{% endblock %}

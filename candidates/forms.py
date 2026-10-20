@@ -165,6 +165,7 @@ def entry_formset(model, form, maximum=30, formset=OwnedEntryFormSet):
         CandidateProfile,
         model,
         form=form,
+        fields=tuple(form._meta.fields),
         formset=formset,
         extra=1,
         can_delete=True,

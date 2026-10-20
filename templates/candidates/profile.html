@@ -11,6 +11,7 @@
         <a class="button" href="{% url 'candidates:profile_edit' %}">{% if profile %}Edit profile{% else %}Create profile{% endif %} <span aria-hidden="true">↗</span></a>
     </header>
     {% if profile %}<p class="last-updated">Last updated {{ profile.updated_at|date:"j M Y, H:i" }}</p>{% else %}<p class="empty-introduction">Your profile is ready to be written. Start with a summary or add your first skill.</p>{% endif %}
+    <div class="profile-documents-links"><a href="{% url 'candidates:documents' %}">Manage your CV and documents ↗</a><a href="{% url 'jobs:opportunities' %}">Find a job and use your profile ↗</a></div>
     <section class="profile-section" aria-labelledby="summary-title">
         <h2 id="summary-title">Professional summary</h2>
         {% if profile.summary %}<p class="long-copy">{{ profile.summary|linebreaksbr }}</p>{% else %}<p class="empty-state">Introduce yourself and the work you are interested in. <a href="{% url 'candidates:profile_edit' %}#summary">Add a summary</a></p>{% endif %}
@@ -21,6 +22,7 @@
     </section>
     <section class="profile-section" aria-labelledby="education-title">
         <h2 id="education-title">Education and qualifications</h2>
+        <p class="small-copy">Add qualifications in your profile and <a href="{% url 'candidates:documents' %}?kind=degree">upload supporting degree documents</a> to your library.</p>
         {% for entry in profile.education.all %}
             <article class="profile-record"><h3>{{ entry.qualification }}</h3><p class="record-subtitle">{{ entry.institution }}{% if entry.field_of_study %} · {{ entry.field_of_study }}{% endif %}</p>
                 {% if entry.start_date or entry.end_date or entry.currently_studying %}<p class="record-date">{% if entry.start_date %}{{ entry.start_date|date:"M Y" }}{% endif %}{% if entry.currently_studying %}{% if entry.start_date %} – {% endif %}In progress{% elif entry.end_date %}{% if entry.start_date %} – {% endif %}{{ entry.end_date|date:"M Y" }}{% endif %}</p>{% endif %}
@@ -29,6 +31,7 @@
     </section>
     <section class="profile-section" aria-labelledby="certifications-title">
         <h2 id="certifications-title">Certifications</h2>
+        <p class="small-copy">You can also <a href="{% url 'candidates:documents' %}?kind=certificate">upload a certificate</a> to attach to applications.</p>
         {% for entry in profile.certifications.all %}
             <article class="profile-record">
                 <h3>{{ entry.name }}</h3>

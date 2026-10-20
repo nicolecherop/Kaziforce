@@ -1,0 +1,18 @@
+{% extends "candidates/base.html" %}
+{% block title %}{{ job.title }} | KaziForce{% endblock %}
+{% block candidate_content %}
+    <header class="page-heading">
+        <p class="eyebrow">{{ job.company }}</p>
+        <h1>{{ job.title }}</h1>
+        <p>{{ job.location }} · {{ job.get_status_display }}</p>
+    </header>
+    <section class="profile-section">
+        <h2>About the role</h2>
+        <p class="long-copy">{{ job.description|linebreaksbr }}</p>
+    </section>
+    {% if job.requirements %}<section class="profile-section"><h2>What you bring</h2><p class="long-copy">{{ job.requirements|linebreaksbr }}</p></section>{% endif %}
+    <div class="application-callout">
+        <h2>Your profile is a starting point.</h2>
+        <p>You can tailor your information for this job and choose which CV and supporting documents to send. Your main profile stays the same.</p>
+    {% if application and application.status != "draft" %}<a class="button" href="{% url 'applications:detail' application.pk %}">View your application ↗</a>{% elif job.status == "open" %}<a class="button" href="{% url 'applications:edit' job.pk %}">{% if application %}Continue draft{% else %}Start application{% endif %} ↗</a>{% else %}<p>This job is closed to new applications.</p>{% endif %}</div>
+{% endblock %}

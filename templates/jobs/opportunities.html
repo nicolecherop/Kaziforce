@@ -1,0 +1,17 @@
+{% extends "candidates/base.html" %}
+{% block title %}Find jobs | KaziForce{% endblock %}
+{% block candidate_content %}
+    <header class="page-heading">
+        <p class="eyebrow">Find jobs</p>
+        <h1>Find your next opportunity.</h1>
+        <p>Explore open roles. Start an application with your profile and tailor the details for each job.</p>
+    </header>
+    <form class="job-search" method="get">
+        <label class="sr-only" for="job-search">Search jobs, companies or locations</label><input id="job-search"
+       name="q"
+       value="{{ query }}"
+       maxlength="160"
+       placeholder="Job title, company or location"><button class="button button-secondary" type="submit">Search</button>
+    </form>
+    {% for job in jobs %}<article class="job-card"><p class="small-copy">{{ job.company }} · {{ job.location }}</p><h2><a href="{% url 'jobs:detail' job.pk %}">{{ job.title }}</a></h2><p>{{ job.description|truncatechars:220 }}</p><a class="plain-link" href="{% url 'jobs:detail' job.pk %}">View role ↗</a></article>{% empty %}<p class="empty-state">No open jobs {% if query %}match this search{% else %}have been posted yet{% endif %}.</p>{% endfor %}
+{% endblock %}

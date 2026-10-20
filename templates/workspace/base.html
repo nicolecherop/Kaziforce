@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body_class %}candidate-page{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/candidates.css' %}">
+    <link rel="stylesheet" href="{% static 'css/workflow.css' %}">
+{% endblock %}
+{% block header %}
+    <header class="site-header shell"><a class="brand" href="{% url 'pages:home' %}">Kaziforce</a><span class="descriptor">Talent matching</span><a class="back-link" href="{% url 'pages:home' %}">Back to home</a></header>
+{% endblock %}
+{% block content %}
+    <div class="candidate-layout shell">
+        <aside class="candidate-sidebar" aria-label="Workspace">
+            <div class="workspace-identity"><span class="initial-avatar" aria-hidden="true">{{ user.first_name|first|upper|default:"K" }}</span><div><strong>{{ user.get_full_name|default:"My account" }}</strong><span>{% if user.role == "candidate" %}Candidate{% else %}Recruiter{% endif %} workspace</span></div></div>
+            <nav class="workspace-navigation" aria-label="Workspace navigation">
+                <a href="{% url 'accounts:dashboard' %}"
+                   {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}>Overview</a>
+                {% if user.role == "candidate" %}
+                    <a href="{% url 'candidates:profile' %}"
+                       {% if request.resolver_match.url_name == 'profile' or request.resolver_match.url_name == 'profile_edit' %}aria-current="page"{% endif %}>My profile</a>
+                    <a href="{% url 'candidates:documents' %}"
+                       {% if request.resolver_match.url_name == 'documents' or request.resolver_match.url_name == 'cv_upload' %}aria-current="page"{% endif %}>CV &amp; documents</a>
+                    <a href="{% url 'jobs:opportunities' %}"
+                       {% if request.resolver_match.app_name == 'jobs' %}aria-current="page"{% endif %}>Find jobs</a>
+                    <a href="{% url 'applications:mine' %}"
+                       {% if request.resolver_match.app_name == 'applications' %}aria-current="page"{% endif %}>My applications</a>
+                {% else %}
+                    <a href="{% url 'jobs:manage' %}"
+                       {% if request.resolver_match.app_name == 'jobs' or request.resolver_match.app_name == 'applications' %}aria-current="page"{% endif %}>Jobs &amp; applicants</a>
+                {% endif %}
+                <a href="{% url 'pages:help' %}">Help</a>
+            </nav>
+            <form method="post" action="{% url 'accounts:sign_out' %}">{% csrf_token %}<button class="text-button" type="submit">Sign out ↗</button></form>
+        </aside>
+        <div class="candidate-content">
+            {% if messages %}<div class="notice-list" role="status">{% for message in messages %}<p {% if message.tags == 'error' %}class="error-notice"{% endif %}>{{ message }}</p>{% endfor %}</div>{% endif %}
+            {% block workspace_content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
