@@ -10,7 +10,7 @@ The custom user model is established before the first migration. Its role descri
 
 Chapter 4 of the supplied proposal defines the original requirements; the project owner's later instructions replace CV extraction with manual profile entry and recruiter-readable attachments. The supplied mockups define the visual direction. Future rankings support human decisions. Scores must exclude personal identity attributes and preserve input, ESCO and matching configuration provenance. Documents belong in protected storage and must never be served as public static assets.
 
-The scoring formula, skill priority scale and evaluation metrics still need implementation decisions. CVs accept PDF/DOCX up to 5 MB; degrees/certificates accept PDF/JPG/PNG. There is no text extraction or page-count restriction. Do not invent claims of matching accuracy before evaluation.
+The scoring formula and evaluation metrics still need implementation decisions. Recruiter priorities use Standard (1), Important (2) and High (3); no matching scores are calculated yet. CVs accept PDF/DOCX up to 5 MB; degrees/certificates accept PDF/JPG/PNG. There is no text extraction or page-count restriction. Do not invent claims of matching accuracy before evaluation.
 
 ## Delivery stages
 
@@ -37,3 +37,7 @@ No profile, job, application or scoring data is fabricated. The matching impleme
 ## Documents and applications
 
 `CandidateDocument` stores a private original, owner, kind and optional title. Uploading never creates or edits a profile. `Application` stores an independently editable profile copy for one candidate/job pair. On submission, it freezes candidate/job details and saves separate file copies as `ApplicationAttachment` records. Only the candidate and that job's recruiter can read submitted copies; drafts belong to the candidate alone. See [manual profiles and applications](manual-applications.md).
+
+## Job requirements
+
+`JobPosting` stores optional education and relevant experience requirements. `JobSkill` stores one named skill, Required/Preferred status and priority per row in `job_skills`. The job form validates all entries before saving the posting and skills in one transaction. Candidate job details display these requirements; new submissions freeze their values and display labels in the application job snapshot. See [job requirements](job-requirements.md) for boundaries and validation.

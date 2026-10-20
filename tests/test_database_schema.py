@@ -17,6 +17,7 @@ class DatabaseSchemaTests(TestCase):
             "candidate_portfolio_links",
             "candidate_documents",
             "jobs",
+            "job_skills",
             "applications",
             "application_draft_documents",
             "application_attachments",

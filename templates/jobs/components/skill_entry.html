@@ -1,0 +1,11 @@
+<fieldset class="profile-entry" data-profile-entry>
+    <legend>Skill <span data-entry-number>{{ forloop.counter|default:"" }}</span></legend>
+    {% for hidden in entry.hidden_fields %}{{ hidden }}{% if hidden.errors %}<div class="field-errors">{{ hidden.errors }}</div>{% endif %}{% endfor %}
+    {% if entry.non_field_errors %}<div class="field-errors">{{ entry.non_field_errors }}</div>{% endif %}
+    <div class="job-skill-fields">
+        {% include "components/form_field.html" with field=entry.name %}
+        {% include "components/form_field.html" with field=entry.requirement %}
+        {% include "components/form_field.html" with field=entry.priority %}
+    </div>
+    {% if entry.DELETE %}<label class="remove-entry">{{ entry.DELETE }} <span>Remove this skill when saving</span></label>{% endif %}
+</fieldset>

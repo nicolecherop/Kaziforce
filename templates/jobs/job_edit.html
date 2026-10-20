@@ -1,6 +1,99 @@
 {% extends "workspace/base.html" %}
+{% load static %}
 {% block title %}{% if job.created_at %}Edit job{% else %}Post a job{% endif %} | KaziForce{% endblock %}
 {% block workspace_content %}
-    <header class="page-heading"><p class="eyebrow">Your vacancies</p><h1>{% if job.created_at %}Refine your job posting.{% else %}Make room for the right talent.{% endif %}</h1><p>Give candidates a clear picture of the work and what your team needs.</p></header>
-    <form method="post" class="profile-form" novalidate>{% csrf_token %}{% if form.errors %}<div class="form-errors" role="alert" tabindex="-1" data-form-errors><p>Check the highlighted fields.</p>{{ form.non_field_errors }}</div>{% endif %}<div class="profile-section">{% for field in form %}{% include "components/form_field.html" %}{% endfor %}</div><div class="action-row"><button class="button" type="submit">{% if job.created_at %}Save changes{% else %}Publish job{% endif %} ↗</button><a href="{% url 'jobs:manage' %}">Cancel</a></div></form>
+    <header class="page-heading">
+        <p class="eyebrow">Your vacancies</p>
+        <h1>{% if job.created_at %}Refine your job posting.{% else %}Make room for the right talent.{% endif %}</h1>
+        <p>Describe the role, the skills you need and what matters most to your team.</p>
+    </header>
+    <nav class="profile-section-links" aria-label="Job sections">
+        <a href="#role">About the role</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#experience">Experience</a>
+    </nav>
+    <form method="post" class="profile-form job-form" novalidate>
+        {% csrf_token %}
+        {% if form.errors or skills.total_error_count %}
+            <div class="form-errors" role="alert" tabindex="-1" data-form-errors>
+                <p>Your changes have not been saved. Check the highlighted fields.</p>
+                {{ form.non_field_errors }}
+                {% if skills.total_error_count %}<p><a href="#skills">Check the skill entries.</a></p>{% endif %}
+            </div>
+        {% endif %}
+        <section class="profile-section" id="role" aria-labelledby="role-title">
+            <div class="section-heading">
+                <h2 id="role-title">About the role</h2>
+                <p>Help candidates understand the opportunity and your expectations.</p>
+            </div>
+            <div class="entry-fields">
+                {% include "components/form_field.html" with field=form.title %}
+                {% include "components/form_field.html" with field=form.company %}
+                {% include "components/form_field.html" with field=form.location %}
+            </div>
+            {% include "components/form_field.html" with field=form.description %}
+            {% include "components/form_field.html" with field=form.requirements %}
+        </section>
+        <section class="profile-section"
+                 id="skills"
+                 aria-labelledby="skills-title"
+                 data-formset="skills"
+                 data-maximum="{{ skills.max_num }}">
+            <div class="section-heading">
+                <h2 id="skills-title">Skills</h2>
+                <p>Add one skill per entry. Choose Required for skills the role needs and Preferred for useful extras.</p>
+            </div>
+            <p class="priority-note"><strong>Set your priorities.</strong> Standard gives a requirement normal emphasis, Important gives it more emphasis, and High identifies a top priority. Priority is separate from whether a skill is required or preferred.</p>
+            {{ skills.management_form }}
+            {% if skills.non_form_errors %}<div class="field-errors"
+     role="alert">{{ skills.non_form_errors }}</div>{% endif %}
+            <div class="entry-list" data-entry-list>
+                {% for entry in skills %}
+                    {% include "jobs/components/skill_entry.html" %}
+                {% endfor %}
+            </div>
+            <template data-empty-entry>
+                {% include "jobs/components/skill_entry.html" with entry=skills.empty_form %}
+            </template>
+            <button type="button"
+                    class="button button-secondary add-entry"
+                    data-add-entry
+                    hidden>
+                + Add skill
+            </button>
+            <p class="entry-limit"
+               data-entry-limit
+               hidden>You can add up to 40 skills. Remove an entry and save before adding another.</p>
+            <p class="profile-form-note">Leave unused entries blank. Select “Remove this skill” to remove an entry when you save.</p>
+        </section>
+        <section class="profile-section"
+                 id="education"
+                 aria-labelledby="education-title">
+            <div class="section-heading">
+                <h2 id="education-title">Education and qualifications</h2>
+                <p>Set a minimum qualification if the role needs one. Include equivalent qualifications you are willing to accept.</p>
+            </div>
+            <div class="entry-fields">
+                {% include "components/form_field.html" with field=form.education_level %}
+                {% include "components/form_field.html" with field=form.education_priority %}
+            </div>
+            {% include "components/form_field.html" with field=form.education_field %}
+        </section>
+        <section class="profile-section"
+                 id="experience"
+                 aria-labelledby="experience-title">
+            <div class="section-heading">
+                <h2 id="experience-title">Experience</h2>
+                <p>Describe the relevant experience you need, including internships, freelance work or volunteer experience where appropriate.</p>
+            </div>
+            <div class="entry-fields">
+                {% include "components/form_field.html" with field=form.minimum_experience_years %}
+                {% include "components/form_field.html" with field=form.experience_priority %}
+            </div>
+            {% include "components/form_field.html" with field=form.experience_details %}
+        </section>
+        <div class="save-bar"><p>Your posting is saved when you select the button.</p><div class="action-row"><a href="{% url 'jobs:manage' %}">Cancel</a><button class="button" type="submit">{% if job.created_at %}Save changes{% else %}Publish job{% endif %} ↗</button></div></div>
+        <span class="sr-only" role="status" data-entry-status></span>
+    </form>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'js/profile.js' %}" defer></script>
 {% endblock %}

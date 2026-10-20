@@ -491,6 +491,11 @@ class ManualApplicationTests(TestCase):
             "location": "Remote",
             "description": "A new role",
             "recruiter": self.other_recruiter.pk,
+            "education_level": "any",
+            "education_priority": "1",
+            "experience_priority": "1",
+            "skills-TOTAL_FORMS": "0",
+            "skills-INITIAL_FORMS": "0",
         }
         response = self.client.post(reverse("jobs:create"), data)
         self.assertRedirects(response, reverse("jobs:manage"))

@@ -1,0 +1,20 @@
+/* Structured job requirements share the workspace's forms and entry controls. */
+.priority-note { border-left: 3px solid var(--blue); padding: 14px 18px; background: #f2f7ff; font-size: 13px; margin-bottom: 26px; }
+.job-skill-fields { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+.job-skill-fields .field { margin-bottom: 12px; }
+.job-skill-fields .field-label { font-size: 13px; }
+.job-skill-list { list-style: none; padding: 0; margin: 22px 0; }
+.job-skill-list li { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 15px; overflow-wrap: anywhere; }
+.requirement-labels { display: flex; gap: 14px; align-items: center; flex-shrink: 0; }
+.requirement-labels .status-pill { margin: 0; }
+.job-qualification-list { margin: 26px 0 0; font-size: 14px; }
+.job-qualification-list > div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 20px; padding-block: 18px; border-top: 1px solid var(--line); }
+.job-qualification-list dt { font-weight: 600; color: var(--ink); }
+.job-qualification-list dd { margin: 0; overflow-wrap: anywhere; }
+.job-qualification-list dd p { margin: 8px 0 0; }
+@media (max-width: 1100px) { .job-skill-fields { grid-template-columns: 1fr 1fr; } .job-skill-fields .field:first-child { grid-column: 1 / -1; } }
+@media (max-width: 760px) {
+  .job-skill-fields { grid-template-columns: 1fr; gap: 10px; }
+  .job-skill-list li { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .job-qualification-list > div { grid-template-columns: 1fr; gap: 10px; }
+}

@@ -1,0 +1,14 @@
+<section class="profile-section" aria-labelledby="job-requirements-title">
+    <h2 id="job-requirements-title">{% if submitted_copy %}Job requirements at submission{% else %}Skills and qualifications{% endif %}</h2>
+    {% if requirements.skills %}
+        <ul class="job-skill-list">
+            {% for skill in requirements.skills %}
+                <li><strong>{{ skill.name }}</strong><span class="requirement-labels"><span class="status-pill">{{ skill.requirement_label }}</span><span class="small-copy">{{ skill.priority_label }} priority</span></span></li>
+            {% endfor %}
+        </ul>
+    {% else %}<p class="small-copy">No individual skills listed. See the role description for details.</p>{% endif %}
+    <dl class="job-qualification-list">
+        <div><dt>Education</dt><dd>{{ requirements.education_level_label }}{% if requirements.education_field %}<p>{{ requirements.education_field }}</p>{% endif %}{% if requirements.education_level != "any" or requirements.education_field %}<p class="small-copy">{{ requirements.education_priority_label }} priority</p>{% endif %}</dd></div>
+        <div><dt>Experience</dt><dd>{% if requirements.minimum_experience_years != None %}{{ requirements.minimum_experience_years|floatformat:"-1" }} year{{ requirements.minimum_experience_years|floatformat:"-1"|pluralize }} minimum{% else %}No minimum years specified{% endif %}{% if requirements.experience_details %}<p>{{ requirements.experience_details|linebreaksbr }}</p>{% endif %}{% if requirements.minimum_experience_years != None or requirements.experience_details %}<p class="small-copy">{{ requirements.experience_priority_label }} priority</p>{% endif %}</dd></div>
+    </dl>
+</section>

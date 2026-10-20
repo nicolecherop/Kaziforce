@@ -15,6 +15,7 @@ KaziForce uses PostgreSQL for local application development. The database is `ka
 | `candidate_portfolio_links` | Professional and project links |
 | `candidate_documents` | Original private CV, degree and certificate metadata |
 | `jobs` | Recruiter job postings |
+| `job_skills` | Required/preferred skills and their recruiter priorities |
 | `applications` | Draft/submitted profile copies, job copies and application statuses |
 | `application_draft_documents` | Selected library document references |
 | `application_attachments` | Private copies actually submitted with applications |

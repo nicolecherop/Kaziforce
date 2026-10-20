@@ -1,10 +1,11 @@
 from django.contrib import messages
+from django.db import IntegrityError, transaction
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 from candidates.access import candidate_required
 from .access import recruiter_required
-from .forms import JobPostingForm
+from .forms import JobPostingForm, JobSkillFormSet
 from .models import JobPosting
 
 
@@ -30,7 +31,13 @@ def job_detail(request, job_id):
     job = get_object_or_404(JobPosting, pk=job_id)
     application = request.user.applications.filter(job=job).first()
     return render(
-        request, "jobs/job_detail.html", {"job": job, "application": application}
+        request,
+        "jobs/job_detail.html",
+        {
+            "job": job,
+            "application": application,
+            "requirements": job.structured_requirements(),
+        },
     )
 
 
@@ -54,11 +61,29 @@ def job_edit(request, job_id=None):
     form = JobPostingForm(
         request.POST if request.method == "POST" else None, instance=job
     )
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, "Your job posting has been saved.")
-        return redirect("jobs:manage")
-    return render(request, "jobs/job_edit.html", {"form": form, "job": job})
+    skills = JobSkillFormSet(
+        request.POST if request.method == "POST" else None,
+        instance=job,
+        prefix="skills",
+    )
+    if request.method == "POST":
+        valid_form, valid_skills = form.is_valid(), skills.is_valid()
+        if valid_form and valid_skills:
+            try:
+                with transaction.atomic():
+                    form.save()
+                    skills.save()
+            except IntegrityError:
+                form.add_error(
+                    None,
+                    "These changes conflict with saved information. Reload the job and try again.",
+                )
+            else:
+                messages.success(request, "Your job posting has been saved.")
+                return redirect("jobs:manage")
+    return render(
+        request, "jobs/job_edit.html", {"form": form, "job": job, "skills": skills}
+    )
 
 
 @recruiter_required

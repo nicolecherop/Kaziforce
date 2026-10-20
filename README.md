@@ -4,7 +4,7 @@ A Django candidate–job matching application under development. The matching en
 
 ## Current stage
 
-Candidates enter their professional information manually, including skills, education, certifications, work experience and portfolio links. CVs, degree documents and certificates are private attachments for recruiters to read. Candidates can start each job application with their saved profile, tailor an independent copy, save a private draft and choose attachments before submitting. Recruiters can publish, edit and close jobs, read submitted applications and update their statuses. ESCO standardization, skill priorities and matching are still to be implemented.
+Candidates enter their professional information manually, including skills, education, certifications, work experience and portfolio links. CVs, degree documents and certificates are private attachments for recruiters to read. Candidates can start each job application with their saved profile, tailor an independent copy, save a private draft and choose attachments before submitting. Recruiters can publish, edit and close jobs with required/preferred skills, priorities, education and relevant experience requirements, read submitted applications and update their statuses. ESCO standardization and matching are still to be implemented.
 
 ## Local setup on Windows
 
@@ -49,7 +49,7 @@ Candidate pages are `templates/candidates/dashboard.html`, `profile.html` and `p
 - `config`: project configuration and root routes.
 - `accounts`: user identity, authentication and roles.
 - `candidates`: manually entered profiles, private CV/degree/certificate documents, forms and ownership checks.
-- `jobs`: recruiter-owned vacancies, candidate job browsing and search.
+- `jobs`: recruiter-owned vacancies, structured requirements and priorities, candidate job browsing and search. See [job requirements](docs/job-requirements.md).
 - `applications`: independent profile copies, private drafts, immutable submitted attachments and status tracking.
 - `matching`: independent preprocessing, ESCO mapping and scoring services, to be implemented.
 - `pages`: public page routes.

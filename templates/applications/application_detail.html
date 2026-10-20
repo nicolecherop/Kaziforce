@@ -7,6 +7,9 @@
       method="post"
       action="{% url 'applications:status' application.pk %}">{% csrf_token %}{% include "components/form_field.html" with field=status_form.status %}<button class="button button-secondary" type="submit">Update status</button></form>{% endif %}</div>{% endif %}
     {% include "applications/components/snapshot.html" %}
+    {% if application.job_snapshot.structured_requirements %}
+        {% include "jobs/components/requirements.html" with requirements=application.job_snapshot.structured_requirements submitted_copy=True %}
+    {% endif %}
     <section class="profile-section">
         <h2>Message to the recruiter</h2>
         <p class="long-copy">{{ application.cover_letter|default:"No message added."|linebreaksbr }}</p>

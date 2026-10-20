@@ -98,6 +98,9 @@ def save_application(user, job_id, snapshot, application_data, submit):
                         "requirements",
                     )
                 }
+                application.job_snapshot["structured_requirements"] = (
+                    job.structured_requirements()
+                )
             application.save()
             application.documents.set(documents)
             if submit:

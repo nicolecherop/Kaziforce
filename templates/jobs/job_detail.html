@@ -11,6 +11,7 @@
         <p class="long-copy">{{ job.description|linebreaksbr }}</p>
     </section>
     {% if job.requirements %}<section class="profile-section"><h2>What you bring</h2><p class="long-copy">{{ job.requirements|linebreaksbr }}</p></section>{% endif %}
+    {% include "jobs/components/requirements.html" %}
     <div class="application-callout">
         <h2>Your profile is a starting point.</h2>
         <p>You can tailor your information for this job and choose which CV and supporting documents to send. Your main profile stays the same.</p>
