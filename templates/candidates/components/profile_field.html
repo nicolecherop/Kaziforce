@@ -1,0 +1,10 @@
+{% if field.field.widget.input_type == "checkbox" %}
+    <div class="field checkbox-field">
+        <label>{{ field }} <span>{{ field.label }}</span></label>
+        {% if field.errors %}<div class="field-errors">{{ field.errors }}</div>{% endif %}
+    </div>
+{% else %}
+    <div class="profile-field {% if field.field.widget.input_type != 'text' and field.field.widget.input_type != 'date' and field.field.widget.input_type != 'url' %}field-wide{% endif %}">
+        {% include "components/form_field.html" with field=field %}
+    </div>
+{% endif %}

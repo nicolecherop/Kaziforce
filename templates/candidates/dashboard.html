@@ -1,4 +1,35 @@
-{% extends "accounts/workspace_base.html" %}
-{% block workspace_content %}
-    <p>Your candidate account is ready. Profile creation, job recommendations and application tracking are the next features being built.</p>
+{% extends "candidates/base.html" %}
+{% block title %}Candidate overview | KaziForce{% endblock %}
+{% block candidate_content %}
+    <header class="page-heading">
+        <p class="eyebrow">My workspace</p>
+        <h1>Welcome, {{ user.first_name|default:"there" }}.</h1>
+        <p>Bring your skills and experience together in one professional profile.</p>
+    </header>
+    <section class="profile-introduction" aria-labelledby="profile-start-title">
+        <div>
+            <span class="section-kicker">Your professional story</span>
+            <h2 id="profile-start-title">{% if profile %}Keep your profile up to date.{% else %}Start with your profile.{% endif %}</h2>
+            <p>Share what you know, the work you have done and the direction you want to take.</p>
+            <div class="action-row">
+                <a class="button" href="{% url 'candidates:profile_edit' %}">{% if profile %}Edit my profile{% else %}Create my profile{% endif %} <span aria-hidden="true">↗</span></a>
+                {% if profile %}<a class="plain-link"
+   href="{% url 'candidates:profile' %}">View my profile</a>{% endif %}
+            </div>
+        </div>
+    </section>
+    <section class="section-overview" aria-labelledby="sections-title">
+        <div class="section-heading">
+            <h2 id="sections-title">Make it yours.</h2>
+            <p>Add the sections that reflect your background. You can return to them at any time.</p>
+        </div>
+        <ul class="section-checklist">
+            {% for section in profile_sections %}
+                <li>
+                    <a href="{% url 'candidates:profile_edit' %}#{{ section.anchor }}"><span>{{ section.label }}</span><span class="section-state {% if section.complete %}is-added{% endif %}">{% if section.complete %}Added{% else %}Add details{% endif %} <span aria-hidden="true">↗</span></span></a>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+    <p class="next-feature">Job recommendations and application tracking are coming in the next stages.</p>
 {% endblock %}

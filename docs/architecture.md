@@ -25,3 +25,9 @@ The public page stage implements registration for candidates and recruiters, cas
 `accounts/forms.py` validates identity and credentials. `accounts/views.py` coordinates account creation and role dispatch. `accounts/urls.py` binds named endpoints, including Django's password reset views. Registration creates an internal random username; the public interface asks for email. Database constraints continue to enforce case-insensitive email uniqueness, including concurrent submissions.
 
 No profile, job, application or scoring data is fabricated. The matching implementation remains independent of the page and account stage.
+
+## Candidate profiles
+
+`CandidateProfile` has one account owner. `CandidateSkill`, `Education`, `Certification`, `WorkExperience` and `PortfolioLink` hold repeatable records. Skill names retain the candidate's terminology until the ESCO stage. The profile timestamp changes on each saved edit, including changes to related records.
+
+`selectors.py` reads an owner-scoped profile with prefetched related records. `forms.py` validates profile data. `views.py` checks the candidate role, binds every formset to the session user's profile, validates all sections and commits the edit atomically. Posted entry and parent IDs are untrusted; foreign entries invalidate the submission, even if marked for deletion. Formsets have row limits. Candidate text is escaped, and validated links open with `noopener noreferrer`.

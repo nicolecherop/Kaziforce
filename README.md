@@ -4,7 +4,7 @@ A Django candidate–job matching application under development. The matching en
 
 ## Current stage
 
-The public landing page follows the approved video-hero layout, with responsive lower sections. Sign-in and registration use the approved photo-and-form layouts. Candidate and recruiter registration, email sign-in, CSRF-protected sign-out and password reset are connected. Signed-in users reach role-specific start pages; profiles, jobs, applications and matching are the next stages.
+The public pages and account flows are connected. Candidates have a workspace overview, profile display and a separate profile editor. Profiles support a headline, location, summary, skills, education, certifications, work experience and optional portfolio links. CV processing, recruiter job tools, applications and matching are the next stages.
 
 ## Local setup on Windows
 
@@ -44,9 +44,11 @@ The supplied video is encoded as a roughly 2 MB, silent 1080p MP4 for browser de
 
 ## Project layout
 
+Candidate pages are `templates/candidates/dashboard.html`, `profile.html` and `profile_edit.html`, using a shared workspace layout. `forms.css` provides shared field styles; `candidates.css` styles the workspace. `profile.js` adds repeatable entries and maintains formset indices. Without JavaScript, each section supports one new entry per save.
+
 - `config`: project configuration and root routes.
 - `accounts`: user identity, authentication and roles.
-- `candidates`: candidate profiles and CV processing, to be implemented.
+- `candidates`: profile models, forms, ownership checks, page views and database migrations. CV processing will be added separately.
 - `jobs`: recruiter information, postings and skill requirements, to be implemented.
 - `applications`: submissions and status tracking, to be implemented.
 - `matching`: independent preprocessing, ESCO mapping and scoring services, to be implemented.
@@ -57,6 +59,10 @@ The supplied video is encoded as a roughly 2 MB, silent 1080p MP4 for browser de
 - `docs`: architecture and implementation decisions.
 
 ## Verification
+
+The profile editor uses the signed-in account as its owner and rejects related entries from other profiles. It validates every section before saving everything in one transaction. Blank new entries are ignored. Skill names are unique per profile without case differences. Dates must be consistent, and external links accept HTTP or HTTPS only.
+
+Run `manage.py migrate` after updating to create candidate tables. ESCO mapping, CV upload and scoring are not implemented yet.
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py check
