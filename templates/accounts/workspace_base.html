@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}My workspace | KaziForce{% endblock %}
+{% block content %}
+    <section class="workspace shell">
+        <p class="eyebrow">{{ user.get_role_display }} workspace</p>
+        <h1>Welcome, {{ user.first_name|default:'there' }}.</h1>
+        {% block workspace_content %}{% endblock %}
+        <form method="post" action="{% url 'accounts:sign_out' %}">
+            {% csrf_token %}
+            <button class="button" type="submit">Sign out</button>
+        </form>
+    </section>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "accounts/workspace_base.html" %}
+{% block workspace_content %}
+    <p>You are signed in to the administrator workspace.</p>
+    {% if user.is_staff %}
+        <p>
+            <a href="{% url 'admin:index' %}">Open administration</a>
+        </p>
+    {% endif %}
+{% endblock %}

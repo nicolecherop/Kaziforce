@@ -1,0 +1,84 @@
+/* Authentication layouts and accessible form states. */
+.account-page .site-header { margin-bottom: 10px; }
+.account-layout { display: grid; grid-template-columns: 1.2fr .8fr; gap: 60px; align-items: stretch; min-height: 720px; }
+.account-photo { position: relative; min-width: 0; border-radius: var(--radius); overflow: hidden; min-height: 720px; background: #e4e9ef; }
+.account-photo > img { width: 100%; height: 100%; position: absolute; object-fit: cover; }
+.sign-in-layout .account-photo > img { object-position: center 15%; }
+.registration-layout .account-photo > img { object-position: center 55%; }
+.account-photo::after { content: ""; position: absolute; inset: 40% 0 0; background: linear-gradient(transparent, #081325e8); }
+.photo-copy { position: absolute; bottom: 32px; left: 36px; right: 30px; color: white; z-index: 1; }
+.photo-copy h2 { font-size: clamp(36px, 4vw, 58px); line-height: 1.1; margin-bottom: 16px; }
+.photo-copy p { color: #eaf0fb; font-size: 20px; margin: 0; }
+.account-panel { align-self: center; padding-block: 30px; min-width: 0; }
+.account-heading { margin-bottom: 44px; }
+.account-heading h1 { font-size: clamp(36px, 4vw, 60px); white-space: nowrap; }
+.account-heading p { font-size: 20px; }
+.field { margin-bottom: 28px; min-width: 0; }
+.field-label { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; font-size: 15px; margin-bottom: 10px; }
+.field-label label { color: var(--ink); font-weight: 500; }
+.field-label a { font-size: 14px; }
+.input-wrap { position: relative; }
+.input-wrap input { width: 100%; min-height: 56px; border: 1px solid #d4dce7; border-radius: 9px; padding: 14px 16px; background: white; color: var(--ink); font-size: 16px; }
+.input-wrap input[type=password], .input-wrap input[data-revealed] { padding-right: 52px; }
+.input-wrap input::placeholder { color: #7d8aa0; opacity: 1; }
+.input-wrap input:focus { border-color: var(--blue); }
+.password-toggle { position: absolute; top: 50%; transform: translateY(-50%); right: 9px; display: grid; place-items: center; min-width: 40px; min-height: 40px; border: 0; border-radius: 7px; color: #62738f; background: transparent; }
+.password-toggle:hover { color: var(--blue); background: #f2f6ff; }
+.field-hint { color: var(--muted); margin-top: 8px; font-size: 12px; line-height: 1.6; }
+.field-hint ul { padding-left: 16px; margin: 0; }
+.field-errors { color: var(--error); font-size: 13px; margin-top: 8px; }
+.field-errors ul, .form-errors ul { list-style: none; padding: 0; margin: 0; }
+.field-error input { border-color: var(--error); }
+.form-errors { color: var(--error); padding-block: 10px 18px; margin-bottom: 12px; font-size: 14px; }
+.form-errors p { color: inherit; margin: 0 0 4px; font-weight: 600; }
+.account-panel .button-full { min-height: 58px; margin-top: 8px; font-size: 18px; }
+.account-switch { border-top: 1px solid var(--line); padding-top: 30px; margin: 34px 0 0; font-size: 15px; text-align: center; }
+.registration-layout { grid-template-columns: 1fr .95fr; gap: 48px; }
+.registration-layout .account-heading { margin-bottom: 28px; }
+.registration-layout .account-heading h1 { font-size: clamp(34px, 3.6vw, 54px); }
+.registration-layout .account-panel { padding-top: 10px; }
+.role-selector { display: grid; grid-template-columns: 1fr 1fr; border: 0; gap: 20px; padding: 0; margin: 0 0 30px; min-width: 0; }
+.role-option { position: relative; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 11px; padding: 22px 24px; min-height: 160px; cursor: pointer; }
+.role-option:has(input:checked) { border-color: var(--blue); background: #eef5ff; box-shadow: inset 0 0 0 .5px var(--blue); }
+.role-option input { position: absolute; right: 18px; top: 18px; width: 20px; height: 20px; accent-color: var(--blue); margin: 0; cursor: pointer; }
+.role-icon { width: 30px; height: 30px; margin-bottom: 12px; }
+.role-option strong { font-size: 17px; font-weight: 600; }
+.role-option > span { color: var(--muted); font-size: 13px; margin-top: 6px; max-width: 180px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+.form-grid .field { margin-bottom: 22px; }
+.form-grid .input-wrap input { font-size: 14px; padding-left: 13px; }
+.terms-field { margin: 2px 0 20px; font-size: 13px; color: var(--muted); }
+.terms-field label { display: flex; align-items: flex-start; gap: 12px; }
+.terms-field input { width: 21px; height: 21px; flex: 0 0 auto; margin: 0; accent-color: var(--blue); }
+.terms-field a { text-decoration: underline; }
+.compact-panel { max-width: 520px; width: calc(100% - 40px); margin: 60px auto; min-height: 55vh; }
+.compact-panel h1 { font-size: 42px; }
+@media (max-width: 1150px) {
+  .account-layout { gap: 32px; grid-template-columns: 1fr 1fr; }
+  .account-heading h1 { font-size: 44px; }
+  .account-heading p { font-size: 17px; }
+  .registration-layout .account-heading h1 { font-size: 38px; white-space: normal; }
+  .registration-layout .form-grid { grid-template-columns: 1fr; }
+  .registration-layout .account-photo { min-height: 900px; }
+  .role-option { padding: 20px 16px; }
+}
+@media (max-width: 760px) {
+  .account-layout { grid-template-columns: 1fr; gap: 30px; min-height: 0; }
+  .account-photo, .registration-layout .account-photo { min-height: 280px; max-height: 320px; }
+  .account-photo > img { object-position: center 33%; }
+  .sign-in-layout .account-photo > img { object-position: center 15%; }
+  .registration-layout .account-photo > img { object-position: center 62%; }
+  .photo-copy { bottom: 22px; left: 24px; }
+  .photo-copy h2 { font-size: 34px; margin-bottom: 10px; }
+  .photo-copy p { font-size: 14px; }
+  .account-panel { padding-block: 0 12px; }
+  .account-heading { margin-bottom: 28px; }
+  .account-heading h1, .registration-layout .account-heading h1 { white-space: normal; font-size: 38px; }
+  .registration-layout .form-grid { grid-template-columns: 1fr 1fr; gap: 0 16px; }
+  .role-selector { gap: 14px; margin-bottom: 24px; }
+  .role-option { padding: 20px 16px; min-height: 156px; }
+  .role-option strong { font-size: 16px; }
+  .role-option > span { font-size: 12px; }
+  .role-option input { right: 12px; top: 14px; }
+}
+@media (max-width: 440px) { .registration-layout .form-grid { grid-template-columns: 1fr; } .field-label { font-size: 14px; } }

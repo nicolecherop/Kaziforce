@@ -1,5 +1,78 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 {% block title %}Create an account | KaziForce{% endblock %}
+{% block body_class %}account-page{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+{% endblock %}
 {% block content %}
-<section class="intro"><h1>Create your account.</h1><p>Join as a candidate or recruit for your team.</p><p>Candidate and recruiter registration will be connected in the authentication stage.</p></section>
+    <div class="account-layout shell registration-layout">
+        <section class="account-photo" aria-label="Bring your skills">
+            <img src="{% static 'images/create-account-team.jpg' %}"
+                 alt="A team collaborating around a table"
+                 fetchpriority="high">
+            <div class="photo-copy">
+                <h2>
+                    Bring your skills.
+                    <br>
+                    Find your place.
+                </h2>
+                <p>Opportunities start with a profile.</p>
+            </div>
+        </section>
+        <section class="account-panel" aria-labelledby="register-title">
+            <div class="account-heading">
+                <h1 id="register-title">Create your account.</h1>
+                <p>Join as a candidate or recruit for your team.</p>
+            </div>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% include "components/form_errors.html" %}
+                <fieldset class="role-selector">
+                    <legend class="sr-only">Choose your account type</legend>
+                    {% for choice in form.role %}
+                        <label class="role-option">
+                            <input type="radio"
+                                   name="role"
+                                   value="{{ choice.data.value }}"
+                                   id="{{ choice.id_for_label }}"
+                                   {% if choice.data.selected %}checked{% endif %}
+                                   required>
+                            <svg class="icon role-icon" aria-hidden="true">
+                                <use href="{% if choice.data.value == 'candidate' %}#icon-user{% else %}#icon-case{% endif %}" />
+                            </svg>
+                            <strong>{{ choice.choice_label }}</strong>
+                            <span>
+                                {% if choice.data.value == "candidate" %}Find opportunities and get matched to roles.{% else %}Find and hire the right talent for your team.{% endif %}
+                            </span>
+                        </label>
+                    {% endfor %}
+                </fieldset>
+                {% if form.role.errors %}
+                    <div class="field-errors">{{ form.role.errors }}</div>
+                {% endif %}
+                <div class="form-grid">
+                    {% include "components/form_field.html" with field=form.full_name %}
+                    {% include "components/form_field.html" with field=form.email %}
+                    {% include "components/form_field.html" with field=form.password1 %}
+                    {% include "components/form_field.html" with field=form.password2 %}
+                </div>
+                <div class="terms-field">
+                    <label>{{ form.accept_terms }}<span>I agree to the prototype <a href="{% url 'pages:terms' %}" target="_blank" rel="noopener">Terms</a> and <a href="{% url 'pages:privacy' %}" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+                    </label>
+                    {% if form.accept_terms.errors %}
+                        <div class="field-errors">{{ form.accept_terms.errors }}</div>
+                    {% endif %}
+                </div>
+                <button class="button button-full" type="submit">
+                    Create account
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#icon-arrow" />
+                    </svg>
+                </button>
+            </form>
+            <p class="account-switch">Already have an account? <a href="{% url 'accounts:sign_in' %}">Sign in</a>
+            </p>
+        </section>
+    </div>
 {% endblock %}

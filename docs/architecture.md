@@ -17,3 +17,11 @@ The scoring formula, skill priority scale, CV format and size limits, applicatio
 3. Profiles, reviewed CV extraction, jobs and applications with ownership checks.
 4. Versioned ESCO catalogue, reproducible scoring, explanations and top-ten results.
 5. Workflow, access-control, matching evaluation and browser verification.
+
+## Public pages and account implementation
+
+The public page stage implements registration for candidates and recruiters, case-insensitive email sign-in, POST-only sign-out, password reset and protected role-specific entry pages. Those entry pages explicitly identify workflows that are still under development. Django's built-in model authentication, password hashing, password validation, CSRF middleware, session handling and reset-token mechanisms remain the basis of authentication.
+
+`accounts/forms.py` validates identity and credentials. `accounts/views.py` coordinates account creation and role dispatch. `accounts/urls.py` binds named endpoints, including Django's password reset views. Registration creates an internal random username; the public interface asks for email. Database constraints continue to enforce case-insensitive email uniqueness, including concurrent submissions.
+
+No profile, job, application or scoring data is fabricated. The matching implementation remains independent of the page and account stage.

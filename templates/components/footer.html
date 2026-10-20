@@ -1,1 +1,9 @@
-<footer class="site-footer"><span class="brand">Kaziforce</span><span>Skills meet opportunity.</span></footer>
+<footer class="site-footer shell">
+    <a class="brand" href="{% url 'pages:home' %}">Kaziforce</a>
+    <span class="descriptor">Talent matching</span>
+    <nav aria-label="Footer">
+        <a href="{% url 'pages:privacy' %}">Privacy</a>
+        <a href="{% url 'pages:terms' %}">Terms</a>
+        <a href="{% url 'pages:help' %}">Help</a>
+    </nav>
+</footer>

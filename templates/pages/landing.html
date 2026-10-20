@@ -1,18 +1,155 @@
-{% extends 'base.html' %}
-{% block title %}Talent matching | KaziForce{% endblock %}
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Your skills, the right opportunity | KaziForce{% endblock %}
+{% block body_class %}landing-page{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/landing.css' %}">
+{% endblock %}
 {% block content %}
-<section class="intro">
-  <p class="eyebrow">Talent matching</p>
-  <h1>Your skills deserve<br>the right opportunity.</h1>
-  <p>Discover jobs that fit your profile, understand your match and take your next step with confidence.</p>
-  <a class="button" href="{% url 'accounts:create_account' %}">Find opportunities &rarr;</a>
-</section>
-<section class="overview">
-  <h2>A clearer view of your next move.</h2>
-  <div class="steps">
-    <article><span>01</span><h3>Build your profile</h3><p>Showcase your skills, experience and qualifications.</p></article>
-    <article><span>02</span><h3>Explore your matches</h3><p>Find opportunities aligned with your recorded skills.</p></article>
-    <article><span>03</span><h3>Apply with confidence</h3><p>Understand your matched skills and areas to develop.</p></article>
-  </div>
-</section>
+    <section class="hero" aria-labelledby="hero-title">
+        <img class="hero-poster"
+             src="{% static 'images/hero-poster.jpg' %}"
+             alt=""
+             fetchpriority="high">
+        <video class="hero-video"
+               muted
+               loop
+               playsinline
+               preload="none"
+               poster="{% static 'images/hero-poster.jpg' %}"
+               aria-hidden="true"
+               tabindex="-1"
+               data-hero-video>
+            <source data-src="{% static 'video/talent-matching.mp4' %}" type="video/mp4">
+        </video>
+        <div class="hero-shade"></div>
+        <header class="hero-nav">
+            <a class="brand"
+               href="{% url 'pages:home' %}"
+               aria-label="KaziForce home">Kaziforce</a>
+            <nav class="section-nav" aria-label="Main navigation">
+                <a href="#talent-matching">Talent matching</a>
+                <a href="#how-it-works">How it works</a>
+                <a href="#for-employers">For employers</a>
+            </nav>
+            <div class="hero-actions">
+                {% if user.is_authenticated %}
+                    <a class="button" href="{% url 'accounts:dashboard' %}">My workspace</a>
+                {% else %}
+                    <a class="sign-in-link" href="{% url 'accounts:sign_in' %}">Sign in</a>
+                    <a class="button" href="{% url 'accounts:create_account' %}">Get started</a>
+                {% endif %}
+            </div>
+        </header>
+        <div class="hero-copy" id="talent-matching">
+            <p class="eyebrow">Talent matching</p>
+            <h1 id="hero-title">
+                Your skills deserve
+                <br>
+                the right opportunity.
+            </h1>
+            <p>Discover jobs that fit your profile, understand your match and take your next step with confidence.</p>
+            <div class="button-row">
+                <a class="button"
+                   href="{% url 'accounts:create_account' %}?role=candidate">Find opportunities <span aria-hidden="true">↗</span>
+                </a>
+                <a class="button button-outline"
+                   href="{% url 'accounts:create_account' %}?role=recruiter">Find talent</a>
+            </div>
+        </div>
+        <span class="sr-only" role="status" data-video-status></span>
+    </section>
+    <div class="landing-content shell">
+        <section class="how-section" id="how-it-works" aria-labelledby="how-title">
+            <h2 id="how-title">A clearer view of your next move.</h2>
+            <p class="section-intro">From your profile to the right opportunities, everything you need to move forward.</p>
+            <div class="steps">
+                <article>
+                    <span class="step-number">01</span>
+                    <h3>Build your profile</h3>
+                    <p>Showcase your skills, experience and qualifications so we can find the right opportunities for you.</p>
+                    <img src="{% static 'images/build-your-profile.jpg' %}"
+                         alt="A professional working on his laptop alongside colleagues"
+                         loading="lazy">
+                </article>
+                <article>
+                    <span class="step-number">02</span>
+                    <h3>Explore your matches</h3>
+                    <p>Get personalised job matches based on the skills, qualifications and experience in your profile.</p>
+                    <img src="{% static 'images/explore-your-matches.jpg' %}"
+                         alt="A professional seated in a shared office"
+                         loading="lazy">
+                </article>
+                <article>
+                    <span class="step-number">03</span>
+                    <h3>Apply with confidence</h3>
+                    <p>See how well you match, understand any skills gaps and apply for roles that fit.</p>
+                    <img src="{% static 'images/apply-with-confidence.jpg' %}"
+                         alt="A candidate discussing his experience during an interview"
+                         loading="lazy">
+                </article>
+            </div>
+        </section>
+        <section class="employer-section"
+                 id="for-employers"
+                 aria-labelledby="employer-title">
+            <div class="employer-photo">
+                <img src="{% static 'images/recruiter-team.jpg' %}"
+                     alt="Two colleagues reviewing documents together in an office"
+                     loading="lazy">
+            </div>
+            <div class="employer-copy">
+                <h2 id="employer-title">Find people with the skills your team needs.</h2>
+                <p>Explore candidate profiles, compare skills and see how well they match your role requirements.</p>
+                <ul class="feature-list">
+                    <li>
+                        <svg class="icon" aria-hidden="true">
+                            <use href="#icon-user" />
+                        </svg>
+                        <div>
+                            <h3>Ranked candidate profiles</h3>
+                            <p>See relevant candidates based on their profiles and how well they match your role.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <svg class="icon" aria-hidden="true">
+                            <use href="#icon-file" />
+                        </svg>
+                        <div>
+                            <h3>Priorities that reflect your role</h3>
+                            <p>Give more importance to the skills your team needs most.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <svg class="icon" aria-hidden="true">
+                            <use href="#icon-chart" />
+                        </svg>
+                        <div>
+                            <h3>Clear matching explanations</h3>
+                            <p>Understand the score, including matched skills and missing requirements.</p>
+                        </div>
+                    </li>
+                </ul>
+                <a class="button"
+                   href="{% url 'accounts:create_account' %}?role=recruiter">Explore recruiter tools <span aria-hidden="true">↗</span>
+                </a>
+            </div>
+        </section>
+        <section class="closing-cta">
+            <div>
+                <h2>
+                    Make your next move
+                    <br>
+                    with KaziForce.
+                </h2>
+                <p>Bring your experience. Discover where your skills can take you.</p>
+            </div>
+            <a class="button"
+               href="{% url 'accounts:create_account' %}">Create your profile <span aria-hidden="true">↗</span>
+            </a>
+        </section>
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'js/landing.js' %}" defer></script>
 {% endblock %}

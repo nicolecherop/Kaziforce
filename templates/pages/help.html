@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Help | KaziForce{% endblock %}
+{% block content %}
+    <article class="reading-page shell">
+        <h1>How can we help?</h1>
+        <h2>Getting started</h2>
+        <p>
+            <a href="{% url 'accounts:create_account' %}">Create an account</a> and choose Candidate if you are looking for opportunities, or Recruiter if you are looking for talent. Use your email address to sign in.</p>
+        <h2>Account access</h2>
+        <p>Forgotten your password? <a href="{% url 'accounts:password_reset' %}">Request a reset link</a>. Local development reset emails appear in the server console.</p>
+        <h2>What is available?</h2>
+        <p>Registration, sign-in, password reset and sign-out are available. Profiles, job postings, applications and matching are still being built.</p>
+    </article>
+{% endblock %}

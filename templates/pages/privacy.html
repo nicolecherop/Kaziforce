@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Prototype privacy information | KaziForce{% endblock %}
+{% block content %}
+    <article class="reading-page shell">
+        <p class="eyebrow">Academic project prototype</p>
+        <h1>Privacy information</h1>
+        <p>Registration stores your name, email address, selected account role and a password hash in the configured project database. Session and CSRF cookies support sign-in and protect submitted forms.</p>
+        <h2>Test data</h2>
+        <p>Use fictional personal details during local development. Do not reuse a password from another service. Profile and CV workflows are not available yet.</p>
+        <h2>Access and deletion</h2>
+        <p>Project administrators can manage test accounts through Django administration. Self-service account deletion and data retention procedures have not yet been implemented. Arrange deletion with the project owner when finishing a test.</p>
+        <h2>Before collecting real information</h2>
+        <p>This page documents the current prototype. A reviewed privacy notice, retention schedule and deletion process are required before collecting real candidate data.</p>
+    </article>
+{% endblock %}

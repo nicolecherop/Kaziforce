@@ -1,18 +1,26 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}KaziForce{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/base.css' %}">
-  {% block extra_css %}{% endblock %}
-</head>
-<body>
-  <a class="skip-link" href="#main">Skip to content</a>
-  {% include 'components/navigation.html' %}
-  <main id="main">{% block content %}{% endblock %}</main>
-  {% include 'components/footer.html' %}
-  {% block extra_js %}{% endblock %}
-</body>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}KaziForce{% endblock %}</title>
+        <meta name="description"
+              content="Discover opportunities that fit your skills with KaziForce talent matching.">
+        <link rel="stylesheet" href="{% static 'css/site.css' %}">
+        {% block extra_css %}{% endblock %}
+    </head>
+    <body class="{% block body_class %} {% endblock %}">
+        {% include "components/icons.html" %}
+        <a class="skip-link" href="#main">Skip to content</a>
+        {% block header %}
+            {% include "components/navigation.html" %}
+        {% endblock %}
+        <main id="main" tabindex="-1">
+            {% block content %}{% endblock %}
+        </main>
+        {% include "components/footer.html" %}
+        <script src="{% static 'js/site.js' %}" defer></script>
+        {% block extra_js %}{% endblock %}
+    </body>
 </html>
