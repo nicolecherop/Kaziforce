@@ -1,0 +1,19 @@
+{% load workspace_ui %}
+<article class="opportunity-row">
+    <span class="company-avatar"
+          aria-hidden="true">{{ result.input_snapshot.job.company|site_text|initials }}</span>
+    <div class="opportunity-name">
+        <h3>
+            <a href="{% url 'matches:detail' result.pk %}">{{ result.input_snapshot.job.title|site_text }}</a>
+        </h3>
+        <p>{{ result.input_snapshot.job.company|site_text }} · {{ result.job.location }}</p>
+    </div>
+    <div class="skill-chips">
+        {% for skill in result.input_snapshot.job.skills|slice:":3" %}
+            <span class="skill-chip">{{ skill.name }}</span>
+        {% endfor %}
+    </div>
+    <span class="score-pill">{{ result.score|floatformat:0 }}% match</span>
+    <a class="button button-small"
+       href="{% url 'matches:detail' result.pk %}">View match</a>
+</article>

@@ -1,0 +1,22 @@
+<div class="match-notice">
+    {% if user.role == "candidate" %}
+        <p>Recommendations are a starting point for your job search. A match score does not guarantee a job offer.</p>
+        {% if run %}
+            <p class="small-copy">Last updated {{ run.created_at|date:"j M Y, H:i" }}</p>
+            {% if stale %}
+                <p class="inline-notice">Your profile or available jobs have changed. Update your matches to see current recommendations.</p>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <p>Scores help you review fit; they are not a hiring recommendation or a probability of success. Missing evidence lowers a score. Read the profile and requirements before deciding.</p>
+        {% if run %}
+            <p class="small-copy">Saved {{ run.created_at|date:"j M Y, H:i" }} · {{ scored_count }} scored result{{ scored_count|pluralize }} · {{ run.configuration.version }} · ESCO {{ run.corpus.catalogue.version }}</p>
+            {% if scored_count > 10 %}
+                <p>Showing the ten highest scores. All applications remain available for manual review.</p>
+            {% endif %}
+            {% if stale %}
+                <p class="error-notice">These saved results are out of date. Update matches to use the latest information and reference.</p>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</div>

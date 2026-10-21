@@ -1,96 +1,160 @@
 {% extends "workspace/base.html" %}
+{% load workspace_ui %}
 {% load static %}
-{% block title %}{% if job.created_at %}Edit job{% else %}Post a job{% endif %} | KaziForce{% endblock %}
+{% block title %}
+    {% if job.created_at %}Edit job{% else %}Post a job{% endif %} | KaziForce{% endblock %}
 {% block workspace_content %}
     <header class="page-heading">
         <p class="eyebrow">Your vacancies</p>
-        <h1>{% if job.created_at %}Refine your job posting.{% else %}Make room for the right talent.{% endif %}</h1>
+        <h1>{% if job.created_at %}Edit your job.{% else %}Create a job.{% endif %}</h1>
         <p>Describe the role, the skills you need and what matters most to your team.</p>
     </header>
     <nav class="profile-section-links" aria-label="Job sections">
-        <a href="#role">About the role</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#experience">Experience</a>
+        <a href="#role">About the role</a>
+        <a href="#skills">Skills</a>
+        <a href="#education">Education</a>
+        <a href="#experience">Experience</a>
     </nav>
-    <form method="post" class="profile-form job-form" novalidate>
+    <form method="post"
+          class="profile-form job-form"
+          data-job-preview
+          novalidate>
         {% csrf_token %}
+        {% include "components/skill_suggestions.html" %}
         {% if form.errors or skills.total_error_count %}
             <div class="form-errors" role="alert" tabindex="-1" data-form-errors>
                 <p>Your changes have not been saved. Check the highlighted fields.</p>
                 {{ form.non_field_errors }}
-                {% if skills.total_error_count %}<p><a href="#skills">Check the skill entries.</a></p>{% endif %}
+                {% if skills.total_error_count %}
+                    <p>
+                        <a href="#skills">Check the skill entries.</a>
+                    </p>
+                {% endif %}
             </div>
         {% endif %}
-        <section class="profile-section" id="role" aria-labelledby="role-title">
-            <div class="section-heading">
-                <h2 id="role-title">About the role</h2>
-                <p>Help candidates understand the opportunity and your expectations.</p>
+        <div class="workspace-split edit-split">
+            <div>
+                <section class="profile-section" id="role" aria-labelledby="role-title">
+                    <div class="section-heading">
+                        <h2 id="role-title">About the role</h2>
+                        <p>Help candidates understand the opportunity and your expectations.</p>
+                    </div>
+                    <div class="entry-fields">
+                        {% include "components/form_field.html" with field=form.title %}
+                        {% include "components/form_field.html" with field=form.company %}
+                        {% include "components/form_field.html" with field=form.location %}
+                    </div>
+                    {% include "components/form_field.html" with field=form.description %}
+                    {% include "components/form_field.html" with field=form.requirements %}
+                </section>
+                <div class="job-requirements-layout">
+                    <section class="profile-section"
+                             id="skills"
+                             aria-labelledby="skills-title"
+                             data-formset="skills"
+                             data-maximum="{{ skills.max_num }}">
+                        <div class="section-heading">
+                            <h2 id="skills-title">Skills</h2>
+                            <p>Add one skill per entry. Choose Required for skills the role needs and Preferred for useful extras.</p>
+                        </div>
+                        <details class="priority-explainer">
+                            <summary>How priorities affect matching</summary>
+                            <p class="priority-note">
+                                <strong>Set your priorities.</strong> Standard gives a requirement normal emphasis, Important gives it more emphasis, and High identifies a top priority. Priority is separate from whether a skill is required or preferred.
+                            </p>
+                        </details>
+                        {{ skills.management_form }}
+                        {% if skills.non_form_errors %}
+                            <div class="field-errors"
+                                 role="alert">{{ skills.non_form_errors }}</div>
+                        {% endif %}
+                        <div class="entry-list" data-entry-list>
+                            {% for entry in skills %}
+                                {% include "jobs/components/skill_entry.html" %}
+                            {% endfor %}
+                        </div>
+                        <template data-empty-entry>
+                            {% include "jobs/components/skill_entry.html" with entry=skills.empty_form %}
+                        </template>
+                        <button type="button"
+                                class="button button-secondary add-entry"
+                                data-add-entry
+                                hidden>
+                            + Add skill
+                        </button>
+                        <p class="entry-limit" data-entry-limit hidden>You can add up to 40 skills. Remove an entry and save before adding another.</p>
+                        <p class="profile-form-note">Leave unused entries blank. Select “Remove this skill” to remove an entry when you save.</p>
+                        {% if skill_standardization.skills %}
+                            <details class="saved-skill-review">
+                                <summary>Review saved skill names</summary>
+                                {% include "components/skill_review.html" with standardization=skill_standardization %}
+                            </details>
+                        {% endif %}
+                    </section>
+                    <section class="profile-section"
+                             id="education"
+                             aria-labelledby="education-title">
+                        <div class="section-heading">
+                            <h2 id="education-title">Education and qualifications</h2>
+                            <p>Set a minimum qualification if the role needs one. Include equivalent qualifications you are willing to accept.</p>
+                        </div>
+                        <div class="entry-fields">
+                            {% include "components/form_field.html" with field=form.education_level %}
+                            {% include "components/form_field.html" with field=form.education_priority %}
+                        </div>
+                        {% include "components/form_field.html" with field=form.education_field %}
+                    </section>
+                    <section class="profile-section"
+                             id="experience"
+                             aria-labelledby="experience-title">
+                        <div class="section-heading">
+                            <h2 id="experience-title">Experience</h2>
+                            <p>Describe the relevant experience you need, including internships, freelance work or volunteer experience where appropriate.</p>
+                        </div>
+                        <div class="entry-fields">
+                            {% include "components/form_field.html" with field=form.minimum_experience_years %}
+                            {% include "components/form_field.html" with field=form.experience_priority %}
+                        </div>
+                        {% include "components/form_field.html" with field=form.experience_details %}
+                    </section>
+                </div>
+                <div class="save-bar">
+                    <p>Your posting is saved when you select the button.</p>
+                    <div class="action-row">
+                        <a href="{% url 'jobs:manage' %}">Cancel</a>
+                        <button class="button" type="submit">
+                        {% if job.created_at %}Save changes{% else %}Publish job{% endif %} ↗</button>
+                    </div>
+                </div>
             </div>
-            <div class="entry-fields">
-                {% include "components/form_field.html" with field=form.title %}
-                {% include "components/form_field.html" with field=form.company %}
-                {% include "components/form_field.html" with field=form.location %}
-            </div>
-            {% include "components/form_field.html" with field=form.description %}
-            {% include "components/form_field.html" with field=form.requirements %}
-        </section>
-        <section class="profile-section"
-                 id="skills"
-                 aria-labelledby="skills-title"
-                 data-formset="skills"
-                 data-maximum="{{ skills.max_num }}">
-            <div class="section-heading">
-                <h2 id="skills-title">Skills</h2>
-                <p>Add one skill per entry. Choose Required for skills the role needs and Preferred for useful extras.</p>
-            </div>
-            <p class="priority-note"><strong>Set your priorities.</strong> Standard gives a requirement normal emphasis, Important gives it more emphasis, and High identifies a top priority. Priority is separate from whether a skill is required or preferred.</p>
-            {{ skills.management_form }}
-            {% if skills.non_form_errors %}<div class="field-errors"
-     role="alert">{{ skills.non_form_errors }}</div>{% endif %}
-            <div class="entry-list" data-entry-list>
-                {% for entry in skills %}
-                    {% include "jobs/components/skill_entry.html" %}
-                {% endfor %}
-            </div>
-            <template data-empty-entry>
-                {% include "jobs/components/skill_entry.html" with entry=skills.empty_form %}
-            </template>
-            <button type="button"
-                    class="button button-secondary add-entry"
-                    data-add-entry
-                    hidden>
-                + Add skill
-            </button>
-            <p class="entry-limit"
-               data-entry-limit
-               hidden>You can add up to 40 skills. Remove an entry and save before adding another.</p>
-            <p class="profile-form-note">Leave unused entries blank. Select “Remove this skill” to remove an entry when you save.</p>
-        </section>
-        <section class="profile-section"
-                 id="education"
-                 aria-labelledby="education-title">
-            <div class="section-heading">
-                <h2 id="education-title">Education and qualifications</h2>
-                <p>Set a minimum qualification if the role needs one. Include equivalent qualifications you are willing to accept.</p>
-            </div>
-            <div class="entry-fields">
-                {% include "components/form_field.html" with field=form.education_level %}
-                {% include "components/form_field.html" with field=form.education_priority %}
-            </div>
-            {% include "components/form_field.html" with field=form.education_field %}
-        </section>
-        <section class="profile-section"
-                 id="experience"
-                 aria-labelledby="experience-title">
-            <div class="section-heading">
-                <h2 id="experience-title">Experience</h2>
-                <p>Describe the relevant experience you need, including internships, freelance work or volunteer experience where appropriate.</p>
-            </div>
-            <div class="entry-fields">
-                {% include "components/form_field.html" with field=form.minimum_experience_years %}
-                {% include "components/form_field.html" with field=form.experience_priority %}
-            </div>
-            {% include "components/form_field.html" with field=form.experience_details %}
-        </section>
-        <div class="save-bar"><p>Your posting is saved when you select the button.</p><div class="action-row"><a href="{% url 'jobs:manage' %}">Cancel</a><button class="button" type="submit">{% if job.created_at %}Save changes{% else %}Publish job{% endif %} ↗</button></div></div>
+            <aside class="workspace-panel side-panel job-preview">
+                <p class="eyebrow">As candidates will see it</p>
+                <h2>Job preview</h2>
+                <div class="panel-divider"></div>
+                <h3 data-preview="title">{{ form.title.value|default:"Your job title"|site_text }}</h3>
+                <p data-preview="company">{{ form.company.value|default:"Your company"|site_text }}</p>
+                <p class="job-meta"
+                   data-preview="location">{{ form.location.value|default:"Location" }}</p>
+                <h3>Key skills</h3>
+                <div class="skill-chips" data-preview-skills>
+                    {% for entry in skills %}
+                        {% if entry.name.value and not entry.DELETE.value %}
+                            <span class="skill-chip">{{ entry.name.value }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <h3 class="panel-subheading">Qualifications</h3>
+                <p data-preview-education>{{ job.get_education_level_display }}{% if job.education_field %} · {{ job.education_field }}{% endif %}
+                </p>
+                <h3>Experience</h3>
+                <p data-preview-experience>
+                    {% if job.minimum_experience_years != None %}{{ job.minimum_experience_years }} years minimum{% else %}No minimum specified{% endif %}
+                </p>
+                <h3>Job description</h3>
+                <p class="preview-description" data-preview="description">{{ form.description.value|default:"Describe the role to see your preview." }}</p>
+                <p class="small-copy">Your changes are published only when you save the job.</p>
+            </aside>
+        </div>
         <span class="sr-only" role="status" data-entry-status></span>
     </form>
 {% endblock %}

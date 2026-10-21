@@ -1,0 +1,1607 @@
+{
+  "version": "synthetic-v1",
+  "as_of": "2026-10-21",
+  "purpose": "Initial engineering evaluation of ranking behavior, not validated hiring accuracy.",
+  "label_status": "Internally drafted synthetic expectations, fixed before the first evaluation run. Independent human review pending.",
+  "rubric": {
+    "3": "Strong evidence for the role",
+    "2": "Plausible with explicit gaps; manual review",
+    "1": "Weak or transferable evidence only",
+    "0": "Insufficient or unrelated evidence"
+  },
+  "relevant_threshold": 2,
+  "label_method": "Designed role/variant rubric with explicit labels for every pair; not annotations from real recruiters. Strong profiles deliberately echo job wording. Candidate relevance uses the same pair labels, not candidate preference judgements.",
+  "expected_top_profile_by_job": {
+    "backend": "backend-strong",
+    "data": "data-strong",
+    "frontend": "frontend-strong",
+    "project": "project-strong",
+    "support": "support-strong"
+  },
+  "jobs": [
+    {
+      "id": "backend",
+      "requirements": {
+        "title": "Backend developer",
+        "company": "Fictional Evaluation Studio",
+        "description": "Develop Python and Django web applications, database queries and REST services.",
+        "requirements": "Build and test server software and maintain relational databases.",
+        "education_level": "bachelors",
+        "education_level_label": "Bachelor's degree",
+        "education_field": "Computer Science",
+        "education_priority": 1,
+        "minimum_experience_years": "2.00",
+        "experience_details": "Build and test server software and maintain relational databases.",
+        "experience_priority": 1,
+        "skills": [
+          {
+            "name": "Python",
+            "requirement": "required",
+            "priority": 3
+          },
+          {
+            "name": "Django",
+            "requirement": "required",
+            "priority": 3
+          },
+          {
+            "name": "SQL",
+            "requirement": "required",
+            "priority": 2
+          },
+          {
+            "name": "Docker",
+            "requirement": "preferred",
+            "priority": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "data",
+      "requirements": {
+        "title": "Data analyst",
+        "company": "Fictional Evaluation Studio",
+        "description": "Analyse data, write SQL queries, prepare statistical reports and data visualisations.",
+        "requirements": "Clean datasets, interpret statistics and build dashboards for reporting.",
+        "education_level": "bachelors",
+        "education_level_label": "Bachelor's degree",
+        "education_field": "Statistics",
+        "education_priority": 1,
+        "minimum_experience_years": "2.00",
+        "experience_details": "Clean datasets, interpret statistics and build dashboards for reporting.",
+        "experience_priority": 1,
+        "skills": [
+          {
+            "name": "SQL",
+            "requirement": "required",
+            "priority": 3
+          },
+          {
+            "name": "Python",
+            "requirement": "required",
+            "priority": 3
+          },
+          {
+            "name": "Microsoft Excel",
+            "requirement": "required",
+            "priority": 2
+          },
+          {
+            "name": "Power BI",
+            "requirement": "preferred",
+            "priority": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "frontend",
+      "requirements": {
+        "title": "Frontend developer",
+        "company": "Fictional Evaluation Studio",
+        "description": "Develop accessible web user interfaces using JavaScript, HTML, CSS and React.",
+        "requirements": "Build responsive websites, implement interface designs and test browser compatibility.",
+        "education_level": "bachelors",
+        "education_level_label": "Bachelor's degree",
+        "education_field": "Computer Science",
+        "education_priority": 1,
+        "minimum_experience_years": "2.00",
+        "experience_details": "Build responsive websites, implement interface designs and test browser compatibility.",
+        "experience_priority": 1,
+        "skills": [
+          {
+            "name": "JavaScript",
+            "requirement": "required",
+            "priority": 3
+          },
+          {
+            "name": "HTML",
+            "requirement": "required",
+            "priority": 3
+          },
+          {
+            "name": "CSS",
+            "requirement": "required",
+            "priority": 2
+          },
+          {
+            "name": "React",
+            "requirement": "preferred",
+            "priority": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "project",
+      "requirements": {
+        "title": "Project coordinator",
+        "company": "Fictional Evaluation Studio",
+        "description": "Coordinate project schedules, budgets, risks and communication with stakeholders.",
+        "requirements": "Track project milestones, organise meetings and report on delivery risks.",
+        "education_level": "bachelors",
+        "education_level_label": "Bachelor's degree",
+        "education_field": "Project Management",
+        "education_priority": 1,
+        "minimum_experience_years": "2.00",
+        "experience_details": "Track project milestones, organise meetings and report on delivery risks.",
+        "experience_priority": 1,
+        "skills": [
+          {
+            "name": "Project management",
+            "requirement": "required",
+            "priority": 3
+          },
+          {
+            "name": "Budgeting",
+            "requirement": "required",
+            "priority": 3
+          },
+          {
+            "name": "Risk management",
+            "requirement": "required",
+            "priority": 2
+          },
+          {
+            "name": "Communication",
+            "requirement": "preferred",
+            "priority": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "support",
+      "requirements": {
+        "title": "Customer support officer",
+        "company": "Fictional Evaluation Studio",
+        "description": "Respond to customer enquiries, resolve complaints and maintain customer service records.",
+        "requirements": "Handle support requests, communicate clearly and follow up customer problems.",
+        "education_level": "bachelors",
+        "education_level_label": "Bachelor's degree",
+        "education_field": "Business Administration",
+        "education_priority": 1,
+        "minimum_experience_years": "2.00",
+        "experience_details": "Handle support requests, communicate clearly and follow up customer problems.",
+        "experience_priority": 1,
+        "skills": [
+          {
+            "name": "Customer service",
+            "requirement": "required",
+            "priority": 3
+          },
+          {
+            "name": "Communication",
+            "requirement": "required",
+            "priority": 3
+          },
+          {
+            "name": "Problem solving",
+            "requirement": "required",
+            "priority": 2
+          },
+          {
+            "name": "CRM",
+            "requirement": "preferred",
+            "priority": 2
+          }
+        ]
+      }
+    }
+  ],
+  "profiles": [
+    {
+      "id": "backend-strong",
+      "domain": "backend",
+      "variant": "strong",
+      "snapshot": {
+        "profile": {
+          "headline": "Backend developer",
+          "summary": "Develop Python and Django web applications, database queries and REST services."
+        },
+        "skills": [
+          {
+            "name": "Python"
+          },
+          {
+            "name": "Django"
+          },
+          {
+            "name": "SQL"
+          },
+          {
+            "name": "Docker"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Bachelor's degree",
+            "field_of_study": "Computer Science"
+          }
+        ],
+        "certifications": [
+          {
+            "name": "Computer Science practical training"
+          }
+        ],
+        "experience": [
+          {
+            "job_title": "Backend developer",
+            "description": "Build and test server software and maintain relational databases.",
+            "start_date": "2022-01-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 3,
+      "own_role_rationale": "All three core skills and the preferred skill; relevant degree and four years of directly described work."
+    },
+    {
+      "id": "backend-partial",
+      "domain": "backend",
+      "variant": "partial",
+      "snapshot": {
+        "profile": {
+          "headline": "Backend developer",
+          "summary": "Interested in backend developer work. Build and test server software and maintain relational databases."
+        },
+        "skills": [
+          {
+            "name": "Python"
+          },
+          {
+            "name": "Django"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Diploma",
+            "field_of_study": "Computer Science"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Backend developer",
+            "description": "Build and test server software and maintain relational databases.",
+            "start_date": "2023-01-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 2,
+      "own_role_rationale": "Two of three core skills and relevant work, but missing a core skill and the requested degree level; manual review warranted."
+    },
+    {
+      "id": "backend-junior",
+      "domain": "backend",
+      "variant": "junior",
+      "snapshot": {
+        "profile": {
+          "headline": "Backend developer",
+          "summary": "Interested in backend developer work. Build and test server software and maintain relational databases."
+        },
+        "skills": [
+          {
+            "name": "Python"
+          },
+          {
+            "name": "Django"
+          },
+          {
+            "name": "SQL"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Diploma",
+            "field_of_study": "Computer Science"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Backend developer",
+            "description": "Build and test server software and maintain relational databases.",
+            "start_date": "2025-07-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 2,
+      "own_role_rationale": "Three core skills and related training, but only six months of work and no requested degree; plausible developmental candidate with gaps."
+    },
+    {
+      "id": "backend-weak",
+      "domain": "backend",
+      "variant": "weak",
+      "snapshot": {
+        "profile": {
+          "headline": "Trainee backend developer",
+          "summary": "Interested in backend developer work. Introductory practical training."
+        },
+        "skills": [
+          {
+            "name": "Python"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Certificate",
+            "field_of_study": "Computer Science"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Trainee",
+            "description": "Introductory supervised practical tasks.",
+            "start_date": "2025-10-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 1,
+      "own_role_rationale": "Only one core skill, introductory training and three months of related exposure; weak evidence for this role."
+    },
+    {
+      "id": "data-strong",
+      "domain": "data",
+      "variant": "strong",
+      "snapshot": {
+        "profile": {
+          "headline": "Data analyst",
+          "summary": "Analyse data, write SQL queries, prepare statistical reports and data visualisations."
+        },
+        "skills": [
+          {
+            "name": "SQL"
+          },
+          {
+            "name": "Python"
+          },
+          {
+            "name": "Microsoft Excel"
+          },
+          {
+            "name": "Power BI"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Bachelor's degree",
+            "field_of_study": "Statistics"
+          }
+        ],
+        "certifications": [
+          {
+            "name": "Statistics practical training"
+          }
+        ],
+        "experience": [
+          {
+            "job_title": "Data analyst",
+            "description": "Clean datasets, interpret statistics and build dashboards for reporting.",
+            "start_date": "2022-01-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 3,
+      "own_role_rationale": "All three core skills and the preferred skill; relevant degree and four years of directly described work."
+    },
+    {
+      "id": "data-partial",
+      "domain": "data",
+      "variant": "partial",
+      "snapshot": {
+        "profile": {
+          "headline": "Data analyst",
+          "summary": "Interested in data analyst work. Clean datasets, interpret statistics and build dashboards for reporting."
+        },
+        "skills": [
+          {
+            "name": "SQL"
+          },
+          {
+            "name": "Python"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Diploma",
+            "field_of_study": "Statistics"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Data analyst",
+            "description": "Clean datasets, interpret statistics and build dashboards for reporting.",
+            "start_date": "2023-01-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 2,
+      "own_role_rationale": "Two of three core skills and relevant work, but missing a core skill and the requested degree level; manual review warranted."
+    },
+    {
+      "id": "data-junior",
+      "domain": "data",
+      "variant": "junior",
+      "snapshot": {
+        "profile": {
+          "headline": "Data analyst",
+          "summary": "Interested in data analyst work. Clean datasets, interpret statistics and build dashboards for reporting."
+        },
+        "skills": [
+          {
+            "name": "SQL"
+          },
+          {
+            "name": "Python"
+          },
+          {
+            "name": "Microsoft Excel"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Diploma",
+            "field_of_study": "Statistics"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Data analyst",
+            "description": "Clean datasets, interpret statistics and build dashboards for reporting.",
+            "start_date": "2025-07-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 2,
+      "own_role_rationale": "Three core skills and related training, but only six months of work and no requested degree; plausible developmental candidate with gaps."
+    },
+    {
+      "id": "data-weak",
+      "domain": "data",
+      "variant": "weak",
+      "snapshot": {
+        "profile": {
+          "headline": "Trainee data analyst",
+          "summary": "Interested in data analyst work. Introductory practical training."
+        },
+        "skills": [
+          {
+            "name": "SQL"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Certificate",
+            "field_of_study": "Statistics"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Trainee",
+            "description": "Introductory supervised practical tasks.",
+            "start_date": "2025-10-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 1,
+      "own_role_rationale": "Only one core skill, introductory training and three months of related exposure; weak evidence for this role."
+    },
+    {
+      "id": "frontend-strong",
+      "domain": "frontend",
+      "variant": "strong",
+      "snapshot": {
+        "profile": {
+          "headline": "Frontend developer",
+          "summary": "Develop accessible web user interfaces using JavaScript, HTML, CSS and React."
+        },
+        "skills": [
+          {
+            "name": "JavaScript"
+          },
+          {
+            "name": "HTML"
+          },
+          {
+            "name": "CSS"
+          },
+          {
+            "name": "React"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Bachelor's degree",
+            "field_of_study": "Computer Science"
+          }
+        ],
+        "certifications": [
+          {
+            "name": "Computer Science practical training"
+          }
+        ],
+        "experience": [
+          {
+            "job_title": "Frontend developer",
+            "description": "Build responsive websites, implement interface designs and test browser compatibility.",
+            "start_date": "2022-01-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 3,
+      "own_role_rationale": "All three core skills and the preferred skill; relevant degree and four years of directly described work."
+    },
+    {
+      "id": "frontend-partial",
+      "domain": "frontend",
+      "variant": "partial",
+      "snapshot": {
+        "profile": {
+          "headline": "Frontend developer",
+          "summary": "Interested in frontend developer work. Build responsive websites, implement interface designs and test browser compatibility."
+        },
+        "skills": [
+          {
+            "name": "JavaScript"
+          },
+          {
+            "name": "HTML"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Diploma",
+            "field_of_study": "Computer Science"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Frontend developer",
+            "description": "Build responsive websites, implement interface designs and test browser compatibility.",
+            "start_date": "2023-01-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 2,
+      "own_role_rationale": "Two of three core skills and relevant work, but missing a core skill and the requested degree level; manual review warranted."
+    },
+    {
+      "id": "frontend-junior",
+      "domain": "frontend",
+      "variant": "junior",
+      "snapshot": {
+        "profile": {
+          "headline": "Frontend developer",
+          "summary": "Interested in frontend developer work. Build responsive websites, implement interface designs and test browser compatibility."
+        },
+        "skills": [
+          {
+            "name": "JavaScript"
+          },
+          {
+            "name": "HTML"
+          },
+          {
+            "name": "CSS"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Diploma",
+            "field_of_study": "Computer Science"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Frontend developer",
+            "description": "Build responsive websites, implement interface designs and test browser compatibility.",
+            "start_date": "2025-07-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 2,
+      "own_role_rationale": "Three core skills and related training, but only six months of work and no requested degree; plausible developmental candidate with gaps."
+    },
+    {
+      "id": "frontend-weak",
+      "domain": "frontend",
+      "variant": "weak",
+      "snapshot": {
+        "profile": {
+          "headline": "Trainee frontend developer",
+          "summary": "Interested in frontend developer work. Introductory practical training."
+        },
+        "skills": [
+          {
+            "name": "JavaScript"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Certificate",
+            "field_of_study": "Computer Science"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Trainee",
+            "description": "Introductory supervised practical tasks.",
+            "start_date": "2025-10-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 1,
+      "own_role_rationale": "Only one core skill, introductory training and three months of related exposure; weak evidence for this role."
+    },
+    {
+      "id": "project-strong",
+      "domain": "project",
+      "variant": "strong",
+      "snapshot": {
+        "profile": {
+          "headline": "Project coordinator",
+          "summary": "Coordinate project schedules, budgets, risks and communication with stakeholders."
+        },
+        "skills": [
+          {
+            "name": "Project management"
+          },
+          {
+            "name": "Budgeting"
+          },
+          {
+            "name": "Risk management"
+          },
+          {
+            "name": "Communication"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Bachelor's degree",
+            "field_of_study": "Project Management"
+          }
+        ],
+        "certifications": [
+          {
+            "name": "Project Management practical training"
+          }
+        ],
+        "experience": [
+          {
+            "job_title": "Project coordinator",
+            "description": "Track project milestones, organise meetings and report on delivery risks.",
+            "start_date": "2022-01-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 3,
+      "own_role_rationale": "All three core skills and the preferred skill; relevant degree and four years of directly described work."
+    },
+    {
+      "id": "project-partial",
+      "domain": "project",
+      "variant": "partial",
+      "snapshot": {
+        "profile": {
+          "headline": "Project coordinator",
+          "summary": "Interested in project coordinator work. Track project milestones, organise meetings and report on delivery risks."
+        },
+        "skills": [
+          {
+            "name": "Project management"
+          },
+          {
+            "name": "Budgeting"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Diploma",
+            "field_of_study": "Project Management"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Project coordinator",
+            "description": "Track project milestones, organise meetings and report on delivery risks.",
+            "start_date": "2023-01-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 2,
+      "own_role_rationale": "Two of three core skills and relevant work, but missing a core skill and the requested degree level; manual review warranted."
+    },
+    {
+      "id": "project-junior",
+      "domain": "project",
+      "variant": "junior",
+      "snapshot": {
+        "profile": {
+          "headline": "Project coordinator",
+          "summary": "Interested in project coordinator work. Track project milestones, organise meetings and report on delivery risks."
+        },
+        "skills": [
+          {
+            "name": "Project management"
+          },
+          {
+            "name": "Budgeting"
+          },
+          {
+            "name": "Risk management"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Diploma",
+            "field_of_study": "Project Management"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Project coordinator",
+            "description": "Track project milestones, organise meetings and report on delivery risks.",
+            "start_date": "2025-07-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 2,
+      "own_role_rationale": "Three core skills and related training, but only six months of work and no requested degree; plausible developmental candidate with gaps."
+    },
+    {
+      "id": "project-weak",
+      "domain": "project",
+      "variant": "weak",
+      "snapshot": {
+        "profile": {
+          "headline": "Trainee project coordinator",
+          "summary": "Interested in project coordinator work. Introductory practical training."
+        },
+        "skills": [
+          {
+            "name": "Project management"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Certificate",
+            "field_of_study": "Project Management"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Trainee",
+            "description": "Introductory supervised practical tasks.",
+            "start_date": "2025-10-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 1,
+      "own_role_rationale": "Only one core skill, introductory training and three months of related exposure; weak evidence for this role."
+    },
+    {
+      "id": "support-strong",
+      "domain": "support",
+      "variant": "strong",
+      "snapshot": {
+        "profile": {
+          "headline": "Customer support officer",
+          "summary": "Respond to customer enquiries, resolve complaints and maintain customer service records."
+        },
+        "skills": [
+          {
+            "name": "Customer service"
+          },
+          {
+            "name": "Communication"
+          },
+          {
+            "name": "Problem solving"
+          },
+          {
+            "name": "CRM"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Bachelor's degree",
+            "field_of_study": "Business Administration"
+          }
+        ],
+        "certifications": [
+          {
+            "name": "Business Administration practical training"
+          }
+        ],
+        "experience": [
+          {
+            "job_title": "Customer support officer",
+            "description": "Handle support requests, communicate clearly and follow up customer problems.",
+            "start_date": "2022-01-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 3,
+      "own_role_rationale": "All three core skills and the preferred skill; relevant degree and four years of directly described work."
+    },
+    {
+      "id": "support-partial",
+      "domain": "support",
+      "variant": "partial",
+      "snapshot": {
+        "profile": {
+          "headline": "Customer support officer",
+          "summary": "Interested in customer support officer work. Handle support requests, communicate clearly and follow up customer problems."
+        },
+        "skills": [
+          {
+            "name": "Customer service"
+          },
+          {
+            "name": "Communication"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Diploma",
+            "field_of_study": "Business Administration"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Customer support officer",
+            "description": "Handle support requests, communicate clearly and follow up customer problems.",
+            "start_date": "2023-01-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 2,
+      "own_role_rationale": "Two of three core skills and relevant work, but missing a core skill and the requested degree level; manual review warranted."
+    },
+    {
+      "id": "support-junior",
+      "domain": "support",
+      "variant": "junior",
+      "snapshot": {
+        "profile": {
+          "headline": "Customer support officer",
+          "summary": "Interested in customer support officer work. Handle support requests, communicate clearly and follow up customer problems."
+        },
+        "skills": [
+          {
+            "name": "Customer service"
+          },
+          {
+            "name": "Communication"
+          },
+          {
+            "name": "Problem solving"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Diploma",
+            "field_of_study": "Business Administration"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Customer support officer",
+            "description": "Handle support requests, communicate clearly and follow up customer problems.",
+            "start_date": "2025-07-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 2,
+      "own_role_rationale": "Three core skills and related training, but only six months of work and no requested degree; plausible developmental candidate with gaps."
+    },
+    {
+      "id": "support-weak",
+      "domain": "support",
+      "variant": "weak",
+      "snapshot": {
+        "profile": {
+          "headline": "Trainee customer support officer",
+          "summary": "Interested in customer support officer work. Introductory practical training."
+        },
+        "skills": [
+          {
+            "name": "Customer service"
+          }
+        ],
+        "education": [
+          {
+            "qualification": "Certificate",
+            "field_of_study": "Business Administration"
+          }
+        ],
+        "certifications": [],
+        "experience": [
+          {
+            "job_title": "Trainee",
+            "description": "Introductory supervised practical tasks.",
+            "start_date": "2025-10-01",
+            "end_date": "2026-01-01",
+            "currently_working": false
+          }
+        ]
+      },
+      "own_role_grade": 1,
+      "own_role_rationale": "Only one core skill, introductory training and three months of related exposure; weak evidence for this role."
+    }
+  ],
+  "labels": [
+    {
+      "job_id": "backend",
+      "profile_id": "backend-strong",
+      "grade": 3,
+      "rationale": "All three core skills and the preferred skill; relevant degree and four years of directly described work."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "backend-partial",
+      "grade": 2,
+      "rationale": "Two of three core skills and relevant work, but missing a core skill and the requested degree level; manual review warranted."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "backend-junior",
+      "grade": 2,
+      "rationale": "Three core skills and related training, but only six months of work and no requested degree; plausible developmental candidate with gaps."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "backend-weak",
+      "grade": 1,
+      "rationale": "Only one core skill, introductory training and three months of related exposure; weak evidence for this role."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "data-strong",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "data-partial",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "data-junior",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "data-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "frontend-strong",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "frontend-partial",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "frontend-junior",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "frontend-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "project-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "project-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "project-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "project-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "support-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "support-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "support-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "backend",
+      "profile_id": "support-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "backend-strong",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "backend-partial",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "backend-junior",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "backend-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "data-strong",
+      "grade": 3,
+      "rationale": "All three core skills and the preferred skill; relevant degree and four years of directly described work."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "data-partial",
+      "grade": 2,
+      "rationale": "Two of three core skills and relevant work, but missing a core skill and the requested degree level; manual review warranted."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "data-junior",
+      "grade": 2,
+      "rationale": "Three core skills and related training, but only six months of work and no requested degree; plausible developmental candidate with gaps."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "data-weak",
+      "grade": 1,
+      "rationale": "Only one core skill, introductory training and three months of related exposure; weak evidence for this role."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "frontend-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "frontend-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "frontend-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "frontend-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "project-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "project-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "project-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "project-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "support-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "support-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "support-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "data",
+      "profile_id": "support-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "backend-strong",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "backend-partial",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "backend-junior",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "backend-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "data-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "data-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "data-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "data-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "frontend-strong",
+      "grade": 3,
+      "rationale": "All three core skills and the preferred skill; relevant degree and four years of directly described work."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "frontend-partial",
+      "grade": 2,
+      "rationale": "Two of three core skills and relevant work, but missing a core skill and the requested degree level; manual review warranted."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "frontend-junior",
+      "grade": 2,
+      "rationale": "Three core skills and related training, but only six months of work and no requested degree; plausible developmental candidate with gaps."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "frontend-weak",
+      "grade": 1,
+      "rationale": "Only one core skill, introductory training and three months of related exposure; weak evidence for this role."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "project-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "project-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "project-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "project-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "support-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "support-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "support-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "frontend",
+      "profile_id": "support-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "backend-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "backend-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "backend-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "backend-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "data-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "data-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "data-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "data-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "frontend-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "frontend-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "frontend-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "frontend-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "project-strong",
+      "grade": 3,
+      "rationale": "All three core skills and the preferred skill; relevant degree and four years of directly described work."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "project-partial",
+      "grade": 2,
+      "rationale": "Two of three core skills and relevant work, but missing a core skill and the requested degree level; manual review warranted."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "project-junior",
+      "grade": 2,
+      "rationale": "Three core skills and related training, but only six months of work and no requested degree; plausible developmental candidate with gaps."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "project-weak",
+      "grade": 1,
+      "rationale": "Only one core skill, introductory training and three months of related exposure; weak evidence for this role."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "support-strong",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "support-partial",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "support-junior",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "project",
+      "profile_id": "support-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "backend-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "backend-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "backend-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "backend-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "data-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "data-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "data-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "data-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "frontend-strong",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "frontend-partial",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "frontend-junior",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "frontend-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "project-strong",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "project-partial",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "project-junior",
+      "grade": 1,
+      "rationale": "Some transferable technical or communication evidence, but core requirements and directly relevant work are missing."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "project-weak",
+      "grade": 0,
+      "rationale": "Different professional domain with insufficient core skills or directly relevant work for this vacancy."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "support-strong",
+      "grade": 3,
+      "rationale": "All three core skills and the preferred skill; relevant degree and four years of directly described work."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "support-partial",
+      "grade": 2,
+      "rationale": "Two of three core skills and relevant work, but missing a core skill and the requested degree level; manual review warranted."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "support-junior",
+      "grade": 2,
+      "rationale": "Three core skills and related training, but only six months of work and no requested degree; plausible developmental candidate with gaps."
+    },
+    {
+      "job_id": "support",
+      "profile_id": "support-weak",
+      "grade": 1,
+      "rationale": "Only one core skill, introductory training and three months of related exposure; weak evidence for this role."
+    }
+  ]
+}

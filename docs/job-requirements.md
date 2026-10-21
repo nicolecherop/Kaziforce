@@ -1,6 +1,6 @@
 # Job requirements
 
-Recruiters enter structured requirements on `templates/jobs/job_edit.html`. Each skill has a name, a Required/Preferred choice and a priority: Standard (1), Important (2) or High (3). Required describes a skill the role needs; Preferred describes a useful extra. Priority expresses relative emphasis independently of that choice. This stage stores and displays requirements; it does not score, rank or automatically reject candidates.
+Recruiters enter structured requirements on `templates/jobs/job_edit.html`. Each skill has a name, a Required/Preferred choice and a priority: Standard (1), Important (2) or High (3). Required describes a skill the role needs; Preferred describes a useful extra. Priority expresses relative emphasis independently of that choice. The matching app uses these requirements in its scores and explanations; recruitment decisions remain with the recruiter.
 
 ## Data and validation
 
@@ -20,4 +20,4 @@ The named job editor, candidate job detail page and application detail page rema
 
 Apply `manage.py migrate` to add the columns and the `job_skills` table. The migration preserves existing jobs and their free-text requirements; it does not infer skills from descriptions or uploaded documents. Run `manage.py test tests --keepdb` against the separate PostgreSQL test database. Requirement tests cover complete saves, updates/removals, rendered form round-trips, duplicates, invalid values, ownership, row limits, transaction rollback, escaped output and frozen application copies.
 
-ESCO identifiers, aliases, matching calculations and ranking evaluation belong to the next stage. Skill names currently retain the recruiter's terminology.
+Skill names retain the recruiter's terminology. The matching app standardizes recognized labels against ESCO and calculates priority-weighted scores without automatically rejecting candidates. See [matching](matching.md) and the [initial synthetic evaluation](evaluation/report.md).

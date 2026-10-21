@@ -117,3 +117,6 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "KaziForce <noreply@localhost>")
+
+# Candidate display threshold; this does not change scores or recruiter rankings.
+MATCH_RECOMMENDATION_MIN_SCORE = 70

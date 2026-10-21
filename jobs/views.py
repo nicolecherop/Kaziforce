@@ -7,18 +7,22 @@ from candidates.access import candidate_required
 from .access import recruiter_required
 from .forms import JobPostingForm, JobSkillFormSet
 from .models import JobPosting
+from matching.skills import standardize_skills
+from matching.models import MatchResult
+from pages.presentation import company_search_labels
 
 
 @candidate_required
 @require_GET
 def opportunities(request):
-    jobs = JobPosting.objects.filter(status="open")
+    jobs = JobPosting.objects.filter(status="open").prefetch_related("skills")
     query = request.GET.get("q", "").strip()[:160]
     if query:
         jobs = jobs.filter(
             Q(title__icontains=query)
             | Q(company__icontains=query)
             | Q(location__icontains=query)
+            | Q(company__in=company_search_labels(query))
         )
     return render(
         request, "jobs/opportunities.html", {"jobs": jobs[:100], "query": query}
@@ -37,6 +41,11 @@ def job_detail(request, job_id):
             "job": job,
             "application": application,
             "requirements": job.structured_requirements(),
+            "match_result": MatchResult.objects.filter(
+                run__owner=request.user, run__kind="jobs", job=job
+            )
+            .order_by("-run__created_at")
+            .first(),
         },
     )
 
@@ -82,7 +91,18 @@ def job_edit(request, job_id=None):
                 messages.success(request, "Your job posting has been saved.")
                 return redirect("jobs:manage")
     return render(
-        request, "jobs/job_edit.html", {"form": form, "job": job, "skills": skills}
+        request,
+        "jobs/job_edit.html",
+        {
+            "form": form,
+            "job": job,
+            "skills": skills,
+            "skill_standardization": (
+                standardize_skills([skill.name for skill in job.skills.all()])
+                if job.created_at
+                else None
+            ),
+        },
     )
 
 

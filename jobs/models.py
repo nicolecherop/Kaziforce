@@ -82,9 +82,15 @@ class JobPosting(models.Model):
     def __str__(self):
         return self.title
 
-    def structured_requirements(self):
+    def structured_requirements(self, standardization=None):
         """JSON-safe job requirements, including labels for submitted copies."""
+        from matching.skills import standardize_skills
+
+        skills = list(self.skills.all())
+        if standardization is None:
+            standardization = standardize_skills([skill.name for skill in skills])
         return {
+            "skill_standardization": standardization,
             "education_level": self.education_level,
             "education_level_label": self.get_education_level_display(),
             "education_field": self.education_field,
@@ -105,8 +111,11 @@ class JobPosting(models.Model):
                     "requirement_label": skill.get_requirement_display(),
                     "priority": skill.priority,
                     "priority_label": skill.get_priority_display(),
+                    "standardization": mapping,
                 }
-                for skill in self.skills.all()
+                for skill, mapping in zip(
+                    skills, standardization["skills"], strict=True
+                )
             ],
         }
 

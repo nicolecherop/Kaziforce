@@ -30,8 +30,8 @@ class JobPostingForm(forms.ModelForm):
             "experience_priority": "Experience priority",
         }
         widgets = {
-            "description": forms.Textarea(attrs={"rows": 6}),
-            "requirements": forms.Textarea(attrs={"rows": 5}),
+            "description": forms.Textarea(attrs={"rows": 3}),
+            "requirements": forms.Textarea(attrs={"rows": 2}),
             "experience_details": forms.Textarea(
                 attrs={
                     "rows": 3,
@@ -56,10 +56,15 @@ class JobSkillForm(forms.ModelForm):
     class Meta:
         model = JobSkill
         fields = ("name", "requirement", "priority")
-        labels = {"name": "Skill", "requirement": "Required or preferred"}
+        labels = {"name": "Skill", "requirement": "Requirement"}
         widgets = {
             "name": forms.TextInput(
-                attrs={"placeholder": "e.g. Python — one skill per entry"}
+                attrs={
+                    "placeholder": "e.g. Python — one skill per entry",
+                    "list": "skill-suggestions",
+                    "data-skill-input": "",
+                    "autocomplete": "off",
+                }
             )
         }
 

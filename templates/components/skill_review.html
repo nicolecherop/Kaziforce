@@ -1,0 +1,3 @@
+<ul class="skill-review-list">
+    {% for skill in standardization.skills %}<li><strong>{{ skill.name }}</strong>{% include "components/skill_status.html" %}</li>{% endfor %}
+</ul>

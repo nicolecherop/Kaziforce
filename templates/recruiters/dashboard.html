@@ -1,10 +1,92 @@
 {% extends "workspace/base.html" %}
-{% block title %}Recruiter workspace | KaziForce{% endblock %}
+{% load workspace_ui %}
+{% block title %}Recruiter overview | KaziForce{% endblock %}
 {% block workspace_content %}
-    <header class="page-heading">
-        <p class="eyebrow">Recruiter workspace</p>
-        <h1>Build your next team.</h1>
-        <p>Publish a role and review the profiles and documents candidates choose to send you.</p>
+    <header class="page-heading profile-heading">
+        <div>
+            <p class="eyebrow">Recruiter workspace / Overview</p>
+            <h1>Build your next team.</h1>
+            <p>A clearer view of your roles, applicants and next decisions.</p>
+        </div>
+        <a class="button button-small" href="{% url 'jobs:create' %}">+ Create a job</a>
     </header>
-    <section class="profile-introduction"><span class="section-kicker">Your vacancies</span><h2>Start with the role.</h2><p>Describe the work, the skills your team needs and the experience you are looking for.</p><div class="action-row"><a class="button" href="{% url 'jobs:create' %}">Post a job ↗</a><a href="{% url 'jobs:manage' %}">Manage jobs and applicants</a></div></section>
+    <div class="workspace-split dashboard-split">
+        <div>
+            <section class="summary-grid" aria-label="Recruitment at a glance">
+                <a class="summary-card" href="{% url 'jobs:manage' %}">
+                    <span class="icon-tile">{% include "workspace/icon.html" with name="case" %}</span>
+                    <div>
+                        <strong class="summary-number">{{ open_job_count }}</strong>
+                        <h2>Open jobs</h2>
+                        <p>Opportunities on your team.</p>
+                    </div>
+                </a>
+                <a class="summary-card" href="{% url 'applications:inbox' %}">
+                    <span class="icon-tile">{% include "workspace/icon.html" with name="people" %}</span>
+                    <div>
+                        <strong class="summary-number">{{ application_count }}</strong>
+                        <h2>Applications</h2>
+                        <p>Submitted profiles to review.</p>
+                    </div>
+                </a>
+                <a class="summary-card"
+                   href="{% url 'applications:inbox' %}?status=shortlisted">
+                    <span class="icon-tile">{% include "workspace/icon.html" with name="check" %}</span>
+                    <div>
+                        <strong class="summary-number">{{ shortlisted_count }}</strong>
+                        <h2>Shortlisted</h2>
+                        <p>Candidates moving forward.</p>
+                    </div>
+                </a>
+            </section>
+            {% include "applications/components/upcoming_interviews.html" %}
+            <div class="section-title-row">
+                <h2>Your recent jobs</h2>
+                <a href="{% url 'jobs:manage' %}">View all jobs →</a>
+            </div>
+            {% for job in recent_jobs %}
+                <article class="workspace-panel compact-panel">
+                    <div class="section-title-row">
+                        <div>
+                            <h3>{{ job.title|site_text }}</h3>
+                            <p>{{ job.company|site_text }} · {{ job.location }}</p>
+                        </div>
+                        <span class="status-pill">{{ job.get_status_display }}</span>
+                    </div>
+                    <div class="action-row">
+                        <a href="{% url 'applications:applicants' job.pk %}">{{ job.applicant_count }} applicant{{ job.applicant_count|pluralize }}</a>
+                        <a href="{% url 'matches:applicants' job.pk %}">Review rankings →</a>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="workspace-panel empty-panel">
+                    <h3>Start with the role.</h3>
+                    <p>Create a job and describe the skills your team needs.</p>
+                    <a class="button button-small"
+                       href="{% url 'jobs:create' %}">Create your first job</a>
+                </div>
+            {% endfor %}
+        </div>
+        <aside class="workspace-panel side-panel">
+            <span class="icon-tile large">{% include "workspace/icon.html" with name="people" %}</span>
+            <h2>From requirements to the right fit.</h2>
+            <ol class="step-checklist">
+                <li>
+                    <span class="step-dot">1</span>Set the role and skill priorities.
+                </li>
+                <li>
+                    <span class="step-dot">2</span>Compare submitted candidate matches.
+                </li>
+                <li>
+                    <span class="step-dot">3</span>Review profiles and original documents.
+                </li>
+                <li>
+                    <span class="step-dot">4</span>Update application statuses yourself.
+                </li>
+            </ol>
+            <a class="button button-small button-full"
+               href="{% url 'matches:workspace' %}">Review candidate matches</a>
+            <p class="small-copy panel-footnote">Rankings support your review. Recruitment decisions remain with you.</p>
+        </aside>
+    </div>
 {% endblock %}

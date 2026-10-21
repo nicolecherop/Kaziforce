@@ -7,5 +7,7 @@ urlpatterns = [
     path("candidate/", include("candidates.urls")),
     path("jobs/", include("jobs.urls")),
     path("applications/", include("applications.urls")),
+    path("skills/", include("matching.urls")),
+    path("matches/", include("matching.results_urls")),
     path("", include("pages.urls")),
 ]

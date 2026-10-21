@@ -16,6 +16,7 @@ from .forms import (
 )
 from .models import CandidateProfile
 from .selectors import profile_for
+from matching.skills import standardize_skills
 
 SECTIONS = [
     (
@@ -58,8 +59,16 @@ SECTIONS = [
 
 @candidate_required
 def profile(request):
+    instance = profile_for(request.user)
     return render(
-        request, "candidates/profile.html", {"profile": profile_for(request.user)}
+        request,
+        "candidates/profile.html",
+        {
+            "profile": instance,
+            "skill_standardization": standardize_skills(
+                [skill.name for skill in instance.skills.all()] if instance else []
+            ),
+        },
     )
 
 

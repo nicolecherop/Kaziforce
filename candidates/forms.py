@@ -17,18 +17,25 @@ from .models import (
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = CandidateProfile
-        fields = ["headline", "location", "summary"]
+        fields = ["headline", "location", "summary", "contact_email", "phone_number"]
         labels = {
             "headline": "Professional headline",
             "location": "Location",
             "summary": "Professional summary",
+            "contact_email": "Contact email",
+            "phone_number": "Phone number",
         }
         help_texts = {
             "headline": "A short description of what you do or the work you are looking for.",
             "location": "Optional. Your city or country; a full address is not needed.",
             "summary": "Describe your experience, interests and the skills you bring. Up to 3,000 characters.",
+            "contact_email": "Optional. Use a different email for recruitment, or leave blank to use your account email when applying.",
+            "phone_number": "Optional. Include your country code, for example +254 712 345 678. Shared only with applications you submit.",
         }
         widgets = {
+            "phone_number": forms.TextInput(
+                attrs={"type": "tel", "autocomplete": "tel"}
+            ),
             "headline": forms.TextInput(
                 attrs={"placeholder": "e.g. Junior software developer"}
             ),
@@ -41,6 +48,14 @@ class ProfileForm(forms.ModelForm):
             ),
         }
 
+    @property
+    def professional_fields(self):
+        return [self[name] for name in ("headline", "location", "summary")]
+
+    @property
+    def contact_fields(self):
+        return [self[name] for name in ("contact_email", "phone_number")]
+
 
 class SkillForm(forms.ModelForm):
     class Meta:
@@ -49,7 +64,12 @@ class SkillForm(forms.ModelForm):
         labels = {"name": "Skill"}
         widgets = {
             "name": forms.TextInput(
-                attrs={"placeholder": "e.g. Python, one skill per entry"}
+                attrs={
+                    "placeholder": "e.g. Python, one skill per entry",
+                    "list": "skill-suggestions",
+                    "data-skill-input": "",
+                    "autocomplete": "off",
+                }
             )
         }
 

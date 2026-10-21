@@ -1,6 +1,6 @@
 # Manual profiles, original documents and job applications
 
-The project owner replaced CV extraction with manual professional profiles and original documents for recruiters to read. Skills, education, certifications, experience and portfolio details come from candidate input. No document text is extracted or imported into profiles. ESCO standardization and matching remain future work and must use explicitly entered professional data.
+The project owner replaced CV extraction with manual professional profiles and original documents for recruiters to read. Skills, education, certifications, experience and portfolio details come from candidate input. No document text is extracted or imported into profiles. ESCO standardization and matching use explicitly entered professional data; see [matching](matching.md) and the [initial synthetic evaluation](evaluation/report.md).
 
 ## Candidate workflow
 
@@ -14,7 +14,7 @@ Each library file is limited to 5 MB, each candidate can keep 20 files, and an a
 
 ## Recruiter workflow
 
-Recruiters publish, edit and close their own job postings. Jobs include title, company, location, description and written requirements. Their applicant list includes submitted applications only. Recruiters can read the candidate's submitted profile, open/download the chosen original documents and set Submitted, Under review, Shortlisted or Unsuccessful status. Scores and automatic hiring/rejection decisions are not implemented.
+Recruiters publish, edit and close their own job postings. Jobs include title, company, location, description and written requirements. Their applicant list includes submitted applications only. Recruiters can read the candidate's submitted profile, open/download independent copies of the chosen documents and set Submitted, Under review, Shortlisted or Unsuccessful status. Matching scores support manual review and do not make automatic hiring or rejection decisions.
 
 ## Application copies
 

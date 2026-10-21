@@ -1,10 +1,59 @@
 {% extends "workspace/base.html" %}
-{% block title %}Applicants for {{ job.title }} | KaziForce{% endblock %}
+{% load workspace_ui %}
+{% block title %}Applicants for {{ job.title|site_text }} | KaziForce{% endblock %}
 {% block workspace_content %}
-    <header class="page-heading">
-        <p class="eyebrow">{{ job.company }} / Applicants</p>
-        <h1>{{ job.title }}</h1>
-        <p>Read each candidate's submitted profile and original attachments.</p>
+    <a class="back-to-list" href="{% url 'jobs:manage' %}">← Back to my jobs</a>
+    <header class="page-heading profile-heading">
+        <div>
+            <p class="eyebrow">{{ job.company|site_text }} / Applicants</p>
+            <h1>{{ job.title|site_text }}</h1>
+            <p>Read each candidate's submitted profile and original attachments.</p>
+        </div>
+        <a class="button button-small"
+           href="{% url 'matches:applicants' job.pk %}">Review applicant rankings</a>
     </header>
-    {% for application in applications %}<article class="job-card"><span class="status-pill">{{ application.get_status_display }}</span><h2><a href="{% url 'applications:detail' application.pk %}">{{ application.candidate_name|default:application.candidate_email }}</a></h2><p>{{ application.profile_snapshot.profile.headline|default:"Candidate application" }}</p><p class="small-copy">Submitted {{ application.submitted_at|date:"j M Y" }}</p><a href="{% url 'applications:detail' application.pk %}">View profile and documents ↗</a></article>{% empty %}<p class="empty-state">Submitted applications will appear here. Candidate drafts stay private.</p>{% endfor %}
+    <nav class="view-links" aria-label="Applicant review">
+        <a aria-current="page" href="{% url 'applications:applicants' job.pk %}">All applicants</a>
+        <a href="{% url 'matches:applicants' job.pk %}">Ranked matches</a>
+        <a href="{% url 'jobs:edit' job.pk %}">Job requirements</a>
+    </nav>
+    <div class="workspace-table-wrap">
+        <table class="workspace-table">
+            <thead>
+                <tr>
+                    <th scope="col">Candidate</th>
+                    <th scope="col">Professional title</th>
+                    <th scope="col">Submitted</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                    <tr>
+                        <th scope="row">
+                            <div class="person-cell">
+                                <span class="initial-avatar" aria-hidden="true">{{ application.candidate_name|site_text|initials }}</span>{{ application.candidate_name|default:application.candidate_email|site_text }}
+                            </div>
+                        </th>
+                        <td>{{ application.profile_snapshot.profile.headline|default:"Candidate application" }}</td>
+                        <td class="nowrap">{{ application.submitted_at|date:"j M Y" }}</td>
+                        <td>
+                            <span class="status-pill status-{{ application.status }}">{{ application.get_status_display }}</span>
+                        </td>
+                        <td>
+                            <a class="button button-secondary button-small"
+                               href="{% url 'applications:detail' application.pk %}">View profile and documents</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <p class="empty-state">Submitted applications will appear here. Candidate drafts stay private.</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

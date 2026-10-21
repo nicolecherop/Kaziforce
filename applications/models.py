@@ -2,8 +2,10 @@
 
 import uuid
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator, URLValidator
 from django.db import models
 from candidates.storage import PrivateDocumentStorage, application_upload_path
+from candidates.validators import validate_phone_number
 
 
 class Application(models.Model):
@@ -67,3 +69,77 @@ class ApplicationAttachment(models.Model):
 
     def __str__(self):
         return self.title or self.original_name
+
+
+class Interview(models.Model):
+    class Format(models.TextChoices):
+        VIDEO = "video", "Video call"
+        PHONE = "phone", "Phone call"
+        IN_PERSON = "in_person", "In person"
+
+    class Status(models.TextChoices):
+        SCHEDULED = "scheduled", "Scheduled"
+        CANCELLED = "cancelled", "Cancelled"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    application = models.OneToOneField(
+        Application, on_delete=models.CASCADE, related_name="interview"
+    )
+    starts_at = models.DateTimeField()
+    duration_minutes = models.PositiveSmallIntegerField(
+        default=30, validators=[MinValueValidator(15), MaxValueValidator(480)]
+    )
+    format = models.CharField(max_length=12, choices=Format.choices)
+    meeting_url = models.URLField(
+        max_length=500, blank=True, validators=[URLValidator(schemes=["http", "https"])]
+    )
+    location = models.CharField(max_length=300, blank=True)
+    instructions = models.TextField(max_length=2000, blank=True)
+    recruiter_name = models.CharField(max_length=150)
+    recruiter_email = models.EmailField()
+    recruiter_phone = models.CharField(
+        max_length=32, blank=True, validators=[validate_phone_number]
+    )
+    status = models.CharField(
+        max_length=12, choices=Status.choices, default=Status.SCHEDULED
+    )
+    cancellation_reason = models.TextField(max_length=1000, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "interviews"
+        ordering = ["starts_at", "pk"]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(duration_minutes__gte=15, duration_minutes__lte=480),
+                name="interview_duration_valid",
+            )
+        ]
+
+
+class InterviewEmail(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        SENT = "sent", "Sent"
+        FAILED = "failed", "Could not send"
+        NOT_CONFIGURED = "not_configured", "Email delivery not connected"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    interview = models.ForeignKey(
+        Interview, on_delete=models.CASCADE, related_name="emails"
+    )
+    recipient_email = models.EmailField()
+    subject = models.CharField(max_length=255)
+    body = models.TextField()
+    reply_to = models.EmailField()
+    status = models.CharField(
+        max_length=16, choices=Status.choices, default=Status.PENDING
+    )
+    attempts = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = "interview_emails"
+        ordering = ["-created_at", "-pk"]

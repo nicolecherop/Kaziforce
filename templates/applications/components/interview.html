@@ -1,0 +1,76 @@
+{% load tz workspace_ui %}
+{% if application.interview %}
+    {% with interview=application.interview %}
+        <section class="workspace-panel"
+                 id="interview"
+                 aria-labelledby="interview-title">
+            <div class="section-title-row">
+                <h2 id="interview-title">Interview {% if interview.status == "cancelled" %}cancelled{% else %}invitation{% endif %}</h2>
+                <span class="status-pill">{{ interview.get_status_display }}</span>
+            </div>
+            <p><strong>{{ interview.starts_at|timezone:"Africa/Nairobi"|date:"l, j F Y" }} at {{ interview.starts_at|timezone:"Africa/Nairobi"|date:"H:i" }}</strong></p>
+            <p class="small-copy">East Africa Time (UTC+3) · {{ interview.duration_minutes }} minutes · {{ interview.get_format_display }}</p>
+            {% if interview.status == "cancelled" %}
+                <p class="long-copy">{{ interview.cancellation_reason|linebreaksbr }}</p>
+            {% else %}
+                {% if interview.meeting_url %}<p><a href="{{ interview.meeting_url }}"
+   target="_blank"
+   rel="noopener noreferrer">Open video meeting →</a></p>{% endif %}
+                {% if interview.location %}<p><strong>Address:</strong> {{ interview.location }}</p>{% endif %}
+                {% if interview.format == "phone" %}<p>Please use the contact details below to agree who will make the call.</p>{% endif %}
+                {% if interview.instructions %}<p class="long-copy">{{ interview.instructions|linebreaksbr }}</p>{% endif %}
+            {% endif %}
+            <h3>Your recruiter contact</h3>
+            <p>{{ interview.recruiter_name|site_text }}</p>
+            {% include "components/contact_details.html" with email=interview.recruiter_email phone=interview.recruiter_phone %}
+            <p class="small-copy">Contact the recruiter directly for questions, a different time or further arrangements.</p>
+            <p class="small-copy">Last updated {{ interview.updated_at|date:"j M Y, H:i" }}</p>
+            {% if user.role == "recruiter" %}
+                {% with delivery=interview.emails.first %}
+                    {% if delivery %}
+                        <div class="inline-notice">
+                            {% if delivery.status == "sent" %}
+                                <p>Interview email sent. This confirms sending, rather than whether the candidate has read it.</p>
+                            {% else %}
+                                <p>The candidate can view this invitation in My applications. The email has not been sent{% if delivery.status == "failed" %} because delivery failed{% elif delivery.status == "not_configured" %}; connect email delivery and check the candidate's contact email, or contact them directly{% endif %}.</p>
+                                <form method="post"
+                                      action="{% url 'applications:interview_email_retry' application.pk %}">
+                                    {% csrf_token %}
+                                    <button class="text-button" type="submit">Retry email</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                {% if application.status == "shortlisted" %}
+                    <a class="button button-small button-secondary"
+                       href="{% url 'applications:interview_edit' application.pk %}">{% if interview.status == "cancelled" %}Schedule again{% else %}Edit interview{% endif %}</a>
+                {% endif %}
+                {% if interview.status == "scheduled" %}
+                    <details class="saved-skill-review">
+                        <summary>Cancel interview</summary>
+                        <form method="post"
+                              action="{% url 'applications:interview_cancel' application.pk %}">
+                            {% csrf_token %}
+                            <label for="cancellation-reason">Message to the candidate</label>
+                            <textarea id="cancellation-reason"
+                                      name="reason"
+                                      rows="3"
+                                      maxlength="1000"
+                                      required></textarea>
+                            <button class="button button-small button-secondary"
+                                    type="submit">Cancel interview and notify candidate</button>
+                        </form>
+                    </details>
+                {% endif %}
+            {% endif %}
+        </section>
+    {% endwith %}
+{% elif user.role == "recruiter" and application.status == "shortlisted" %}
+    <section class="workspace-panel" id="interview">
+        <h2>Arrange an interview</h2>
+        <p>Share the time, joining details and a recruiter contact with this candidate.</p>
+        <a class="button button-small"
+           href="{% url 'applications:interview_edit' application.pk %}">Set up interview</a>
+    </section>
+{% endif %}

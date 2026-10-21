@@ -20,7 +20,9 @@
         <main id="main" tabindex="-1">
             {% block content %}{% endblock %}
         </main>
-        {% include "components/footer.html" %}
+        {% block footer %}
+            {% include "components/footer.html" %}
+        {% endblock %}
         <script src="{% static 'js/site.js' %}" defer></script>
         {% block extra_js %}{% endblock %}
     </body>

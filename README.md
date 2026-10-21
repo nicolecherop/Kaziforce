@@ -1,12 +1,14 @@
 # KaziForce
 
-A Django candidate–job matching application under development. The matching engine will use ESCO skill standardization, TF-IDF, cosine similarity and recruiter skill priorities.
+A Django candidate–job matching application. Skill names are standardized against a versioned local ESCO reference catalogue. Matching uses TF-IDF, cosine similarity and recruiter priorities with saved evidence and explanations.
 
 ## Current stage
 
-Candidates enter their professional information manually, including skills, education, certifications, work experience and portfolio links. CVs, degree documents and certificates are private attachments for recruiters to read. Candidates can start each job application with their saved profile, tailor an independent copy, save a private draft and choose attachments before submitting. Recruiters can publish, edit and close jobs with required/preferred skills, priorities, education and relevant experience requirements, read submitted applications and update their statuses. ESCO standardization and matching are still to be implemented.
+Candidates enter their professional information manually, including skills, education, certifications, work experience and portfolio links. CVs, degree documents and certificates are private attachments for recruiters to read. Candidates can start each job application with their saved profile, tailor an independent copy, save a private draft and choose attachments before submitting. Recruiters can publish, edit and close jobs with required/preferred skills, priorities, education and relevant experience requirements, read submitted applications and update their statuses. Local ESCO labels provide skill suggestions and deterministic standardization; all entered skill names remain visible with plain-language messages where needed. Candidates can request up to ten job recommendations scoring at least 70%, with an overall score and general guidance. Recruiters can review their ten highest applicant scores with detailed explanations and no minimum-score filter. Results preserve submitted evidence and reference versions.
 
 ## Local setup on Windows
+
+Candidates can add contact details and tailor them for each application. Recruiters can schedule, update and cancel interviews for shortlisted applicants, share recruiter contacts and track email delivery. See [interview invitations and contacts](docs/interviews.md).
 
 Use Python 3.12 or later. Run these commands inside this folder:
 
@@ -51,7 +53,7 @@ Candidate pages are `templates/candidates/dashboard.html`, `profile.html` and `p
 - `candidates`: manually entered profiles, private CV/degree/certificate documents, forms and ownership checks.
 - `jobs`: recruiter-owned vacancies, structured requirements and priorities, candidate job browsing and search. See [job requirements](docs/job-requirements.md).
 - `applications`: independent profile copies, private drafts, immutable submitted attachments and status tracking.
-- `matching`: independent preprocessing, ESCO mapping and scoring services, to be implemented.
+- `matching`: ESCO imports and skill lookup, fixed public TF-IDF reference, profile/job scoring, private top-ten reviews and reproducible history. See [skill standardization](docs/skill-standardization.md) and [matching](docs/matching.md).
 - `pages`: public page routes.
 - `templates`: one named template per page plus shared components.
 - `static`: styles, scripts and approved public media assets.
@@ -62,7 +64,7 @@ Candidate pages are `templates/candidates/dashboard.html`, `profile.html` and `p
 
 The profile editor uses the signed-in account as its owner and rejects related entries from other profiles. It validates every section before saving everything in one transaction. Blank new entries are ignored. Skill names are unique per profile without case differences. Dates must be consistent, and external links accept HTTP or HTTPS only.
 
-Run `manage.py migrate` after updating to create candidate and CV tables. ESCO mapping and scoring are not implemented yet.
+Run `manage.py migrate` after updating. After importing ESCO, run `manage.py build_matching_corpus` to prepare the fixed public scoring reference. Candidates use **My matches**; recruiters open **Applicants → Review applicant rankings**. Scores support manual review and do not change application status. See [matching setup, formula and limitations](docs/matching.md).
 
 CVs accept PDF/DOCX, including scanned documents. Degree and certificate evidence accepts PDF/JPG/PNG. Files are limited to 5 MB, with up to 20 library documents and 10 attachments per application. File validation checks formats and signatures without extracting text. The extraction feature and parser dependencies have been removed. The replacement migration preserves existing CV originals and removes extraction-only database fields.
 
@@ -77,3 +79,21 @@ Documents use the Git-ignored `private_uploads/` directory; never expose it thro
 If Node.js is available, run `node --test tests/video.test.cjs` to check reduced-motion, save-data, background playback and failure fallbacks. Node is only needed for these front-end checks; the application runs on Django.
 
 For PostgreSQL, run `manage.py test tests --keepdb` using the pre-created `test_kaziforce` database. The dedicated application login does not have database-creation privileges. Tests include PostgreSQL concurrency verification; SQLite skips that test.
+
+## Matching evaluation and acceptance testing
+
+Run the isolated evaluation from this folder:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/evaluate_project.py
+```
+
+This uses five fictional jobs, twenty profiles and 100 predeclared relevance labels with the full local ESCO reference. It measures rankings in both directions and checks the registration-to-application-to-recruiter workflow through actual HTTP forms with CSRF enforcement. A new temporary SQLite database, private storage and in-memory email keep it separate from development PostgreSQL, live accounts and uploads. No network download or email delivery is needed.
+
+Read the [evaluation report](docs/evaluation/report.md), [complete results](docs/evaluation/results.json) and [ranking spreadsheet](docs/evaluation/rankings.csv). These are initial synthetic engineering results, not validated hiring accuracy or completed participant testing. The [human acceptance checklist](docs/user-acceptance.md) records the user testing still to be done. Keep the original `evaluation/dataset-v1.json` labels unchanged; expand future evaluation in a new dataset version.
+
+## Demonstration data
+
+The candidate and recruiter workspaces follow the supplied dashboard, profile, ranking and application mockups, with shared navigation, review panels and responsive tables. See [workspace structure and page flow](docs/workspace-design.md).
+
+For fictional candidate profiles, jobs, submitted applications and ready-to-view matching results, see [local demo data](docs/demo-data.md). The helper records demo IDs separately, preserves existing accounts and supports removing the recorded batch.

@@ -1,12 +1,16 @@
 """Candidate application drafts and recruiter access to submitted copies."""
 
+from uuid import UUID
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, OperationalError
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
+from matching.models import MatchResult
 from candidates.access import candidate_required
 from candidates.document_views import document_response
 from candidates.forms import ProfileForm
@@ -15,6 +19,7 @@ from jobs.access import recruiter_required
 from jobs.models import JobPosting
 from .forms import APPLICATION_SECTIONS, ApplicationForm, ApplicationStatusForm
 from .models import Application, ApplicationAttachment
+from .interview_services import change_application_status
 from .services import save_application, snapshot_from_forms, snapshot_from_profile
 
 
@@ -25,7 +30,51 @@ def my_applications(request):
     return render(
         request,
         "applications/my_applications.html",
-        {"applications": request.user.applications.select_related("job")},
+        application_list_context(request),
+    )
+
+
+def application_list_context(request, recruiter=False):
+    applications = Application.objects.select_related("job", "interview")
+    applications = (
+        applications.filter(job__recruiter=request.user).exclude(status="draft")
+        if recruiter
+        else applications.filter(candidate=request.user)
+    )
+    status = request.GET.get("status", "all")
+    if status not in dict(Application.Status.choices):
+        status = "all"
+    if status != "all":
+        applications = applications.filter(status=status)
+    selected_id = request.GET.get("application")
+    if selected_id:
+        try:
+            selected_id = UUID(selected_id)
+        except ValueError as error:
+            raise Http404 from error
+        selected = get_object_or_404(applications, pk=selected_id)
+    else:
+        selected = applications.first()
+    return {
+        "applications": applications,
+        "selected": selected,
+        "active_status": status,
+        "status_choices": [
+            (key, label)
+            for key, label in Application.Status.choices
+            if not (recruiter and key == "draft")
+        ],
+    }
+
+
+@recruiter_required
+@never_cache
+@require_GET
+def inbox(request):
+    return render(
+        request,
+        "applications/inbox.html",
+        application_list_context(request, recruiter=True),
     )
 
 
@@ -144,7 +193,7 @@ def application_edit(request, job_id):
 
 
 def accessible_application(user, application_id):
-    queryset = Application.objects.select_related("job", "candidate")
+    queryset = Application.objects.select_related("job", "candidate", "interview")
     if user.role == "candidate":
         queryset = queryset.filter(candidate=user)
     elif user.role == "recruiter":
@@ -167,6 +216,15 @@ def application_detail(request, application_id):
             "snapshot": application.profile_snapshot,
             "status_form": ApplicationStatusForm(
                 initial={"status": application.status}
+            ),
+            "match_result": (
+                MatchResult.objects.filter(
+                    run__owner=request.user, application=application
+                )
+                .order_by("-run__created_at")
+                .first()
+                if request.user.role == "recruiter"
+                else None
             ),
         },
     )
@@ -191,9 +249,19 @@ def application_status(request, application_id):
     application = accessible_application(request.user, application_id)
     form = ApplicationStatusForm(request.POST)
     if form.is_valid():
-        application.status = form.cleaned_data["status"]
-        application.save(update_fields=["status", "updated_at"])
-        messages.success(request, "Application status updated.")
+        try:
+            change_application_status(
+                request.user, application.pk, form.cleaned_data["status"]
+            )
+        except ValidationError as error:
+            messages.error(request, error.messages[0])
+        except (IntegrityError, OperationalError):
+            messages.error(
+                request,
+                "The status could not be updated. Reload the page and try again.",
+            )
+        else:
+            messages.success(request, "Application status updated.")
     else:
         messages.error(request, "Choose a valid application status.")
     return redirect("applications:detail", application_id=application.pk)

@@ -1,0 +1,148 @@
+{% extends "workspace/base.html" %}
+{% load workspace_ui %}
+{% block title %}Applicant rankings | KaziForce{% endblock %}
+{% block workspace_content %}
+    <header class="page-heading">
+        <p class="eyebrow">Recruiter workspace / Candidate matches</p>
+        <h1>Find the right fit.</h1>
+        <p>Candidates ranked against your job requirements.</p>
+    </header>
+    {% if job %}
+        <div class="workspace-split ranking-split">
+            <div>
+                <div class="ranking-toolbar">
+                    <form method="get"
+                          action="{% url 'matches:workspace' %}"
+                          class="job-picker">
+                        <label class="sr-only" for="ranking-job">Choose a job</label>
+                        <select id="ranking-job" name="job" data-auto-submit>
+                            {% for option in jobs %}
+                                <option value="{{ option.pk }}"
+                                        {% if option.pk == job.pk %}selected{% endif %}>{{ option.title|site_text }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="button button-secondary button-small"
+                                type="submit">View job</button>
+                    </form>
+                    <form method="post" action="{% url 'matches:refresh_applicants' job.pk %}">
+                        {% csrf_token %}
+                        <button class="button button-small" type="submit">Update rankings</button>
+                    </form>
+                </div>
+                <div class="workspace-table-wrap">
+                    <table class="workspace-table ranking-table">
+                        <caption class="sr-only">Applicant rankings for {{ job.title|site_text }}</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Rank</th>
+                                <th scope="col">Candidate</th>
+                                <th scope="col">Matched skills</th>
+                                <th scope="col">Match score</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                                <tr {% if selected.pk == result.pk %}class="is-selected"{% endif %}>
+                                    <td>{{ result.rank }}</td>
+                                    <th scope="row">
+                                        <div class="person-cell">
+                                            <span class="initial-avatar" aria-hidden="true">{{ result.application.candidate_name|site_text|initials }}</span>
+                                            <strong>{{ result.application.candidate_name|default:result.application.candidate_email|site_text }}</strong>
+                                        </div>
+                                    </th>
+                                    <td>
+                                        <div class="skill-chips">
+                                            {% for skill in result.explanation.matched_skills|slice:":3" %}
+                                                <span class="skill-chip">{{ skill.name }}</span>
+                                            {% empty %}
+                                                <span class="small-copy">No requested skills matched</span>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong class="score-text">{{ result.score|floatformat:0 }}%</strong>
+                                    </td>
+                                    <td>
+                                        <a class="button button-secondary button-small"
+                                           href="?candidate={{ result.pk }}#candidate-review"
+                                           aria-label="View match for {{ result.application.candidate_name|site_text }}">View match</a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5">
+                                        <p class="empty-state">Update rankings after candidates submit applications for this job.</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-footnote">
+                    <span>Rankings support your review. Recruitment decisions remain with you.</span>
+                    <a href="{% url 'applications:applicants' job.pk %}">View every application →</a>
+                </div>
+                {% for result in unscored %}
+                    <div class="workspace-panel compact-panel">
+                        <h3>{{ result.application.candidate_name|default:result.application.candidate_email|site_text }}</h3>
+                        <p>Not scored: {{ result.explanation.unavailable }}</p>
+                        <a href="{% url 'applications:detail' result.application_id %}">Review application manually</a>
+                    </div>
+                {% endfor %}
+            </div>
+            <aside class="workspace-panel side-panel candidate-review"
+                   id="candidate-review"
+                   tabindex="-1">
+                {% if selected %}
+                    <div class="person-cell">
+                        <span class="initial-avatar">{{ selected.application.candidate_name|site_text|initials }}</span>
+                        <h2>{{ selected.application.candidate_name|default:selected.application.candidate_email|site_text }}</h2>
+                    </div>
+                    <p class="score-caption">
+                        Match score<strong class="large-score">{{ selected.score|floatformat:0 }}%</strong>
+                    </p>
+                    <div class="panel-divider"></div>
+                    <h3>Matched skills</h3>
+                    <div class="skill-chips">
+                        {% for skill in selected.explanation.matched_skills %}
+                            <span class="skill-chip">{{ skill.name }}</span>
+                        {% empty %}
+                            <p class="small-copy">No matching skill evidence recorded.</p>
+                        {% endfor %}
+                    </div>
+                    <h3 class="panel-subheading">Not recorded</h3>
+                    <div class="skill-chips">
+                        {% for skill in selected.explanation.missing_required_skills %}
+                            <span class="skill-chip missing-chip">{{ skill.name }}</span>
+                        {% endfor %}
+                        {% for skill in selected.explanation.missing_preferred_skills %}
+                            <span class="skill-chip missing-chip">{{ skill.name }}</span>
+                        {% endfor %}
+                        {% if not selected.explanation.missing_required_skills and not selected.explanation.missing_preferred_skills %}
+                            <p class="small-copy">All requested skills have matching evidence.</p>
+                        {% endif %}
+                    </div>
+                    <div class="panel-divider"></div>
+                    <a class="panel-link"
+                       href="{% url 'matches:detail' selected.pk %}">Review score explanation →</a>
+                    <a class="button button-small button-full"
+                       href="{% url 'applications:detail' selected.application_id %}">Review application</a>
+                    <a class="panel-link small-copy"
+                       href="{% url 'applications:detail' selected.application_id %}#submitted-profile">Read submitted profile and documents</a>
+                {% else %}
+                    <span class="icon-tile">{% include "workspace/icon.html" with name="people" %}</span>
+                    <h2>A closer look at each candidate.</h2>
+                    <p>Select a match to see the skills behind the score, then read the submitted application.</p>
+                {% endif %}
+            </aside>
+        </div>
+        {% include "matching/components/run_notice.html" %}
+    {% else %}
+        <section class="workspace-panel empty-panel">
+            <h2>Start with a job.</h2>
+            <p>Define the role and skill priorities, then review submitted candidates here.</p>
+            <a class="button button-small" href="{% url 'jobs:create' %}">Create a job</a>
+        </section>
+    {% endif %}
+{% endblock %}

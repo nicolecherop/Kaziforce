@@ -58,7 +58,7 @@
                     {% include "components/form_field.html" with field=form.password2 %}
                 </div>
                 <div class="terms-field">
-                    <label>{{ form.accept_terms }}<span>I agree to the prototype <a href="{% url 'pages:terms' %}" target="_blank" rel="noopener">Terms</a> and <a href="{% url 'pages:privacy' %}" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+                    <label>{{ form.accept_terms }}<span>I agree to the <a href="{% url 'pages:terms' %}" target="_blank" rel="noopener">Terms</a> and <a href="{% url 'pages:privacy' %}" target="_blank" rel="noopener">Privacy Policy</a>.</span>
                     </label>
                     {% if form.accept_terms.errors %}
                         <div class="field-errors">{{ form.accept_terms.errors }}</div>

@@ -2,34 +2,112 @@
 {% block title %}Candidate overview | KaziForce{% endblock %}
 {% block candidate_content %}
     <header class="page-heading">
-        <p class="eyebrow">My workspace</p>
-        <h1>Welcome, {{ user.first_name|default:"there" }}.</h1>
-        <p>Bring your skills and experience together in one professional profile.</p>
+        <p class="eyebrow">My workspace / Overview</p>
+        <h1>{{ greeting }}, {{ user.first_name|default:"there" }}.</h1>
+        <p>Explore opportunities that fit your skills.</p>
     </header>
-    <section class="profile-introduction" aria-labelledby="profile-start-title">
+    <div class="workspace-split dashboard-split">
         <div>
-            <span class="section-kicker">Your professional story</span>
-            <h2 id="profile-start-title">{% if profile %}Keep your profile up to date.{% else %}Start with your profile.{% endif %}</h2>
-            <p>Share what you know, the work you have done and the direction you want to take.</p>
-            <div class="action-row">
-                <a class="button" href="{% url 'candidates:profile_edit' %}">{% if profile %}Edit my profile{% else %}Create my profile{% endif %} <span aria-hidden="true">↗</span></a>
-                {% if profile %}<a class="plain-link"
-   href="{% url 'candidates:profile' %}">View my profile</a>{% endif %}
+            <section class="summary-grid" aria-label="Your workspace at a glance">
+                <a class="summary-card" href="{% url 'candidates:profile' %}">
+                    <span class="completion-ring" style="--completion: {{ completion }}%">
+                        <strong>{{ completion }}%</strong>
+                    </span>
+                    <div>
+                        <h2>Profile sections</h2>
+                        <p>
+                            {{ completed_sections }} of 5 added
+                            <br>
+                            Build your professional story.
+                        </p>
+                    </div>
+                </a>
+                <a class="summary-card" href="{% url 'matches:jobs' %}">
+                    <span class="icon-tile">{% include "workspace/icon.html" with name="file" %}</span>
+                    <div>
+                        <strong class="summary-number">{{ recommended_count }}</strong>
+                        <h2>Recommended jobs</h2>
+                        <p>Based on your saved matches.</p>
+                    </div>
+                </a>
+                <a class="summary-card" href="{% url 'applications:mine' %}">
+                    <span class="icon-tile">{% include "workspace/icon.html" with name="arrow" %}</span>
+                    <div>
+                        <strong class="summary-number">{{ active_application_count }}</strong>
+                        <h2>Active applications</h2>
+                        <p>Follow your next steps.</p>
+                    </div>
+                </a>
+            </section>
+            <section aria-labelledby="recommendations-title">
+                {% include "applications/components/upcoming_interviews.html" %}
+                <div class="section-title-row">
+                    <h2 id="recommendations-title">Recommended jobs for you</h2>
+                    <a href="{% url 'matches:jobs' %}">View all matches →</a>
+                </div>
+                {% if matches_stale %}
+                    <p class="inline-notice">Your saved matches need an update. <a href="{% url 'matches:jobs' %}">Refresh your matches</a> to use the latest information.</p>
+                {% endif %}
+                <div class="opportunity-list">
+                    {% for result in recommended_jobs %}
+                        {% include "matching/components/job_row.html" %}
+                    {% empty %}
+                        <div class="workspace-panel empty-panel">
+                            <span class="icon-tile">{% include "workspace/icon.html" with name="spark" %}</span>
+                            {% if match_run %}
+                                <h3>No strong matches right now.</h3>
+                                <p>Keep your profile up to date or browse available jobs.</p>
+                                <a class="button button-small"
+                                   href="{% url 'jobs:opportunities' %}">Browse all jobs</a>
+                            {% else %}
+                                <h3>Discover where your skills fit.</h3>
+                                <p>Add your professional information, then request your first job matches.</p>
+                                <a class="button button-small"
+                                   href="{% url 'matches:jobs' %}">Explore my matches</a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+            <div class="workspace-panel compact-panel">
+                <h3>Ready for your next application?</h3>
+                <p>Your saved profile is a starting point. Tailor a separate copy for each role.</p>
+                <div class="action-row">
+                    <a href="{% url 'jobs:opportunities' %}">Browse all jobs →</a>
+                    {% if draft_count %}
+                        <a href="{% url 'applications:mine' %}?status=draft">Continue {{ draft_count }} draft{{ draft_count|pluralize }} →</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </section>
-    <section class="section-overview" aria-labelledby="sections-title">
-        <div class="section-heading">
-            <h2 id="sections-title">Make it yours.</h2>
-            <p>Add the sections that reflect your background. You can return to them at any time.</p>
-        </div>
-        <ul class="section-checklist">
-            {% for section in profile_sections %}
-                <li>
-                    <a href="{% url 'candidates:profile_edit' %}#{{ section.anchor }}"><span>{{ section.label }}</span><span class="section-state {% if section.complete %}is-added{% endif %}">{% if section.complete %}Added{% else %}Add details{% endif %} <span aria-hidden="true">↗</span></span></a>
-                </li>
-            {% endfor %}
-        </ul>
-    </section>
-    <p class="next-feature">Keep your <a href="{% url 'candidates:documents' %}">CV and supporting documents</a> ready, then <a href="{% url 'jobs:opportunities' %}">find a job</a> and tailor an application using your profile.</p>
+        <aside class="workspace-panel side-panel next-step-panel">
+            <div class="section-title-row">
+                <h2>Next step</h2>
+                <span class="small-copy">{{ completed_sections }} of 5</span>
+            </div>
+            <span class="icon-tile large">{% include "workspace/icon.html" with name="user" %}</span>
+            {% if next_section %}
+                <h3>Add {{ next_section.label|lower }}</h3>
+                <p>Bring your background together so recruiters can understand what you offer.</p>
+                <a class="button button-small button-full"
+                   href="{% url 'candidates:profile_edit' %}#{{ next_section.anchor }}">Add {{ next_section.label|lower }}</a>
+            {% else %}
+                <h3>Your profile is taking shape.</h3>
+                <p>Keep your experience up to date and explore the roles that fit your skills.</p>
+                <a class="button button-small button-full"
+                   href="{% url 'matches:jobs' %}">Explore your matches</a>
+            {% endif %}
+            <ol class="step-checklist">
+                {% for section in core_sections %}
+                    <li class="{% if section.complete %}is-complete{% elif section.anchor == next_section.anchor %}is-next{% endif %}">
+                        <span class="step-dot" aria-hidden="true">
+                            {% if section.complete %}✓{% else %}{{ forloop.counter }}{% endif %}
+                        </span>
+                        <a href="{% url 'candidates:profile_edit' %}#{{ section.anchor }}">{{ section.label }}</a>
+                        <span class="sr-only">{% if section.complete %}Added{% else %}Not added{% endif %}</span>
+                    </li>
+                {% endfor %}
+            </ol>
+        </aside>
+    </div>
 {% endblock %}

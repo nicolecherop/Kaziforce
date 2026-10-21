@@ -1,0 +1,103 @@
+{% load workspace_ui %}
+<nav class="view-links application-filters"
+     aria-label="Filter applications">
+    <a href="?status=all"
+       {% if active_status == 'all' %}aria-current="page"{% endif %}>All applications</a>
+    {% for value, label in status_choices %}
+        <a href="?status={{ value }}"
+           {% if active_status == value %}aria-current="page"{% endif %}>{{ label }}</a>
+    {% endfor %}
+</nav>
+<div class="workspace-split applications-split">
+    <div class="workspace-table-wrap">
+        <table class="workspace-table">
+            <caption class="sr-only">
+                {% if recruiter %}Submitted candidate applications{% else %}Your job applications{% endif %}
+            </caption>
+            <thead>
+                <tr>
+                    {% if recruiter %}
+                        <th scope="col">Candidate</th>
+                    {% endif %}
+                    <th scope="col">Job</th>
+                    {% if not recruiter %}
+                        <th scope="col">Company</th>
+                    {% endif %}
+                    <th scope="col">Applied</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                    <tr {% if selected.pk == application.pk %}class="is-selected"{% endif %}>
+                        {% if recruiter %}
+                            <th scope="row">{{ application.candidate_name|default:application.candidate_email|site_text }}</th>
+                            <td>{{ application.job_snapshot.title|default:application.job.title|site_text }}</td>
+                        {% else %}
+                            <th scope="row">{{ application.job_snapshot.title|default:application.job.title|site_text }}</th>
+                            <td>{{ application.job_snapshot.company|default:application.job.company|site_text }}</td>
+                        {% endif %}
+                        <td class="nowrap">
+                            {% if application.submitted_at %}{{ application.submitted_at|date:"j M Y" }}{% else %}Not submitted{% endif %}
+                        </td>
+                        <td>
+                            <span class="status-pill status-{{ application.status }}">{{ application.get_status_display }}</span>
+                        </td>
+                        <td>
+                            <a class="button button-secondary button-small"
+                               href="?status={{ active_status }}&amp;application={{ application.pk }}#application-review">View</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-panel">
+                                <h3>No applications here yet.</h3>
+                                <p>
+                                    {% if recruiter %}Submitted applications will appear here; candidate drafts stay private.{% else %}Explore open jobs or choose another status to see your applications.{% endif %}
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <aside class="workspace-panel side-panel"
+           id="application-review"
+           tabindex="-1">
+        {% if selected %}
+            {% if recruiter %}
+                <div class="person-cell">
+                    <span class="initial-avatar">{{ selected.candidate_name|site_text|initials }}</span>
+                    <h2>{{ selected.candidate_name|default:selected.candidate_email|site_text }}</h2>
+                </div>
+                <div class="panel-divider"></div>
+            {% endif %}
+            <h2>{{ selected.job_snapshot.title|default:selected.job.title|site_text }}</h2>
+            <p class="job-meta">
+                {{ selected.job_snapshot.company|default:selected.job.company|site_text }}
+                <br>
+                {{ selected.job_snapshot.location|default:selected.job.location }}
+            </p>
+            <div class="panel-divider"></div>
+            {% include "applications/components/progress.html" with application=selected %}
+            <a class="button button-small button-full"
+               href="{% if selected.status == 'draft' %}
+{% url 'applications:edit' selected.job_id %}
+{% else %}
+{% url 'applications:detail' selected.pk %}
+{% endif %}">
+                {% if selected.status == "draft" %}Continue draft{% elif recruiter %}Review application{% else %}View submitted application{% endif %}
+            </a>
+        {% else %}
+            <span class="icon-tile">{% include "workspace/icon.html" with name="file" %}</span>
+            <h2>Every next step, in one place.</h2>
+            <p>Select an application to review its current progress and submitted information.</p>
+            {% if not recruiter %}
+                <a href="{% url 'jobs:opportunities' %}">Explore open jobs →</a>
+            {% endif %}
+        {% endif %}
+    </aside>
+</div>

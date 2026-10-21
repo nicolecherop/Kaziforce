@@ -1,0 +1,30 @@
+<h3>Profile headline used</h3>
+<p>{{ candidate_evidence.profile.headline|default:"No headline supplied." }}</p>
+<h3>Education used</h3>
+<ul>
+    {% for entry in candidate_evidence.education %}
+        <li>{{ entry.qualification }} — {{ entry.field_of_study }}</li>
+    {% empty %}
+        <li>None supplied.</li>
+    {% endfor %}
+</ul>
+<p>Requested education: {{ job_evidence.education_level_label }}{% if job_evidence.education_field %} — {{ job_evidence.education_field }}{% endif %}; priority {{ job_evidence.education_priority }}.</p>
+<h3>Certifications used</h3>
+<ul>
+    {% for entry in candidate_evidence.certifications %}
+        <li>{{ entry.name }}</li>
+    {% empty %}
+        <li>None supplied.</li>
+    {% endfor %}
+</ul>
+<h3>Experience used</h3>
+{% for entry in candidate_evidence.experience %}
+    <p>
+        <strong>{{ entry.job_title }}</strong>
+        <br>{{ entry.start_date|default:"No start date" }} — {% if entry.currently_working %}Current at calculation date{% else %}{{ entry.end_date|default:"No end date" }}{% endif %}
+    </p>
+    <p>{{ entry.description|linebreaksbr }}</p>
+{% empty %}
+    <p>None supplied.</p>
+{% endfor %}
+<p>Requested experience wording: {{ job_evidence.experience_details|default:"None supplied." }} Priority {{ job_evidence.experience_priority }}.</p>

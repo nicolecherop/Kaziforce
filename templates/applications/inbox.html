@@ -1,0 +1,10 @@
+{% extends "workspace/base.html" %}
+{% block title %}Applications | KaziForce{% endblock %}
+{% block workspace_content %}
+    <header class="page-heading">
+        <p class="eyebrow">Recruiter workspace / Applications</p>
+        <h1>Your candidate applications.</h1>
+        <p>Read submitted profiles, review original documents and follow your recruitment decisions.</p>
+    </header>
+    {% include "applications/components/list.html" with recruiter=True %}
+{% endblock %}

@@ -1,17 +1,64 @@
 {% extends "candidates/base.html" %}
+{% load workspace_ui %}
 {% block title %}Find jobs | KaziForce{% endblock %}
 {% block candidate_content %}
     <header class="page-heading">
-        <p class="eyebrow">Find jobs</p>
+        <p class="eyebrow">My workspace / Find jobs</p>
         <h1>Find your next opportunity.</h1>
-        <p>Explore open roles. Start an application with your profile and tailor the details for each job.</p>
+        <p>Explore open roles and make your next move with confidence.</p>
     </header>
-    <form class="job-search" method="get">
-        <label class="sr-only" for="job-search">Search jobs, companies or locations</label><input id="job-search"
-       name="q"
-       value="{{ query }}"
-       maxlength="160"
-       placeholder="Job title, company or location"><button class="button button-secondary" type="submit">Search</button>
+    <nav class="view-links" aria-label="Job discovery">
+        <a href="{% url 'matches:jobs' %}">Recommended for you</a>
+        <a aria-current="page" href="{% url 'jobs:opportunities' %}">Browse all jobs</a>
+    </nav>
+    <form class="job-search workspace-panel" method="get">
+        <label class="sr-only" for="job-search">Search jobs, companies or locations</label>
+        <span class="search-icon">{% include "workspace/icon.html" with name="search" %}</span>
+        <input id="job-search"
+               name="q"
+               value="{{ query }}"
+               maxlength="160"
+               placeholder="Job title, company or location">
+        <button class="button button-small" type="submit">Search</button>
     </form>
-    {% for job in jobs %}<article class="job-card"><p class="small-copy">{{ job.company }} · {{ job.location }}</p><h2><a href="{% url 'jobs:detail' job.pk %}">{{ job.title }}</a></h2><p>{{ job.description|truncatechars:220 }}</p><a class="plain-link" href="{% url 'jobs:detail' job.pk %}">View role ↗</a></article>{% empty %}<p class="empty-state">No open jobs {% if query %}match this search{% else %}have been posted yet{% endif %}.</p>{% endfor %}
+    <div class="workspace-split">
+        <div class="opportunity-list">
+            {% for job in jobs %}
+                <article class="opportunity-row browse-row">
+                    <span class="company-avatar"
+                          aria-hidden="true">{{ job.company|site_text|initials }}</span>
+                    <div class="opportunity-name">
+                        <h2>
+                            <a href="{% url 'jobs:detail' job.pk %}">{{ job.title|site_text }}</a>
+                        </h2>
+                        <p>{{ job.company|site_text }} · {{ job.location }}</p>
+                        <p class="browse-description">{{ job.description|truncatechars:150|site_text }}</p>
+                        <div class="skill-chips">
+                            {% for skill in job.skills.all|slice:":4" %}
+                                <span class="skill-chip">{{ skill.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <a class="button button-secondary button-small"
+                       href="{% url 'jobs:detail' job.pk %}">View role →</a>
+                </article>
+            {% empty %}
+                <div class="workspace-panel empty-panel">
+                    <h2>No open roles {% if query %}match this search{% else %}have been posted yet{% endif %}.</h2>
+                    <p>Try another search or return later for new opportunities.</p>
+                </div>
+            {% endfor %}
+        </div>
+        <aside class="workspace-panel side-panel">
+            <span class="icon-tile">{% include "workspace/icon.html" with name="spark" %}</span>
+            <h2>Make it personal.</h2>
+            <p>Find job recommendations based on your skills, education and experience.</p>
+            <a class="button button-small button-full"
+               href="{% url 'matches:jobs' %}">Explore my matches</a>
+            <div class="panel-divider"></div>
+            <h3>Apply in your own words.</h3>
+            <p>Your profile fills a separate application copy. Review it, tailor it and choose your supporting documents before submitting.</p>
+            <a href="{% url 'candidates:profile' %}">Review my profile →</a>
+        </aside>
+    </div>
 {% endblock %}

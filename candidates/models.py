@@ -10,6 +10,7 @@ from django.db.models.functions import Lower
 from django.utils import timezone
 
 from .storage import PrivateDocumentStorage, document_upload_path
+from .validators import validate_phone_number
 
 
 def validate_past_date(value):
@@ -36,6 +37,10 @@ class CandidateProfile(models.Model):
     headline = models.CharField(max_length=160, blank=True)
     location = models.CharField(max_length=120, blank=True)
     summary = models.TextField(max_length=3000, blank=True)
+    contact_email = models.EmailField(blank=True)
+    phone_number = models.CharField(
+        max_length=32, blank=True, validators=[validate_phone_number]
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

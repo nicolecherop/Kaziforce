@@ -1,0 +1,65 @@
+{% extends "candidates/base.html" %}
+{% load workspace_ui %}
+{% block title %}Job match details | KaziForce{% endblock %}
+{% block candidate_content %}
+    <a class="back-to-list" href="{% url 'matches:jobs' %}">← Back to recommended jobs</a>
+    <header class="page-heading match-heading">
+        <div>
+            <p class="eyebrow">Job match details</p>
+            <h1>{{ job_evidence.title|site_text }}</h1>
+            <p class="job-meta">{{ job_evidence.company|site_text }} · {{ result.job.location }}</p>
+        </div>
+        <div class="score-banner">
+            {% if result.score != None %}<strong>{{ result.score|floatformat:0 }}%</strong>{% endif %}
+            <div>
+                <h2>{% if result.score != None %}Match score{% else %}Match score unavailable{% endif %}</h2>
+                <p>Based on your saved profile. A match score does not guarantee a job offer.</p>
+            </div>
+        </div>
+        <div class="heading-actions">
+            <a class="button button-small"
+               href="{% url 'jobs:detail' result.job_id %}">View job and apply →</a>
+        </div>
+    </header>
+    {% if historical %}
+        <p class="inline-notice">Your profile or available jobs have changed since this match was saved. Update your matches to see current recommendations.</p>
+    {% endif %}
+    <div class="match-detail-grid">
+        <section class="workspace-panel evidence-panel">
+            <h2>Considering this opportunity?</h2>
+            {% if strong_match %}
+                <p>This role may be a good fit for your professional background. Read the full requirements to decide whether it suits your interests and experience.</p>
+            {% else %}
+                <p>Review the role's requirements and decide whether they fit your experience and career goals. You can browse other opportunities at any time.</p>
+            {% endif %}
+            <h3>Put your experience into words</h3>
+            <p>Keep your profile accurate and up to date. Describe work you have done and include relevant qualifications, certificates and supporting documents.</p>
+            <p>You can tailor a separate application for this role while keeping your information truthful.</p>
+            <a class="panel-link" href="{% url 'candidates:profile_edit' %}">Review my profile →</a>
+        </section>
+        <section class="workspace-panel">
+            <h2>Job description</h2>
+            <p class="long-copy">{{ job_evidence.description|site_text|linebreaksbr }}</p>
+        </section>
+        <section class="workspace-panel">
+            <h2>Requirements</h2>
+            {% if job_evidence.skills %}
+                <h3>Skills</h3>
+                <ul class="evidence-list">
+                    {% for skill in job_evidence.skills %}
+                        <li><strong>{{ skill.name }}</strong><span class="small-copy">{{ skill.requirement|capfirst }}</span></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <h3>Qualifications</h3>
+            <p>{{ job_evidence.education_level_label }}{% if job_evidence.education_field %} · {{ job_evidence.education_field }}{% endif %}</p>
+            <h3>Experience</h3>
+            <p>{% if job_evidence.minimum_experience_years != None %}{{ job_evidence.minimum_experience_years|floatformat:"-1" }} years minimum{% else %}No minimum years specified{% endif %}</p>
+            {% if job_evidence.experience_details %}<p>{{ job_evidence.experience_details|linebreaksbr }}</p>{% endif %}
+            {% if job_evidence.requirements %}
+                <h3>Additional requirements</h3>
+                <p>{{ job_evidence.requirements|site_text|linebreaksbr }}</p>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}

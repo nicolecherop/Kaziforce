@@ -1,0 +1,10 @@
+{% if application and application.status != "draft" %}
+    <a class="button button-small"
+       href="{% url 'applications:detail' application.pk %}">View your application →</a>
+{% elif job.status == "open" %}
+    <a class="button button-small"
+       href="{% url 'applications:edit' job.pk %}">
+    {% if application %}Continue draft{% else %}Start application{% endif %} →</a>
+{% else %}
+    <p class="small-copy">This job is closed to new applications.</p>
+{% endif %}

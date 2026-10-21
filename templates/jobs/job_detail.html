@@ -1,19 +1,47 @@
 {% extends "candidates/base.html" %}
-{% block title %}{{ job.title }} | KaziForce{% endblock %}
+{% load workspace_ui %}
+{% block title %}{{ job.title|site_text }} | KaziForce{% endblock %}
 {% block candidate_content %}
-    <header class="page-heading">
-        <p class="eyebrow">{{ job.company }}</p>
-        <h1>{{ job.title }}</h1>
-        <p>{{ job.location }} · {{ job.get_status_display }}</p>
+    <a class="back-to-list" href="{% url 'jobs:opportunities' %}">← Back to all jobs</a>
+    <header class="page-heading profile-heading">
+        <div>
+            <p class="eyebrow">Job details</p>
+            <h1>{{ job.title|site_text }}</h1>
+            <p class="job-meta">
+                {{ job.company|site_text }} · {{ job.location }} <span class="status-pill status-{{ job.status }}">{{ job.get_status_display }}</span>
+            </p>
+        </div>
+        <div class="heading-actions">{% include "jobs/components/apply_action.html" %}</div>
     </header>
-    <section class="profile-section">
-        <h2>About the role</h2>
-        <p class="long-copy">{{ job.description|linebreaksbr }}</p>
-    </section>
-    {% if job.requirements %}<section class="profile-section"><h2>What you bring</h2><p class="long-copy">{{ job.requirements|linebreaksbr }}</p></section>{% endif %}
-    {% include "jobs/components/requirements.html" %}
-    <div class="application-callout">
-        <h2>Your profile is a starting point.</h2>
-        <p>You can tailor your information for this job and choose which CV and supporting documents to send. Your main profile stays the same.</p>
-    {% if application and application.status != "draft" %}<a class="button" href="{% url 'applications:detail' application.pk %}">View your application ↗</a>{% elif job.status == "open" %}<a class="button" href="{% url 'applications:edit' job.pk %}">{% if application %}Continue draft{% else %}Start application{% endif %} ↗</a>{% else %}<p>This job is closed to new applications.</p>{% endif %}</div>
+    <div class="workspace-split">
+        <div>
+            <section class="workspace-panel">
+                <h2>About the role</h2>
+                <p class="long-copy">{{ job.description|site_text|linebreaksbr }}</p>
+            </section>
+            {% if job.requirements %}
+                <section class="workspace-panel">
+                    <h2>What you bring</h2>
+                    <p class="long-copy">{{ job.requirements|site_text|linebreaksbr }}</p>
+                </section>
+            {% endif %}
+            <div class="workspace-panel">{% include "jobs/components/requirements.html" %}</div>
+        </div>
+        <aside class="workspace-panel side-panel">
+            {% if match_result %}
+                <p class="score-caption">
+                    Saved match score<strong class="large-score">{{ match_result.score|floatformat:0 }}%</strong>
+                </p>
+                <p class="small-copy">Based on your saved matching review.</p>
+                <a class="panel-link"
+                   href="{% url 'matches:detail' match_result.pk %}">View match details →</a>
+                <div class="panel-divider"></div>
+            {% endif %}
+            <h2>Your profile is a starting point.</h2>
+            <p>Tailor your information for this role and choose which CV and supporting documents to send. Your main profile stays the same.</p>
+            <a href="{% url 'candidates:profile' %}">Review my profile →</a>
+            <div class="panel-divider"></div>
+            {% include "jobs/components/apply_action.html" %}
+        </aside>
+    </div>
 {% endblock %}

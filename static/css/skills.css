@@ -1,0 +1,7 @@
+/* Skill recognition preserves entered names and makes unresolved terms visible. */
+.skill-review-list { list-style: none; padding: 0; margin: 20px 0; }
+.skill-review-list li { border-bottom: 1px solid var(--line); padding: 15px 0; overflow-wrap: anywhere; font-size: 14px; }
+.skill-status { font-size: 12px; margin: 6px 0 0; color: #37674d; overflow-wrap: anywhere; }
+.skill-needs-review { color: #7b5a25; }
+.saved-skill-review { margin-block: 22px; font-size: 13px; }
+.saved-skill-review summary { cursor: pointer; color: var(--blue); }

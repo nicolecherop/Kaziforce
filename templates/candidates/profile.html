@@ -1,61 +1,175 @@
 {% extends "candidates/base.html" %}
+{% load workspace_ui %}
 {% block title %}My profile | KaziForce{% endblock %}
 {% block candidate_content %}
     <header class="page-heading profile-heading">
         <div>
             <p class="eyebrow">My profile</p>
-            <h1>{{ user.get_full_name|default:"My professional profile" }}</h1>
-            {% if profile.headline %}<p class="profile-headline">{{ profile.headline }}</p>{% endif %}
-            {% if profile.location %}<p class="profile-location">{{ profile.location }}</p>{% endif %}
+            <h1>{{ user.get_full_name|default:"My professional profile"|site_text }}</h1>
+            {% if profile.headline %}
+                <p class="profile-headline">{{ profile.headline }}</p>
+            {% endif %}
+            {% if profile.location %}
+                <p class="profile-location">{{ profile.location }}</p>
+            {% endif %}
         </div>
-        <a class="button" href="{% url 'candidates:profile_edit' %}">{% if profile %}Edit profile{% else %}Create profile{% endif %} <span aria-hidden="true">↗</span></a>
+        <a class="button" href="{% url 'candidates:profile_edit' %}">
+            {% if profile %}Edit profile{% else %}Create profile{% endif %} <span aria-hidden="true">↗</span>
+        </a>
     </header>
-    {% if profile %}<p class="last-updated">Last updated {{ profile.updated_at|date:"j M Y, H:i" }}</p>{% else %}<p class="empty-introduction">Your profile is ready to be written. Start with a summary or add your first skill.</p>{% endif %}
-    <div class="profile-documents-links"><a href="{% url 'candidates:documents' %}">Manage your CV and documents ↗</a><a href="{% url 'jobs:opportunities' %}">Find a job and use your profile ↗</a></div>
-    <section class="profile-section" aria-labelledby="summary-title">
-        <h2 id="summary-title">Professional summary</h2>
-        {% if profile.summary %}<p class="long-copy">{{ profile.summary|linebreaksbr }}</p>{% else %}<p class="empty-state">Introduce yourself and the work you are interested in. <a href="{% url 'candidates:profile_edit' %}#summary">Add a summary</a></p>{% endif %}
-    </section>
-    <section class="profile-section" aria-labelledby="skills-title">
-        <h2 id="skills-title">Skills</h2>
-        {% if profile.skills.all %}<ul class="skill-list">{% for skill in profile.skills.all %}<li>{{ skill.name }}</li>{% endfor %}</ul>{% else %}<p class="empty-state">Your skills will appear here. <a href="{% url 'candidates:profile_edit' %}#skills">Add skills</a></p>{% endif %}
-    </section>
-    <section class="profile-section" aria-labelledby="education-title">
-        <h2 id="education-title">Education and qualifications</h2>
-        <p class="small-copy">Add qualifications in your profile and <a href="{% url 'candidates:documents' %}?kind=degree">upload supporting degree documents</a> to your library.</p>
-        {% for entry in profile.education.all %}
-            <article class="profile-record"><h3>{{ entry.qualification }}</h3><p class="record-subtitle">{{ entry.institution }}{% if entry.field_of_study %} · {{ entry.field_of_study }}{% endif %}</p>
-                {% if entry.start_date or entry.end_date or entry.currently_studying %}<p class="record-date">{% if entry.start_date %}{{ entry.start_date|date:"M Y" }}{% endif %}{% if entry.currently_studying %}{% if entry.start_date %} – {% endif %}In progress{% elif entry.end_date %}{% if entry.start_date %} – {% endif %}{{ entry.end_date|date:"M Y" }}{% endif %}</p>{% endif %}
-            </article>
-{% empty %}<p class="empty-state">Add completed qualifications or studies in progress. <a href="{% url 'candidates:profile_edit' %}#education">Add education</a></p>{% endfor %}
-    </section>
-    <section class="profile-section" aria-labelledby="certifications-title">
-        <h2 id="certifications-title">Certifications</h2>
-        <p class="small-copy">You can also <a href="{% url 'candidates:documents' %}?kind=certificate">upload a certificate</a> to attach to applications.</p>
-        {% for entry in profile.certifications.all %}
-            <article class="profile-record">
-                <h3>{{ entry.name }}</h3>
-                <p class="record-subtitle">{{ entry.issuer }}</p>
-                {% if entry.issue_date or entry.expiry_date %}<p class="record-date">{% if entry.issue_date %}Issued {{ entry.issue_date|date:"M Y" }}{% endif %}{% if entry.expiry_date %} · Expires {{ entry.expiry_date|date:"M Y" }}{% endif %}</p>{% endif %}
-                {% if entry.credential_id %}<p class="record-date">Credential ID: {{ entry.credential_id }}</p>{% endif %}
-                {% if entry.credential_url %}<a class="external-link"
-   href="{{ entry.credential_url }}"
-   target="_blank"
-   rel="noopener noreferrer">View credential <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>{% endif %}
-            </article>
-{% empty %}<p class="empty-state">List relevant certifications if you have them. <a href="{% url 'candidates:profile_edit' %}#certifications">Add a certification</a></p>{% endfor %}
-    </section>
-    <section class="profile-section" aria-labelledby="experience-title">
-        <h2 id="experience-title">Work experience</h2>
-        {% for entry in profile.experience.all %}
-            <article class="profile-record"><h3>{{ entry.job_title }}</h3><p class="record-subtitle">{{ entry.company }}</p><p class="record-date">{{ entry.start_date|date:"M Y" }} – {% if entry.currently_working %}Present{% else %}{{ entry.end_date|date:"M Y" }}{% endif %}</p>{% if entry.description %}<p class="long-copy">{{ entry.description|linebreaksbr }}</p>{% endif %}</article>
-{% empty %}<p class="empty-state">Include employment, internships or other relevant experience. <a href="{% url 'candidates:profile_edit' %}#experience">Add experience</a></p>{% endfor %}
-    </section>
-    <section class="profile-section" aria-labelledby="portfolio-title">
-        <h2 id="portfolio-title">Portfolio links</h2>
-        {% for entry in profile.portfolio_links.all %}<article class="profile-record"><a class="external-link"
-   href="{{ entry.url }}"
-   target="_blank"
-   rel="noopener noreferrer">{{ entry.title }} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a><p class="portfolio-address">{{ entry.url }}</p></article>{% empty %}<p class="empty-state">Optional. Share a website or examples of your work. <a href="{% url 'candidates:profile_edit' %}#portfolio">Add a link</a></p>{% endfor %}
-    </section>
+    <div class="workspace-split" data-section-layout>
+        <div>
+            <nav class="view-links" data-section-nav aria-label="Profile sections">
+                <a href="#summary">Overview</a>
+                <a href="#contact">Contact information</a>
+                <a href="#skills">Skills</a>
+                <a href="#experience">Experience</a>
+                <a href="#education">Education</a>
+                <a href="#certifications">Certifications</a>
+                <a href="#portfolio">Portfolio</a>
+            </nav>
+            {% if profile %}
+                <p class="last-updated">Last updated {{ profile.updated_at|date:"j M Y, H:i" }}</p>
+            {% else %}
+                <p class="empty-introduction">Your profile is ready to be written. Start with a summary or add your first skill.</p>
+            {% endif %}
+            <div class="profile-documents-links">
+                <a href="{% url 'candidates:documents' %}">Manage your CV and documents ↗</a>
+                <a href="{% url 'jobs:opportunities' %}">Find a job and use your profile ↗</a>
+            </div>
+            <section class="profile-section"
+                     id="summary"
+                     data-section-panel
+                     aria-labelledby="summary-title">
+                <h2 id="summary-title">Professional summary</h2>
+                {% if profile.summary %}
+                    <p class="long-copy">{{ profile.summary|linebreaksbr }}</p>
+                {% else %}
+                    <p class="empty-state">Introduce yourself and the work you are interested in. <a href="{% url 'candidates:profile_edit' %}#summary">Add a summary</a>
+                    </p>
+                {% endif %}
+            </section>
+            <section class="profile-section"
+                     data-section-panel
+                     id="contact"
+                     aria-labelledby="contact-title">
+                <h2 id="contact-title">Contact information</h2>
+                {% include "components/contact_details.html" with email=profile.contact_email|default:user.email phone=profile.phone_number %}
+                <p class="small-copy">You choose which contact details to share when submitting an application.</p>
+                <a href="{% url 'candidates:profile_edit' %}#contact">Edit contact information →</a>
+            </section>
+            <section class="profile-section"
+                     id="skills"
+                     data-section-panel
+                     aria-labelledby="skills-title">
+                <h2 id="skills-title">Skills</h2>
+                {% if profile.skills.all %}
+                    {% include "components/skill_review.html" with standardization=skill_standardization %}
+                    <p class="small-copy">You can <a href="{% url 'candidates:profile_edit' %}#skills">edit your skill names</a> at any time.</p>
+                {% else %}
+                    <p class="empty-state">Your skills will appear here. <a href="{% url 'candidates:profile_edit' %}#skills">Add skills</a>
+                    </p>
+                {% endif %}
+            </section>
+            <section class="profile-section"
+                     id="education"
+                     data-section-panel
+                     aria-labelledby="education-title">
+                <h2 id="education-title">Education and qualifications</h2>
+                <p class="small-copy">Add qualifications in your profile and <a href="{% url 'candidates:documents' %}?kind=degree">upload supporting degree documents</a> to your library.</p>
+                {% for entry in profile.education.all %}
+                    <article class="profile-record">
+                        <h3>{{ entry.qualification }}</h3>
+                        <p class="record-subtitle">{{ entry.institution|site_text }}{% if entry.field_of_study %} · {{ entry.field_of_study }}{% endif %}
+                        </p>
+                        {% if entry.start_date or entry.end_date or entry.currently_studying %}
+                            <p class="record-date">
+                                {% if entry.start_date %}{{ entry.start_date|date:"M Y" }}{% endif %}
+                                {% if entry.currently_studying %}
+                                    {% if entry.start_date %}– {% endif %}In progress{% elif entry.end_date %}
+                                    {% if entry.start_date %}– {% endif %}{{ entry.end_date|date:"M Y" }}{% endif %}
+                            </p>
+                        {% endif %}
+                    </article>
+                {% empty %}
+                    <p class="empty-state">Add completed qualifications or studies in progress. <a href="{% url 'candidates:profile_edit' %}#education">Add education</a>
+                    </p>
+                {% endfor %}
+            </section>
+            <section class="profile-section"
+                     id="certifications"
+                     data-section-panel
+                     aria-labelledby="certifications-title">
+                <h2 id="certifications-title">Certifications</h2>
+                <p class="small-copy">You can also <a href="{% url 'candidates:documents' %}?kind=certificate">upload a certificate</a> to attach to applications.</p>
+                {% for entry in profile.certifications.all %}
+                    <article class="profile-record">
+                        <h3>{{ entry.name }}</h3>
+                        <p class="record-subtitle">{{ entry.issuer|site_text }}</p>
+                        {% if entry.issue_date or entry.expiry_date %}
+                            <p class="record-date">
+                                {% if entry.issue_date %}Issued {{ entry.issue_date|date:"M Y" }}{% endif %}
+                                {% if entry.expiry_date %}· Expires {{ entry.expiry_date|date:"M Y" }}{% endif %}
+                            </p>
+                        {% endif %}
+                        {% if entry.credential_id %}
+                            <p class="record-date">Credential ID: {{ entry.credential_id }}</p>
+                        {% endif %}
+                        {% if entry.credential_url %}
+                            <a class="external-link"
+                               href="{{ entry.credential_url }}"
+                               target="_blank"
+                               rel="noopener noreferrer">View credential <span aria-hidden="true">↗</span>
+                                <span class="sr-only">(opens in a new tab)</span>
+                            </a>
+                        {% endif %}
+                    </article>
+                {% empty %}
+                    <p class="empty-state">List relevant certifications if you have them. <a href="{% url 'candidates:profile_edit' %}#certifications">Add a certification</a>
+                    </p>
+                {% endfor %}
+            </section>
+            <section class="profile-section"
+                     id="experience"
+                     data-section-panel
+                     aria-labelledby="experience-title">
+                <h2 id="experience-title">Work experience</h2>
+                {% for entry in profile.experience.all %}
+                    <article class="profile-record">
+                        <h3>{{ entry.job_title }}</h3>
+                        <p class="record-subtitle">{{ entry.company|site_text }}</p>
+                        <p class="record-date">{{ entry.start_date|date:"M Y" }} – {% if entry.currently_working %}Present{% else %}{{ entry.end_date|date:"M Y" }}{% endif %}
+                        </p>
+                        {% if entry.description %}
+                            <p class="long-copy">{{ entry.description|linebreaksbr }}</p>
+                        {% endif %}
+                    </article>
+                {% empty %}
+                    <p class="empty-state">Include employment, internships or other relevant experience. <a href="{% url 'candidates:profile_edit' %}#experience">Add experience</a>
+                    </p>
+                {% endfor %}
+            </section>
+            <section class="profile-section"
+                     id="portfolio"
+                     data-section-panel
+                     aria-labelledby="portfolio-title">
+                <h2 id="portfolio-title">Portfolio links</h2>
+                {% for entry in profile.portfolio_links.all %}
+                    <article class="profile-record">
+                        <a class="external-link"
+                           href="{{ entry.url }}"
+                           target="_blank"
+                           rel="noopener noreferrer">{{ entry.title }} <span aria-hidden="true">↗</span>
+                            <span class="sr-only">(opens in a new tab)</span>
+                        </a>
+                        <p class="portfolio-address">{{ entry.url }}</p>
+                    </article>
+                {% empty %}
+                    <p class="empty-state">Optional. Share a website or examples of your work. <a href="{% url 'candidates:profile_edit' %}#portfolio">Add a link</a>
+                    </p>
+                {% endfor %}
+            </section>
+        </div>
+        {% include "workspace/document_panel.html" %}
+    </div>
 {% endblock %}

@@ -1,6 +1,66 @@
 {% extends "workspace/base.html" %}
-{% block title %}Manage jobs | KaziForce{% endblock %}
+{% load workspace_ui %}
+{% block title %}My jobs | KaziForce{% endblock %}
 {% block workspace_content %}
-    <header class="page-heading profile-heading"><div><p class="eyebrow">Recruiter workspace</p><h1>Your jobs and applicants.</h1><p>Review the information and original documents submitted for your roles.</p></div><a class="button" href="{% url 'jobs:create' %}">Post a job ↗</a></header>
-    {% for job in jobs %}<article class="job-card"><span class="status-pill">{{ job.get_status_display }}</span><h2>{{ job.title }}</h2><p>{{ job.company }} · {{ job.location }}</p><div class="action-row"><a href="{% url 'applications:applicants' job.pk %}">{{ job.applicant_count }} applicant{{ job.applicant_count|pluralize }} ↗</a><a href="{% url 'jobs:edit' job.pk %}">Edit posting</a>{% if job.status == "open" %}<form method="post" action="{% url 'jobs:close' job.pk %}">{% csrf_token %}<button class="text-button" type="submit">Close job</button></form>{% endif %}</div></article>{% empty %}<p class="empty-state">You have not posted any jobs yet.</p>{% endfor %}
+    <header class="page-heading profile-heading">
+        <div>
+            <p class="eyebrow">Recruiter workspace / My jobs</p>
+            <h1>Make room for the right talent.</h1>
+            <p>Manage your roles and move from applications to informed decisions.</p>
+        </div>
+        <a class="button button-small" href="{% url 'jobs:create' %}">+ Create a job</a>
+    </header>
+    <div class="workspace-table-wrap">
+        <table class="workspace-table">
+            <thead>
+                <tr>
+                    <th scope="col">Job</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Applicants</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                    <tr>
+                        <th scope="row">
+                            <strong>{{ job.title|site_text }}</strong>
+                            <span class="cell-subtitle">{{ job.company|site_text }}</span>
+                        </th>
+                        <td>{{ job.location }}</td>
+                        <td>
+                            <span class="status-pill status-{{ job.status }}">{{ job.get_status_display }}</span>
+                        </td>
+                        <td>
+                            <a href="{% url 'applications:applicants' job.pk %}">{{ job.applicant_count }} applicant{{ job.applicant_count|pluralize }}</a>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="{% url 'matches:applicants' job.pk %}">View matches</a>
+                                <a href="{% url 'jobs:edit' job.pk %}">Edit posting</a>
+                                {% if job.status == "open" %}
+                                    <form method="post" action="{% url 'jobs:close' job.pk %}">
+                                        {% csrf_token %}
+                                        <button class="text-button" type="submit">Close job</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-panel">
+                                <h2>Your next team starts here.</h2>
+                                <p>Create a role and choose the skills that matter most.</p>
+                                <a class="button button-small"
+                                   href="{% url 'jobs:create' %}">Post a job</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

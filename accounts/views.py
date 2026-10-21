@@ -7,7 +7,7 @@ from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
-from candidates.selectors import profile_for, section_status
+from pages.workspace import candidate_dashboard, recruiter_dashboard
 
 from .forms import EmailAuthenticationForm, RegistrationForm
 from .models import User
@@ -51,16 +51,14 @@ def create_account(request):
 @login_required
 def dashboard(request):
     if request.user.role == User.Role.RECRUITER:
-        template = "recruiters/dashboard.html"
+        return render(
+            request, "recruiters/dashboard.html", recruiter_dashboard(request.user)
+        )
     elif request.user.role == User.Role.CANDIDATE:
-        profile = profile_for(request.user)
         return render(
             request,
             "candidates/dashboard.html",
-            {
-                "profile": profile,
-                "profile_sections": section_status(profile),
-            },
+            candidate_dashboard(request.user),
         )
     else:
         template = "accounts/administrator_home.html"

@@ -3,7 +3,7 @@
     {% if requirements.skills %}
         <ul class="job-skill-list">
             {% for skill in requirements.skills %}
-                <li><strong>{{ skill.name }}</strong><span class="requirement-labels"><span class="status-pill">{{ skill.requirement_label }}</span><span class="small-copy">{{ skill.priority_label }} priority</span></span></li>
+                <li><div><strong>{{ skill.name }}</strong>{% if skill.standardization %}{% include "components/skill_status.html" with skill=skill.standardization %}{% endif %}</div><span class="requirement-labels"><span class="status-pill">{{ skill.requirement_label }}</span><span class="small-copy">{{ skill.priority_label }} priority</span></span></li>
             {% endfor %}
         </ul>
     {% else %}<p class="small-copy">No individual skills listed. See the role description for details.</p>{% endif %}

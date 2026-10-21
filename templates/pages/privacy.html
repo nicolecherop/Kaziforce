@@ -1,19 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Prototype privacy information | KaziForce{% endblock %}
+{% block title %}Privacy Policy | KaziForce{% endblock %}
 {% block content %}
     <article class="reading-page shell">
-        <p class="eyebrow">Academic project prototype</p>
-        <h1>Privacy information</h1>
-        <p>Registration stores your name, email address, selected account role and a password hash in the configured project database. Session and CSRF cookies support sign-in and protect submitted forms.</p>
-        <h2>Test data</h2>
-        <p>Use fictional personal details during local development. Do not reuse a password from another service. Candidate profiles store the professional details you choose to add, including skills, education, certifications, experience and portfolio links.</p>
+        <p class="eyebrow">Your information and choices</p>
+        <h1>Privacy Policy</h1>
+        <p>Your account stores your name, email address, selected account role and a password hash. Cookies support sign-in and help protect submitted forms.</p>
+        <h2>Profile information</h2>
+        <p>Your professional profile contains the details you choose to add, including skills, education, certifications, experience and portfolio links. These details support job matching and can be used as a starting point for your applications.</p>
         <h2>Documents and applications</h2>
-        <p>CVs, degrees and certificates are stored in a private project directory as original attachments. Profile information is entered by you. Uploading a document does not change your profile.</p>
+        <p>You may add a contact email and phone number to your profile and choose the contact details shared with each application. Recruiters can use the submitted details to contact you. Contact information does not contribute to matching scores.</p>
+        <h2>Interview invitations</h2>
+        <p>A recruiter may share an interview time, joining details and their contact information through your application. Updates and cancellations appear there too. When email delivery is connected, interview messages are sent to the contact email submitted with that application, or its saved account email if no separate contact email was provided. Email delivery records are kept with the interview. Further arrangements can continue directly by email or phone.</p>
+        <p>CVs, degrees and certificates are stored privately as original attachments. Profile information is entered by you. Uploading a document does not change your profile.</p>
         <p>Each application stores a separate copy of the details you choose to submit. Only you can see a draft. When you submit, the recruiter who owns that job can access the submitted profile and selected document copies. Later edits to your profile or removal of a library document do not change previously submitted applications.</p>
-        <p>You can remove library documents from CV &amp; documents. Submitted application copies remain for recruitment records. Self-service deletion of submitted applications is not currently available. Arrange removal with the project owner. Administrators with access to the project server or database can access stored information, and project backups may retain earlier copies until their retention period ends.</p>
+        <p>You can remove library documents from CV &amp; documents. Submitted application copies remain for recruitment records. To request removal of an application, contact the KaziForce administrator. Authorized administrators can access stored information, and backups may retain earlier copies.</p>
         <h2>Access and deletion</h2>
-        <p>Project administrators can manage test accounts through Django administration. Self-service account deletion and data retention procedures have not yet been implemented. Arrange deletion with the project owner when finishing a test.</p>
-        <h2>Before collecting real information</h2>
-        <p>This page documents the current prototype. A reviewed privacy notice, retention schedule and deletion process are required before collecting real candidate data.</p>
+        <p>To request account or data removal, contact the KaziForce administrator. Removing a library document does not remove copies previously submitted with an application.</p>
+        <h2>Account security</h2>
+        <p>Use a strong, unique password and keep your sign-in details private. Sign out when using a shared device.</p>
     </article>
 {% endblock %}

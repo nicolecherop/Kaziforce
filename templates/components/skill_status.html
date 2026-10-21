@@ -1,0 +1,5 @@
+{% if skill.status == "ambiguous" %}
+    <p class="skill-status skill-needs-review">Skill added. A more specific name may improve matching.</p>
+{% elif skill.status != "mapped" %}
+    <p class="skill-status">Skill added.</p>
+{% endif %}

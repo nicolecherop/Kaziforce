@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Preserve exact reference CSV bytes for the recorded SHA-256 checksum.
+data/esco/*.csv -text

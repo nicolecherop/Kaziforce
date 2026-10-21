@@ -1,0 +1,168 @@
+{% extends "workspace/base.html" %}
+{% load workspace_ui %}
+{% block title %}Match explanation | KaziForce{% endblock %}
+{% block workspace_content %}
+    <a class="back-to-list"
+       href="{% url 'matches:applicants' result.job_id %}?candidate={{ result.pk }}">← Back to candidate rankings
+    </a>
+    <header class="page-heading match-heading">
+        <div>
+            <p class="eyebrow">Candidate match review</p>
+            <h1>{{ job_evidence.title|site_text }}</h1>
+            <p class="job-meta">{{ job_evidence.company|site_text }} · {{ result.job.location }}</p>
+            <p>{{ result.application.candidate_name|default:result.application.candidate_email|site_text }}</p>
+        </div>
+        <div class="score-banner">
+            <strong>{{ result.score|floatformat:0 }}%</strong>
+            <div>
+                <h2>Match score</h2>
+                <p>Profile alignment, not a hiring prediction.</p>
+            </div>
+        </div>
+        <div class="heading-actions">
+            <a class="button button-small"
+               href="{% url 'applications:detail' result.application_id %}">Review application →</a>
+        </div>
+    </header>
+    {% if historical %}
+        <p class="inline-notice">This is a saved review. Inputs or the reference have changed; update matches for current results.</p>
+    {% endif %}
+    <div class="match-detail-grid">
+        <section class="workspace-panel evidence-panel">
+            <h2>Why this candidate matches</h2>
+            <p>Skill evidence compared with the role's priorities.</p>
+            <div class="skill-comparison">
+                <div>
+                    <h3>
+                        <span class="evidence-mark matched-mark">✓</span> Matched from the profile
+                    </h3>
+                    <ul class="evidence-list">
+                        {% for skill in result.explanation.matched_skills %}
+                            <li>
+                                <div>
+                                    <strong>{{ skill.name }}</strong>
+                                    {% if skill.exact_wording_only %}
+                                        <span class="small-copy">Matched by the skill name provided.</span>
+                                    {% endif %}
+                                </div>
+                                <span class="priority-pill priority-{{ skill.priority }}">{{ skill.priority|priority_label }}</span>
+                            </li>
+                        {% empty %}
+                            <li>No requested skills matched.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>
+                    <h3>
+                        <span class="evidence-mark missing-mark">!</span> Not recorded in the profile
+                    </h3>
+                    <ul class="evidence-list">
+                        {% for skill in result.explanation.missing_required_skills %}
+                            <li>
+                                <div>
+                                    <strong>{{ skill.name }}</strong>
+                                    <span class="small-copy">Required</span>
+                                </div>
+                                <span class="priority-pill priority-{{ skill.priority }}">{{ skill.priority|priority_label }}</span>
+                            </li>
+                        {% endfor %}
+                        {% for skill in result.explanation.missing_preferred_skills %}
+                            <li>
+                                <div>
+                                    <strong>{{ skill.name }}</strong>
+                                    <span class="small-copy">Preferred</span>
+                                </div>
+                                <span class="priority-pill priority-{{ skill.priority }}">{{ skill.priority|priority_label }}</span>
+                            </li>
+                        {% endfor %}
+                        {% if not result.explanation.missing_required_skills and not result.explanation.missing_preferred_skills %}
+                            <li>All requested skills have matching evidence.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <a class="panel-link"
+               href="{% url 'applications:detail' result.application_id %}#submitted-profile">View submitted profile →</a>
+        </section>
+        <section class="workspace-panel">
+            <h2>Job description</h2>
+            <p class="long-copy">{{ job_evidence.description|site_text|linebreaksbr }}</p>
+        </section>
+        <section class="workspace-panel">
+            <h2>Requirements</h2>
+            <h3>Qualifications</h3>
+            <p>{{ job_evidence.education_level_label }}{% if job_evidence.education_field %} · {{ job_evidence.education_field }}{% endif %}
+            </p>
+            <h3>Experience</h3>
+            <p>
+                {% if job_evidence.minimum_experience_years != None %}{{ job_evidence.minimum_experience_years }} years minimum{% else %}No minimum years specified{% endif %}
+            </p>
+            <p>{{ job_evidence.experience_details }}</p>
+            {% if job_evidence.requirements %}
+                <h3>Additional requirements</h3>
+                <p>{{ job_evidence.requirements|site_text|linebreaksbr }}</p>
+            {% endif %}
+        </section>
+    </div>
+    <div class="workspace-split">
+        <section class="workspace-panel">
+            <h2>How the score was calculated</h2>
+            <p>Only active components contribute. Job priorities increase their share of the total.</p>
+            <div class="match-table-wrap">
+                <table class="match-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Component</th>
+                            <th scope="col">Score / 100</th>
+                            <th scope="col">Share of total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for component in result.components %}
+                            <tr>
+                                <th scope="row">{{ component.label }}</th>
+                                <td>
+                                    {% if component.active %}{{ component.score|floatformat:2 }}{% else %}Not requested{% endif %}
+                                </td>
+                                <td>{{ component.share|floatformat:1 }}%</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <aside class="workspace-panel">
+            <h2>Points to review</h2>
+            <p>Scores support review and do not confirm eligibility.</p>
+            {% if result.explanation.education_review %}
+                <p>Education compares wording. Review original records to establish qualification level and equivalence.</p>
+            {% endif %}
+            {% if result.explanation.experience_review %}
+                <p>Declared experience: {{ result.explanation.declared_experience_years }} years across non-overlapping dates. Review whether those roles are relevant.</p>
+            {% endif %}
+            {% if result.explanation.incomplete_experience_dates %}
+                <p>Some incomplete or invalid dates could not contribute to duration.</p>
+            {% endif %}
+            {% if result.explanation.unresolved_skills %}
+                <p>Review these skills in the submitted profile and documents: {{ result.explanation.unresolved_skills|join:", " }}.</p>
+            {% endif %}
+        </aside>
+    </div>
+    <details class="workspace-panel saved-evidence">
+        <summary>Saved evidence and scoring reference</summary>
+        <p>{{ result.run.configuration.version }} · ESCO {{ result.run.corpus.catalogue.version }} · Calculated as of {{ result.run.as_of|date:"j M Y" }}</p>
+        <p class="small-copy">
+            Reference checksum: <code class="match-checksum">{{ result.run.corpus.checksum }}</code>
+        </p>
+        <p class="small-copy">Text similarity uses a fixed public vocabulary; {{ result.explanation.ignored_text_terms }} distinct terms fell outside it. Dedicated identity, contact, location, employer and institution fields, cover letters and uploaded documents are excluded from scoring.</p>
+        <h3>Profile summary used</h3>
+        <p>{{ candidate_evidence.profile.summary|default:"No summary supplied."|linebreaksbr }}</p>
+        <h3>Skills used</h3>
+        <div class="skill-chips">
+            {% for skill in candidate_evidence.skills %}
+                <span class="skill-chip">{{ skill.name }}</span>
+            {% endfor %}
+        </div>
+        {% include "matching/components/saved_evidence.html" %}
+    </details>
+{% endblock %}

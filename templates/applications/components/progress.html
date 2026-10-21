@@ -1,0 +1,51 @@
+<h2>Application progress</h2>
+<ol class="application-timeline">
+    {% if application.status == "draft" %}
+        <li class="is-current">
+            <strong>Draft in progress</strong>
+            <time>{{ application.updated_at|date:"j M Y" }}</time>
+            <p>Your draft is private. Review your details and submit when ready.</p>
+        </li>
+    {% else %}
+        <li class="is-complete">
+            <strong>Application submitted</strong>
+            <time>{{ application.submitted_at|date:"j M Y" }}</time>
+            <p>Your submitted information has been received.</p>
+        </li>
+        {% if application.status == "reviewing" %}
+            <li class="is-current">
+                <strong>Under review</strong>
+                <time>{{ application.updated_at|date:"j M Y" }}</time>
+                <p>The recruiter has marked this application as under review.</p>
+            </li>
+            <li>
+                <strong>Awaiting recruiter update</strong>
+                <p>Return here to check for the next decision.</p>
+            </li>
+        {% elif application.status == "shortlisted" %}
+            <li class="is-complete">
+                <strong>Shortlisted</strong>
+                <time>{{ application.updated_at|date:"j M Y" }}</time>
+                <p>The recruiter has shortlisted this application.</p>
+            </li>
+        {% elif application.status == "unsuccessful" %}
+            <li class="is-closed">
+                <strong>Not selected</strong>
+                <time>{{ application.updated_at|date:"j M Y" }}</time>
+                <p>The recruiter has marked this application unsuccessful.</p>
+            </li>
+        {% else %}
+            <li>
+                <strong>Awaiting recruiter review</strong>
+                <p>The recruiter has not recorded a further update yet.</p>
+            </li>
+        {% endif %}
+        {% if application.interview %}
+            <li class="{% if application.interview.status == 'cancelled' %}is-closed{% else %}is-current{% endif %}">
+                <strong>Interview {{ application.interview.get_status_display|lower }}</strong>
+                <time>{{ application.interview.starts_at|date:"j M Y, H:i" }} EAT (UTC+3)</time>
+                <a href="{% url 'applications:detail' application.pk %}#interview">View interview details and recruiter contact</a>
+            </li>
+        {% endif %}
+    {% endif %}
+</ol>

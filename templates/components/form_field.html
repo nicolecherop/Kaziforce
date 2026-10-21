@@ -1,9 +1,10 @@
+{% load workspace_ui %}
 <div class="field {% if field.errors %}field-error{% endif %}">
     <div class="field-label">{{ field.label_tag }}{% if reset_link %}
         <a href="{% url 'accounts:password_reset' %}">Forgot password?</a>
     {% endif %}
 </div>
-<div class="input-wrap">{{ field }}{% if field.field.widget.input_type == "password" %}
+<div class="input-wrap">{{ field|site_field }}{% if field.field.widget.input_type == "password" %}
     <button type="button"
             class="password-toggle"
             data-password-target="{{ field.id_for_label }}"

@@ -1,0 +1,19 @@
+{
+  "version": "v1.2.0",
+  "language": "en",
+  "source_url": "https://ec.europa.eu/esco/api/resource/skill",
+  "query": {
+    "isInScheme": "http://data.europa.eu/esco/concept-scheme/skills",
+    "selectedVersion": "v1.2.0",
+    "language": "en",
+    "viewObsolete": false
+  },
+  "retrieved_at": "2026-10-20T20:54:01.066616+00:00",
+  "skill_count": 13939,
+  "checksum": "7cb3dcaa7a585ceaacba8d522fb414dd2eff400bc53b8ceb8119ba6c352f05cd",
+  "bulk_concept_count": 14579,
+  "excluded_group_count": 640,
+  "classification_filter": "Individual member-skills concepts only; hierarchy groups excluded",
+  "group_source_url": "https://ec.europa.eu/esco/api/resource/concept?isInScheme=http%3A%2F%2Fdata.europa.eu%2Fesco%2Fconcept-scheme%2Fskills-hierarchy&language=en&selectedVersion=v1.2.0&limit=1000&offset=0",
+  "group_source_checksum": "57cb8b673dd05c26531dc1a1ee0cd9a5e1abf95b414dcc35eb6d4d3677c72d50"
+}

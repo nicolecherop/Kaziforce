@@ -8,6 +8,7 @@ from django.db import transaction
 from django.utils import timezone
 from candidates.selectors import profile_for
 from jobs.models import JobPosting
+from matching.skills import standardize_skills
 from .forms import APPLICATION_SECTIONS
 from .models import Application, ApplicationAttachment
 
@@ -28,7 +29,13 @@ def snapshot_from_profile(user):
     snapshot = {
         "profile": {
             key: getattr(profile, key, "")
-            for key in ("headline", "location", "summary")
+            for key in (
+                "headline",
+                "location",
+                "summary",
+                "contact_email",
+                "phone_number",
+            )
         }
     }
     for prefix, title, factory, label in APPLICATION_SECTIONS:
@@ -50,7 +57,13 @@ def snapshot_from_forms(profile_form, sections):
     snapshot = {
         "profile": {
             key: profile_form.cleaned_data[key]
-            for key in ("headline", "location", "summary")
+            for key in (
+                "headline",
+                "location",
+                "summary",
+                "contact_email",
+                "phone_number",
+            )
         }
     }
     for section in sections:
@@ -84,6 +97,17 @@ def save_application(user, job_id, snapshot, application_data, submit):
             if any(document.user_id != user.pk for document in documents):
                 raise ValidationError("Choose documents from your own library.")
             if submit:
+                candidate_names = [
+                    entry["name"] for entry in snapshot.get("skills", [])
+                ]
+                job_names = [skill.name for skill in job.skills.all()]
+                mapping = standardize_skills(candidate_names + job_names)
+                application.profile_snapshot = dict(
+                    snapshot,
+                    skill_standardization=dict(
+                        mapping, skills=mapping["skills"][: len(candidate_names)]
+                    ),
+                )
                 application.status = Application.Status.SUBMITTED
                 application.submitted_at = timezone.now()
                 application.candidate_name = user.get_full_name()
@@ -99,7 +123,9 @@ def save_application(user, job_id, snapshot, application_data, submit):
                     )
                 }
                 application.job_snapshot["structured_requirements"] = (
-                    job.structured_requirements()
+                    job.structured_requirements(
+                        dict(mapping, skills=mapping["skills"][len(candidate_names) :])
+                    )
                 )
             application.save()
             application.documents.set(documents)

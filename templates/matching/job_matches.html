@@ -1,0 +1,57 @@
+{% extends "workspace/base.html" %}
+{% block title %}My matches | KaziForce{% endblock %}
+{% block workspace_content %}
+    <header class="page-heading profile-heading">
+        <div>
+            <p class="eyebrow">My workspace / My matches</p>
+            <h1>Your skills. Your next move.</h1>
+            <p>Explore up to ten opportunities that closely match your professional profile.</p>
+        </div>
+        <form method="post" action="{% url 'matches:refresh_jobs' %}">
+            {% csrf_token %}
+            <button class="button button-small" type="submit">Update my matches</button>
+        </form>
+    </header>
+    <nav class="view-links" aria-label="Job discovery">
+        <a aria-current="page" href="{% url 'matches:jobs' %}">Recommended for you</a>
+        <a href="{% url 'jobs:opportunities' %}">Browse all jobs</a>
+        <a href="{% url 'candidates:profile' %}">Review my profile</a>
+    </nav>
+    <div class="workspace-split">
+        <div>
+            <div class="section-title-row">
+                <h2>Recommended opportunities</h2>
+                <span class="small-copy">
+                    {% if run %}{{ recommended_count }} recommended job{{ recommended_count|pluralize }}{% else %}Your matches start here{% endif %}
+                </span>
+            </div>
+            <div class="opportunity-list">
+                {% for result in results %}
+                    {% include "matching/components/job_row.html" %}
+                {% empty %}
+                    <div class="workspace-panel empty-panel">
+                        <span class="icon-tile">{% include "workspace/icon.html" with name="spark" %}</span>
+                        {% if run %}
+                            <h2>No strong matches right now.</h2>
+                            <p>Keep your profile up to date or browse available jobs.</p>
+                            <a href="{% url 'jobs:opportunities' %}">Browse all jobs →</a>
+                        {% else %}
+                            <h2>Find a clearer direction.</h2>
+                            <p>Add your professional information, then select “Update my matches” to find relevant opportunities.</p>
+                            <a href="{% url 'candidates:profile_edit' %}">Build your profile →</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <aside class="workspace-panel side-panel">
+            <h2>Find your next opportunity</h2>
+            <p>These recommendations highlight roles that may suit your professional background. Keep your profile accurate and up to date.</p>
+            <div class="panel-divider"></div>
+            <h3>A starting point for your review</h3>
+            <p>Read the full requirements and consider your interests and experience before applying. You can also browse all available jobs.</p>
+            <a href="{% url 'candidates:profile_edit' %}">Improve your profile →</a>
+        </aside>
+    </div>
+    {% include "matching/components/run_notice.html" %}
+{% endblock %}

@@ -2,9 +2,9 @@
 {% block title %}My applications | KaziForce{% endblock %}
 {% block candidate_content %}
     <header class="page-heading">
-        <p class="eyebrow">My applications</p>
-        <h1>Your next steps, in one place.</h1>
-        <p>Return to drafts and follow the status of your submitted applications.</p>
+        <p class="eyebrow">My workspace / My applications</p>
+        <h1>My applications</h1>
+        <p>Follow your progress and return to the applications you are working on.</p>
     </header>
-    {% for application in applications %}<article class="job-card"><span class="status-pill">{{ application.get_status_display }}</span><h2><a href="{% url 'applications:detail' application.pk %}">{{ application.job_snapshot.title|default:application.job.title }}</a></h2><p>{{ application.job_snapshot.company|default:application.job.company }}</p><p class="small-copy">{% if application.submitted_at %}Submitted {{ application.submitted_at|date:"j M Y" }}{% else %}Draft saved {{ application.updated_at|date:"j M Y" }}{% endif %}</p><a href="{% url 'applications:detail' application.pk %}">{% if application.status == "draft" %}Continue draft{% else %}View application{% endif %} ↗</a></article>{% empty %}<p class="empty-state">Your applications will appear here. <a href="{% url 'jobs:opportunities' %}">Explore open jobs</a>.</p>{% endfor %}
+    {% include "applications/components/list.html" %}
 {% endblock %}

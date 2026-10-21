@@ -1,0 +1,31 @@
+<aside class="workspace-panel side-panel">
+    <span class="icon-tile">{% include "workspace/icon.html" with name="file" %}</span>
+    <h2>Your CV &amp; supporting documents</h2>
+    <p>Keep your original CV, degrees and certificates ready for recruiters to review.</p>
+    <a class="upload-link"
+       href="{% url 'candidates:documents' %}"
+       {% if editing %}target="_blank" rel="noopener"{% endif %}>
+        {% include "workspace/icon.html" with name="file" %}
+        <strong>Manage your documents</strong>
+        <span>CV: PDF or DOCX · Evidence: PDF, JPG or PNG
+            <br>
+        Up to 5 MB per file</span>
+    </a>
+    {% for document in user.documents.all|slice:":3" %}
+        <div class="mini-document">
+            <span class="icon-tile small">{% include "workspace/icon.html" with name="file" %}</span>
+            <div>
+                <strong>{{ document.title|default:document.original_name }}</strong>
+                <span>{{ document.get_kind_display }}</span>
+            </div>
+        </div>
+    {% empty %}
+        <p class="small-copy">Your library is empty. You can add documents whenever you are ready.</p>
+    {% endfor %}
+    <div class="panel-divider"></div>
+    <h3>Your information stays in your hands</h3>
+    <p class="small-copy">Enter profile details yourself. Choose which files to share for each application. Uploading a document leaves your profile unchanged.</p>
+    {% if editing %}
+        <p class="small-copy">The document library opens in a new tab so your current edits stay here. Save your profile before closing this tab.</p>
+    {% endif %}
+</aside>

@@ -1,0 +1,20 @@
+{% extends "workspace/base.html" %}
+{% load workspace_ui %}
+{% block title %}Cancel interview | KaziForce{% endblock %}
+{% block workspace_content %}
+    <a class="back-to-list"
+       href="{% url 'applications:detail' application.pk %}">← Back to application</a>
+    <header class="page-heading">
+        <h1>Cancel interview</h1>
+        <p>{{ application.job.title|site_text }}</p>
+    </header>
+    <form method="post" class="workspace-panel profile-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            {% include "components/form_field.html" %}
+        {% endfor %}
+        <button class="button button-small"
+                type="submit">Cancel interview and notify candidate</button>
+    </form>
+{% endblock %}

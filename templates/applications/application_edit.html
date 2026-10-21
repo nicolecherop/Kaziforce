@@ -1,42 +1,153 @@
 {% extends "candidates/base.html" %}
+{% load workspace_ui %}
 {% load static %}
-{% block title %}Apply for {{ job.title }} | KaziForce{% endblock %}
+{% block title %}Apply for {{ job.title|site_text }} | KaziForce{% endblock %}
 {% block candidate_content %}
     <header class="page-heading">
-        <p class="eyebrow">Application / {{ job.company }}</p>
+        <p class="eyebrow">Application / {{ job.company|site_text }}</p>
         <h1>Make this application yours.</h1>
-        <p>{{ job.title }} · {{ job.location }}</p>
+        <p>{{ job.title|site_text }} · {{ job.location }}</p>
     </header>
-    <div class="application-callout"><strong>A separate copy for this role.</strong><p>{% if application %}You are editing your saved draft.{% else %}We have filled this form with your saved profile information.{% endif %} Keep it as it is or tailor the details below. Changes here apply only to this application.</p><p>Recruiters receive your information and chosen documents when you submit. Drafts stay private.</p></div>
-    <form class="profile-form" method="post" novalidate>
-        {% csrf_token %}
-        {% if has_errors %}<div class="form-errors profile-error-summary"
-     role="alert"
-     tabindex="-1"
-     data-form-errors><p>Your application has not been saved. Check the highlighted fields.</p>{{ form.non_field_errors }}{{ application_form.non_field_errors }}{% for section in sections %}{% if section.formset.total_error_count %}<p><a href="#{{ section.prefix }}">Check {{ section.title|lower }}</a></p>{% endif %}{% endfor %}</div>{% endif %}
-        <nav class="profile-section-links" aria-label="Application sections"><a href="#introduction">Introduction</a>{% for section in sections %}<a href="#{{ section.prefix }}">{{ section.title }}</a>{% endfor %}<a href="#attachments">Documents</a></nav>
-        <section class="profile-section" id="introduction"><div class="section-heading"><h2>Your introduction</h2><p>Describe the skills and experience you want this recruiter to see.</p></div><div class="entry-fields">{% for field in form %}{% include "candidates/components/profile_field.html" %}{% endfor %}</div></section>
-        {% for section in sections %}<section class="profile-section"
-         id="{{ section.prefix }}"
-         data-formset="{{ section.prefix }}"
-         data-maximum="{{ section.formset.max_num }}"><div class="section-heading"><h2>{{ section.title }}</h2><p>Review these entries for this application. Leave unused new entries blank.</p></div>{{ section.formset.management_form }}{% if section.formset.non_form_errors %}<div class="field-errors" role="alert">{{ section.formset.non_form_errors }}</div>{% endif %}<div class="entry-list" data-entry-list>{% for entry in section.formset %}{% include "candidates/components/profile_entry.html" with title=section.title %}{% endfor %}</div><template data-empty-entry>{% include "candidates/components/profile_entry.html" with entry=section.formset.empty_form title=section.title %}</template><button class="button button-secondary add-entry"
+    <div class="application-callout">
+        <strong>A separate copy for this role.</strong>
+        <p>
+        {% if application %}You are editing your saved draft.{% else %}We have filled this form with your saved profile information.{% endif %} Keep it as it is or tailor the details below. Changes here apply only to this application.</p>
+        <p>Recruiters receive your information and chosen documents when you submit. Drafts stay private.</p>
+    </div>
+    <a class="back-to-list" href="{% url 'jobs:detail' job.pk %}">← Back to job details</a>
+    <div class="workspace-split" data-section-layout>
+        <div>
+            <form class="profile-form" method="post" novalidate>
+                {% csrf_token %}
+                {% include "components/skill_suggestions.html" %}
+                {% if has_errors %}
+                    <div class="form-errors profile-error-summary"
+                         role="alert"
+                         tabindex="-1"
+                         data-form-errors>
+                        <p>Your application has not been saved. Check the highlighted fields.</p>{{ form.non_field_errors }}{{ application_form.non_field_errors }}{% for section in sections %}
+                        {% if section.formset.total_error_count %}
+                            <p>
+                                <a href="#{{ section.prefix }}">Check {{ section.title|lower }}</a>
+                            </p>
+                        {% endif %}
+                {% endfor %}
+            </div>
+{% endif %}
+<nav data-section-nav
+     class="profile-section-links"
+     aria-label="Application sections">
+    <a href="#introduction">Introduction</a>
+    <a href="#contact">Contact information</a>
+    {% for section in sections %}
+        <a href="#{{ section.prefix }}">{{ section.title }}</a>
+    {% endfor %}
+    <a href="#attachments">Documents</a>
+</nav>
+<section class="profile-section" data-section-panel id="introduction">
+    <div class="section-heading">
+        <h2>Your introduction</h2>
+        <p>Describe the skills and experience you want this recruiter to see.</p>
+    </div>
+    <div class="entry-fields">
+        {% for field in form.professional_fields %}
+            {% include "candidates/components/profile_field.html" %}
+        {% endfor %}
+    </div>
+</section>
+<section class="profile-section" data-section-panel id="contact">
+    <h2>Contact information for this application</h2>
+    <p>Choose the email and phone number this recruiter can use. Leaving the contact email blank uses your account email. Your main profile stays the same.</p>
+    <div class="entry-fields">
+        {% for field in form.contact_fields %}
+            {% include "candidates/components/profile_field.html" %}
+        {% endfor %}
+    </div>
+</section>
+{% for section in sections %}
+    <section class="profile-section"
+             data-section-panel
+             id="{{ section.prefix }}"
+             data-formset="{{ section.prefix }}"
+             data-maximum="{{ section.formset.max_num }}">
+        <div class="section-heading">
+            <h2>{{ section.title }}</h2>
+            <p>Review these entries for this application. Leave unused new entries blank.</p>
+        </div>{{ section.formset.management_form }}{% if section.formset.non_form_errors %}
+        <div class="field-errors" role="alert">{{ section.formset.non_form_errors }}</div>
+{% endif %}
+<div class="entry-list" data-entry-list>
+    {% for entry in section.formset %}
+        {% include "candidates/components/profile_entry.html" with title=section.title %}
+    {% endfor %}
+</div>
+<template data-empty-entry>
+    {% include "candidates/components/profile_entry.html" with entry=section.formset.empty_form title=section.title %}
+</template>
+<button class="button button-secondary add-entry"
         type="button"
         data-add-entry
-        hidden>+ {{ section.add_label }}</button><p class="entry-limit" data-entry-limit hidden>You have reached this section's entry limit.</p></section>{% endfor %}
-        <section class="profile-section" id="attachments"><div class="section-heading"><h2>Documents and message</h2><p>Choose the CV, degrees and certificates you want to send. You can <a href="{% url 'candidates:documents' %}"
+        hidden>
+    + {{ section.add_label }}
+</button>
+<p class="entry-limit" data-entry-limit hidden>You have reached this section's entry limit.</p>
+</section>
+{% endfor %}
+<section class="profile-section" data-section-panel id="attachments">
+    <div class="section-heading">
+        <h2>Documents and message</h2>
+        <p>Choose the CV, degrees and certificates you want to send. You can <a href="{% url 'candidates:documents' %}"
     target="_blank"
-    rel="noopener">upload documents in a new tab</a>; save your draft before leaving, then reopen it to see new uploads.</p></div>{% include "components/form_field.html" with field=application_form.cover_letter %}<div class="document-selection">{% include "components/form_field.html" with field=application_form.documents %}</div>{% if not application_form.fields.documents.queryset.exists %}<p class="empty-state">Your document library is empty. Attachments are optional.</p>{% endif %}</section>
-        <div class="save-bar">
-            <p>Submitting shares this copy and selected files with the recruiter.</p>
-            <div class="action-row">
-                <button class="text-button" type="submit" name="action" value="draft">Save draft</button><button class="button"
-        type="submit"
-        name="action"
-        value="submit">Submit application ↗</button>
-            </div>
-        </div>
-        <span class="sr-only" role="status" data-entry-status></span>
-    </form>
+    rel="noopener">upload documents in a new tab</a>; save your draft before leaving, then reopen it to see new uploads.</p>
+    </div>
+    {% include "components/form_field.html" with field=application_form.cover_letter %}
+    <div class="document-selection">
+        {% include "components/form_field.html" with field=application_form.documents %}
+    </div>
+    {% if not application_form.fields.documents.queryset.exists %}
+        <p class="empty-state">Your document library is empty. Attachments are optional.</p>
+    {% endif %}
+</section>
+<div class="save-bar">
+    <p>Submitting shares this copy and selected files with the recruiter.</p>
+    <div class="action-row">
+        <button class="text-button" type="submit" name="action" value="draft">Save draft</button>
+        <button class="button"
+                type="submit"
+                name="action"
+                value="submit">Submit application ↗</button>
+    </div>
+</div>
+<span class="sr-only" role="status" data-entry-status></span>
+</form>
+</div>
+<aside class="workspace-panel side-panel">
+    <p class="eyebrow">Applying for</p>
+    <h2>{{ job.title|site_text }}</h2>
+    <p>
+        {{ job.company|site_text }}
+        <br>
+        {{ job.location }}
+    </p>
+    <div class="panel-divider"></div>
+    <h3>Make this copy work for you.</h3>
+    <ol class="step-checklist">
+        <li>
+            <span class="step-dot">1</span>Review your introduction and skills.
+        </li>
+        <li>
+            <span class="step-dot">2</span>Tailor your education and experience.
+        </li>
+        <li>
+            <span class="step-dot">3</span>Select documents and a message.
+        </li>
+        <li>
+            <span class="step-dot">4</span>Save a private draft or submit.
+        </li>
+    </ol>
+    <p class="small-copy">Your main profile stays the same. Submitted details become a fixed copy for this role.</p>
+</aside>
+</div>
 {% endblock %}
 {% block extra_js %}
     <script src="{% static 'js/profile.js' %}" defer></script>

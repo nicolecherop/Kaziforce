@@ -21,10 +21,8 @@ class RegistrationForm(UserCreationForm):
         widget=forms.RadioSelect,
     )
     accept_terms = forms.BooleanField(
-        label="I agree to the prototype Terms and Privacy Policy.",
-        error_messages={
-            "required": "Please read and accept the prototype terms to continue."
-        },
+        label="I agree to the Terms and Privacy Policy.",
+        error_messages={"required": "Please read and accept the terms to continue."},
     )
 
     class Meta:

@@ -1,0 +1,7 @@
+.match-table-wrap { overflow-x: auto; }
+.match-table { width: 100%; border-collapse: collapse; text-align: left; }
+.match-table th, .match-table td { padding: .9rem .6rem; border-bottom: 1px solid var(--line, #dce2ec); }
+.match-checksum { overflow-wrap: anywhere; }
+.match-notice { margin-block: 28px; padding: 22px; background: #f1f6ff; border: 1px solid var(--line); border-radius: 18px; }
+.match-notice p:last-child { margin-bottom: 0; }
+.profile-section > summary { cursor: pointer; font-weight: 600; margin-bottom: 20px; }
