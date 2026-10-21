@@ -1,0 +1,33 @@
+{% extends "admin/index.html" %}
+{% load workspace_ui %}
+{% block content %}
+    <section class="kf-overview" aria-label="Administration overview">
+        <p class="kf-introduction">Monitor the platform, review recruitment records and manage the areas available to your account.</p>
+        {% if not available_apps %}<p>Your account has no assigned administration permissions. Contact the system administrator to arrange access to the areas you need.</p>{% endif %}
+        <div class="kf-summary-grid">
+            {% for card in overview_cards %}
+                <a class="kf-metric" href="{{ card.url }}"><strong>{{ card.value }}</strong>
+                    <h2>{{ card.label }}</h2>
+                    <p>{{ card.detail }}</p>
+                </a>
+            {% endfor %}
+        </div>
+        {% if application_statuses %}
+            <section class="kf-panel"><h2>Application progress</h2><div class="kf-status-grid">{% for status in application_statuses %}<a href="{{ status.url }}"><strong>{{ status.count }}</strong> {{ status.label }}</a>{% endfor %}</div></section>
+        {% endif %}
+        {% if email_statuses %}
+            <section class="kf-panel">
+                <h2>Interview email delivery</h2>
+                <p>{% if email_connected %}Email delivery is connected. Sent records confirm sending, rather than receipt or reading.{% else %}Email delivery is not connected. Interview invitations remain available to candidates in My applications.{% endif %}</p>
+                <div class="kf-status-grid">{% for status in email_statuses %}<a href="{{ status.url }}"><strong>{{ status.count }}</strong> {{ status.label }}</a>{% endfor %}</div>
+            </section>
+        {% endif %}
+        {% if upcoming_interviews %}
+            <section class="kf-panel"><h2>Next interviews</h2><div class="kf-table-wrap"><table><thead><tr><th>Job</th><th>Date and time (EAT)</th><th>Format</th></tr></thead><tbody>{% for interview in upcoming_interviews %}<tr><td><a href="{% url 'admin:applications_interview_change' interview.pk %}">{{ interview.application.job.title|site_text }}</a></td><td>{{ interview.starts_at|date:"j M Y, H:i" }}</td><td>{{ interview.get_format_display }}</td></tr>{% endfor %}</tbody></table></div></section>
+        {% endif %}
+        {% if recent_applications %}
+            <section class="kf-panel"><h2>Recent applications</h2><div class="kf-table-wrap"><table><thead><tr><th>Candidate</th><th>Job</th><th>Status</th></tr></thead><tbody>{% for application in recent_applications %}<tr><td><a href="{% url 'admin:applications_application_change' application.pk %}">{{ application.candidate_name|default:"Candidate"|site_text }}</a></td><td>{{ application.job_snapshot.title|default:application.job.title|site_text }}</td><td>{{ application.get_status_display }}</td></tr>{% endfor %}</tbody></table></div></section>
+        {% endif %}
+    </section>
+    {{ block.super }}
+{% endblock %}

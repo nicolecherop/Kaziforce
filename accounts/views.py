@@ -3,6 +3,7 @@
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
+from django.core.exceptions import PermissionDenied
 from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
@@ -50,6 +51,8 @@ def create_account(request):
 
 @login_required
 def dashboard(request):
+    if request.user.is_active and request.user.is_staff:
+        return redirect("admin:index")
     if request.user.role == User.Role.RECRUITER:
         return render(
             request, "recruiters/dashboard.html", recruiter_dashboard(request.user)
@@ -61,5 +64,4 @@ def dashboard(request):
             candidate_dashboard(request.user),
         )
     else:
-        template = "accounts/administrator_home.html"
-    return render(request, template)
+        raise PermissionDenied("Staff access is required to open administration.")

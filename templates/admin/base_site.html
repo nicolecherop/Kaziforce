@@ -1,0 +1,7 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block title %}{{ title }} | KaziForce Admin{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet"
+      href="{% static 'css/admin.css' %}">{% endblock %}
+{% block branding %}<div id="site-name"><a href="{% url 'admin:index' %}">KaziForce <span>Administration</span></a></div>{% endblock %}
+{% block nav-global %}{% endblock %}

@@ -8,6 +8,8 @@ Candidates enter their professional information manually, including skills, educ
 
 ## Local setup on Windows
 
+The [administrator panel](docs/administration.md) at `/admin/` provides permission-aware summaries and read-only recruitment monitoring. Sign in with an active staff account's email and password.
+
 Candidates can add contact details and tailor them for each application. Recruiters can schedule, update and cancel interviews for shortlisted applicants, share recruiter contacts and track email delivery. See [interview invitations and contacts](docs/interviews.md).
 
 Use Python 3.12 or later. Run these commands inside this folder:

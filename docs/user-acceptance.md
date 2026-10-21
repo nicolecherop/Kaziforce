@@ -36,6 +36,16 @@ Use the local demo or a separate disposable database with fictional data. Give e
 | Set up, edit and cancel an interview | Candidate sees the current details; recruiter sees accurate email status and can retry a failed message | Pending |
 | Close the job | New applications stop; existing submissions remain available | Pending |
 
+## Administrator session
+
+| Task | Expected result | Human result |
+| --- | --- | --- |
+| Sign in to `/admin/` with an active staff email | Branded overview opens with only permitted summaries | Pending |
+| Compare account, job and application counts with lists | Counts match; candidate drafts are excluded | Pending |
+| Review an application, interview, email record and saved score | Records are readable; decisions and saved evidence cannot be edited here | Pending |
+| Open a submitted attachment with appropriate permissions | Protected download works without exposing a public storage URL | Pending |
+| Use a limited staff account | Unpermitted counts, records and documents remain inaccessible | Pending |
+
 ## Navigation and accessibility session
 
 Try both workspaces at a desktop width and a narrow mobile width. Use keyboard navigation to reach menus, tabs, form controls, repeatable entries and submission buttons. Check visible focus, error messages, labels, contrast and reading order. Use a screen reader where available. Record problems as observed; automated HTML checks do not establish accessibility conformance.

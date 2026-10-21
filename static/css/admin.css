@@ -1,0 +1,38 @@
+/* Shared KaziForce typography and colour palette for Django administration. */
+:root, html[data-theme="light"] {
+  --primary: #2164ff; --secondary: #1b54d5; --accent: #101a31;
+  --body-fg: #101a31; --body-bg: #f7f9ff; --body-quiet-color: #64738d;
+  --header-color: #101a31; --header-branding-color: #101a31; --header-bg: #fff;
+  --header-link-color: #2164ff; --breadcrumbs-bg: #edf3ff; --breadcrumbs-fg: #64738d;
+  --breadcrumbs-link-fg: #164bc5; --link-fg: #1b54d5; --link-selected-fg: #133e9e;
+  --hairline-color: #dce2ec; --border-color: #dce2ec; --darkened-bg: #edf3ff;
+  --selected-bg: #edf3ff; --selected-row: #e7efff; --object-tools-bg: #2164ff;
+}
+html[data-theme="dark"] {
+  --primary: #78a2ff; --secondary: #285bcc; --accent: #e6edff;
+  --body-fg: #e6edff; --body-bg: #101a31; --body-quiet-color: #b8c6e1;
+  --header-color: #e6edff; --header-branding-color: #e6edff; --header-bg: #17243e;
+  --header-link-color: #a4c0ff; --link-fg: #a4c0ff; --link-selected-fg: #cfddff;
+  --breadcrumbs-bg: #17243e; --breadcrumbs-fg: #b8c6e1; --breadcrumbs-link-fg: #cfddff;
+  --hairline-color: #334361; --border-color: #334361; --darkened-bg: #1d2e4d;
+}
+body, button, input, select, textarea { font-family: "Century Gothic", "Avenir Next", "Segoe UI", sans-serif; }
+#header { border-bottom: 1px solid var(--border-color); padding-block: 22px; }
+#site-name { font: 800 25px/1.2 "Segoe UI", sans-serif; letter-spacing: -1px; }
+#site-name span { font: 400 13px/1.5 "Century Gothic", "Segoe UI", sans-serif; letter-spacing: 0; margin-left: 14px; }
+.kf-overview { margin-bottom: 28px; }
+.kf-introduction { color: var(--body-quiet-color); line-height: 1.6; }
+.kf-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 14px; margin: 22px 0; }
+.kf-metric, .kf-panel { display: block; border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; background: var(--header-bg); }
+.kf-metric:hover { border-color: var(--primary); }
+.kf-metric > strong { font-size: 31px; color: var(--link-fg); }
+.kf-metric h2, .kf-panel h2 { font-size: 15px; margin: 10px 0; padding: 0; color: var(--body-fg); background: transparent; }
+.kf-metric p, .kf-panel p { font-size: 12px; color: var(--body-quiet-color); line-height: 1.6; margin-bottom: 0; }
+.kf-panel { margin-bottom: 18px; }
+.kf-status-grid { display: flex; flex-wrap: wrap; gap: 14px 22px; margin-top: 16px; }
+.kf-status-grid a { font-size: 13px; }
+.kf-status-grid strong { margin-right: 6px; }
+.kf-table-wrap { overflow-x: auto; margin-top: 12px; }
+.kf-table-wrap table { width: 100%; }
+.kf-table-wrap th, .kf-table-wrap td { padding: 12px 10px; }
+@media (max-width: 600px) { #site-name span { display: block; margin: 4px 0 0; } .kf-panel { padding: 14px; } }
