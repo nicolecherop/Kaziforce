@@ -59,7 +59,7 @@ does not remove access to existing agreements or prevent their completion/cancel
 
 ## Payment boundaries
 
-**No M-Pesa, collection, payout or escrow is enabled.** Methods are Cash and Direct
+**No live M-Pesa collection, payout or escrow is enabled.** A separate [M-Pesa sandbox integration](mpesa-sandbox.md) supports test collection after booking completion; sandbox records never change the worker's payment ledger. Methods are Cash and Direct
 payment arranged outside KaziForce. The ledger distinguishes reported, queried,
 withdrawn and recipient-confirmed reports. Full price, confirmed
 receipts, refunds and outstanding balance are separate. Users must not enter PINs or
@@ -73,7 +73,7 @@ cannot be edited or withdrawn. Refunds are separate entries rather than negative
 For a later M-Pesa phase, first agree the merchant/payee, fees and refund arrangements.
 Use Daraja sandbox before live activation. Merchant collection and worker payout need
 separate designs, provider credentials, validated/reconciled results and idempotency.
-Do not call normal STK Push collection escrow. Google integrations remain deferred too.
+Do not call normal STK Push collection escrow. Google sign-in is integrated separately; Calendar/Meet access is not included.
 
 ## Freelance recommendations
 
@@ -147,3 +147,12 @@ in pre-booking messages and public freelance information. Portfolio links are hi
 until that recruiter has an accepted booking with the worker. Older text is masked for
 viewers who are not yet entitled to see it, without rewriting stored records. See
 [contact-sharing rules and limits](freelance-contact-privacy.md).
+
+
+## Recruiter completion without a worker request
+
+The owning recruiter can confirm completion directly from a Confirmed booking, without waiting for the worker to mark it complete. The same option remains available after a worker completion request. A successful confirmation records completion and redirects to the payment page; it never initiates a payment automatically.
+
+The button remains visible but disabled before the booking start date or while cancellation is unresolved. Server validation enforces the same rules. Other users cannot confirm completion, and completed/declined/cancelled/unaccepted bookings cannot be completed again. Workers retain their existing Mark work complete action to request recruiter confirmation.
+
+Verification: 98 focused payment, freelance and contact-privacy tests passed, including direct confirmation, payment redirect, future dates, cancellation, ownership and repeated confirmation.

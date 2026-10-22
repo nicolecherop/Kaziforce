@@ -268,14 +268,19 @@ def booking_transition(booking_id, actor, action, data=None):
         description = (
             "Freelancer marked the work complete; awaiting recruiter confirmation."
         )
-    elif (
-        action in {"confirm_completion", "request_changes"}
-        and recruiter
+    elif recruiter and (
+        action == "confirm_completion"
+        and status in {Booking.Status.ACCEPTED, Booking.Status.COMPLETION_REQUESTED}
+        or action == "request_changes"
         and status == Booking.Status.COMPLETION_REQUESTED
     ):
         if booking.cancellation_requested_by_id:
             raise ValidationError("Resolve the cancellation request first.")
         if action == "confirm_completion":
+            if booking.start_date > timezone.localdate():
+                raise ValidationError(
+                    "Work cannot be confirmed complete before its start date."
+                )
             booking.status = Booking.Status.COMPLETED
             booking.completed_at = timezone.now()
             description = (
@@ -352,7 +357,20 @@ def report_payment(booking_id, actor, fields):
     if refund:
         maximum = totals["received"] - totals["reserved_refunded"]
     else:
-        maximum = booking.total_price - totals["reserved_received"] + totals["refunded"]
+        from django.db.models import Sum
+
+        reserved_mpesa = (
+            booking.mpesa_transactions.filter(
+                status__in=["initiating", "pending", "unknown", "success"]
+            ).aggregate(total=Sum("amount"))["total"]
+            or ZERO
+        )
+        maximum = (
+            booking.total_price
+            - totals["reserved_received"]
+            + totals["refunded"]
+            - reserved_mpesa
+        )
     if amount > maximum:
         raise ValidationError(
             "This amount exceeds the unreported balance. Resolve existing payment reports first."

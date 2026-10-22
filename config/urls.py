@@ -11,5 +11,6 @@ urlpatterns = [
     path("skills/", include("matching.urls")),
     path("matches/", include("matching.results_urls")),
     path("freelance/", include("freelance.urls")),
+    path("payments/mpesa/", include("mpesa.urls")),
     path("", include("pages.urls")),
 ]

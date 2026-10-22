@@ -42,7 +42,7 @@
                                 {% if job.status == "open" %}
                                     <form method="post" action="{% url 'jobs:close' job.pk %}">
                                         {% csrf_token %}
-                                        <button class="text-button" type="submit">Close job</button>
+                                        <button data-confirm="Are you sure you want to close this job? It will stop accepting new applications." class="text-button" type="submit">Close job</button>
                                     </form>
                                 {% endif %}
                             </div>

@@ -28,11 +28,11 @@
                     <div class="action-row">
                         {% if email_codes_ready %}
                             {% if user.email_two_step_enabled %}
-                                {% if not staff_verification_required %}<button class="button button-secondary" name="action" value="disable">Disable email verification</button>{% endif %}
+                                {% if not staff_verification_required %}<button class="button button-secondary" name="action" data-confirm="Are you sure you want to disable email verification for future sign-ins?" value="disable">Disable email verification</button>{% endif %}
                             {% else %}<button class="button" name="action" value="enable">Enable email verification</button>{% endif %}
                         {% endif %}
                         {% if google_signin_enabled and not google_connected %}<button class="button button-secondary" name="action" value="connect_google">Connect Google</button>{% endif %}
-                        {% if google_connected %}<button class="button button-secondary" name="action" value="disconnect_google">Disconnect Google</button>{% endif %}
+                        {% if google_connected %}<button class="button button-secondary" name="action" data-confirm="Are you sure you want to disconnect Google sign-in from your account?" value="disconnect_google">Disconnect Google</button>{% endif %}
                     </div>
                 </form>
             {% else %}

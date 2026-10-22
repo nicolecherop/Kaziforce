@@ -51,6 +51,9 @@ class InterviewForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["starts_at"].widget.attrs["min"] = timezone.localtime().strftime(
+            "%Y-%m-%dT%H:%M"
+        )
         self.fields["format"].choices = [
             (Interview.Format.IN_PERSON, "In person"),
             (Interview.Format.PHONE, "Phone call"),

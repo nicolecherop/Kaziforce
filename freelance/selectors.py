@@ -70,6 +70,8 @@ def freelance_search(data, project=None):
         qs = qs.filter(work_mode__in=[data["work_mode"], "flexible"])
     if data.get("rate_unit"):
         qs = qs.filter(rate_unit=data["rate_unit"])
+    if data.get("minimum_rate") is not None:
+        qs = qs.filter(rate__gte=data["minimum_rate"])
     if data.get("maximum_rate") is not None:
         qs = qs.filter(rate__lte=data["maximum_rate"])
     start, end = data.get("start_date"), data.get("end_date")

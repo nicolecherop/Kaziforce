@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.forms import BaseInlineFormSet, inlineformset_factory
 from django.utils import timezone
 
+from config.date_fields import configure_future_dates
 from candidates.validators import validate_phone_number
 from .contact_rules import (
     validate_no_contacts,
@@ -64,8 +65,18 @@ class FreelancerForm(forms.ModelForm):
             "available_from": "Accepted bookings reserve their full date range.",
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        configure_future_dates(self, start="available_from", end=None)
+
     def clean(self):
         data = super().clean()
+        available = data.get("available_from")
+        original = (
+            self.instance.available_from if not self.instance._state.adding else None
+        )
+        if available and available < timezone.localdate() and available != original:
+            self.add_error("available_from", "Choose today or a future date.")
         validate_contact_fields(self, data, ("title", "about", "location"))
         if data.get("accepting_bookings") and not data.get(
             "share_professional_profile"
@@ -158,7 +169,9 @@ class ProjectForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        configure_future_dates(self)
         self.original_start = self.instance.start_date
+        self.original_end = self.instance.end_date
         if self.instance.pk and not self.instance._state.adding:
             self.fields["skill_names"].initial = ", ".join(self.instance.skills)
 
@@ -183,7 +196,8 @@ class ProjectForm(forms.ModelForm):
             self,
             data,
             allow_past=not self.instance._state.adding
-            and data.get("start_date") == self.original_start,
+            and data.get("start_date") == self.original_start
+            and data.get("end_date") == self.original_end,
         )
         # Editing a published project never changes an existing booking agreement.
         self.instance.skills = data.get("skill_names", [])
@@ -195,8 +209,10 @@ def validate_dates(form, data, allow_past=False):
     start, end = data.get("start_date"), data.get("end_date")
     if start and end and end < start:
         form.add_error("end_date", "The end date must be on or after the start date.")
-    if start and start < timezone.localdate() and not allow_past:
-        form.add_error("start_date", "Choose today or a future date.")
+    if not allow_past:
+        for name, value in (("start_date", start), ("end_date", end)):
+            if value and value < timezone.localdate():
+                form.add_error(name, "Choose today or a future date.")
 
 
 class BookingForm(forms.ModelForm):
@@ -234,6 +250,10 @@ class BookingForm(forms.ModelForm):
             "total_price": "No advance payment is required. Record payment after the work is completed.",
             "cancellation_terms": "Agree when cancellation is allowed and how to settle any completed work or refunds.",
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        configure_future_dates(self)
 
     def clean(self):
         data = super().clean()

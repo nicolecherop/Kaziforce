@@ -25,3 +25,10 @@ Use that account's email and password at `/admin/`. Staff access and model permi
 ## Verification
 
 `tests/test_admin_panel.py` covers summaries, permission isolation, staff/role/inactive boundaries, email sign-in, draft privacy, search/filters, read-only protections, escaping, protected downloads and unchanged saved records. Run `python scripts/check_postgres.py test tests --keepdb --noinput` against the dedicated PostgreSQL test database. Human acceptance remains a separate step.
+
+
+### Confirming important decisions
+
+The site asks for confirmation before completing or cancelling freelance work, accepting bookings, recording receipts, requesting M-Pesa payments, submitting applications and reviews, changing application status, sending or cancelling interviews, deleting library documents, closing jobs, blocking conversations, or disabling sign-in protections. Cancelling the prompt leaves the form available for editing and sends no request.
+
+Admin saves ask for confirmation when account activation, staff/superuser access, roles, groups, permissions, ownership, status, review visibility, report resolution, or booking availability changes. Other admin bulk actions ask for confirmation; Django retains its existing individual and bulk deletion review pages. Routine unchanged saves do not prompt. These browser confirmations prevent accidental submissions; existing server-side permissions, payment verification, and transition validation remain authoritative.

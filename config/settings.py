@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "matching",
     "pages",
     "freelance",
+    "mpesa",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -189,3 +190,15 @@ CACHES = {
 TEMPLATES[0]["OPTIONS"]["context_processors"].append(
     "accounts.auth_context.auth_options"
 )
+
+
+# Sandbox-only integration. No production host, payouts or live-mode switch exists.
+MPESA_SANDBOX = {
+    "enabled": os.getenv("MPESA_SANDBOX_ENABLED", "false").lower() == "true",
+    "consumer_key": os.getenv("MPESA_CONSUMER_KEY", ""),
+    "consumer_secret": os.getenv("MPESA_CONSUMER_SECRET", ""),
+    "shortcode": os.getenv("MPESA_SANDBOX_SHORTCODE", ""),
+    "passkey": os.getenv("MPESA_SANDBOX_PASSKEY", ""),
+    "callback_url": os.getenv("MPESA_SANDBOX_CALLBACK_URL", ""),
+}
+ACCOUNT_RATE_LIMITS["mpesa_sandbox"] = "10/m/key,30/m/ip"

@@ -18,6 +18,8 @@ from .forms import (
     ReviewForm,
 )
 from .models import Booking
+from .pricing import commission_breakdown
+from mpesa.services import payment_summary
 from .services import (
     request_booking,
     booking_transition,
@@ -105,15 +107,13 @@ def booking_context(request, booking):
             actions = [("request_completion", "Mark work complete")]
         else:
             completion_available_from = booking.start_date
-    if (
-        booking.status == "completion_requested"
-        and is_recruiter
-        and not booking.cancellation_requested_by_id
-    ):
-        actions = [
-            ("confirm_completion", "Confirm completion"),
-            ("request_changes", "Request further work"),
-        ]
+    if is_recruiter and booking.status in {"accepted", "completion_requested"}:
+        actions = [("confirm_completion", "Confirm completion")]
+        if (
+            booking.status == "completion_requested"
+            and not booking.cancellation_requested_by_id
+        ):
+            actions.append(("request_changes", "Request further work"))
     if booking.cancellation_requested_by_id:
         if booking.cancellation_requested_by_id == request.user.pk:
             actions.append(("withdraw_cancel", "Withdraw cancellation request"))
@@ -126,9 +126,18 @@ def booking_context(request, booking):
             )
     return {
         "booking": booking,
+        "commission": commission_breakdown(booking.total_price),
+        "payment_summary": payment_summary(booking),
         "is_recruiter": is_recruiter,
         "actions": actions,
         "completion_available_from": completion_available_from,
+        "completion_blocked": booking.start_date > timezone.localdate()
+        or bool(booking.cancellation_requested_by_id),
+        "recruiter_completion_date": (
+            booking.start_date
+            if is_recruiter and booking.start_date > timezone.localdate()
+            else None
+        ),
         "can_accept": booking.status == "requested"
         and not is_recruiter
         and not booking.deposit_amount,
@@ -201,6 +210,11 @@ def booking_detail(request, pk):
                 else:
                     context["action_errors"] = error.messages
             else:
+                if action == "confirm_completion":
+                    messages.success(
+                        request, "Work completion confirmed. Continue to payment."
+                    )
+                    return redirect("mpesa:booking", booking_id=booking.pk)
                 messages.success(request, "Booking updated.")
                 return redirect("freelance:booking", pk=booking.pk)
         return render(request, "freelance/booking_detail.html", context, status=400)

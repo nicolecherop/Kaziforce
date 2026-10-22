@@ -1,0 +1,5 @@
+<dl class="commission-breakdown">
+    <dt>Agreed total</dt><dd>KES {{ breakdown.gross|floatformat:2 }}</dd>
+    <dt>KaziForce commission (10%)</dt><dd>KES {{ breakdown.commission|floatformat:2 }}</dd>
+    <dt>Worker share (90%, before transaction fees)</dt><dd><strong>KES {{ breakdown.worker_share|floatformat:2 }}</strong></dd>
+</dl>

@@ -1,0 +1,76 @@
+{% extends "freelance/base.html" %}
+{% load static %}
+{% block title %}Payment | KaziForce{% endblock %}
+{% block freelance_content %}
+    <a class="back-to-list" href="{% url 'freelance:booking' pk=booking.pk %}">← Back to booking</a>
+    <header class="page-heading">
+        <p class="eyebrow">Freelance work / Payment</p>
+        <h1>Payment for {{ booking.title }}</h1>
+        <p>View your balance, payment history and earnings breakdown.</p>
+    </header>
+    <section class="workspace-panel" aria-labelledby="payment-summary-title">
+        <h2 id="payment-summary-title">{{ payment_summary.label }}</h2>
+        <dl class="commission-breakdown">
+            <dt>Agreed total</dt><dd>KES {{ booking.total_price|floatformat:2 }}</dd>
+            <dt>Received through M-Pesa</dt><dd>KES {{ payment_summary.mpesa_received|floatformat:2 }}</dd>
+            {% if payment_summary.other_received %}<dt>Other confirmed payments, less refunds</dt><dd>KES {{ payment_summary.other_received|floatformat:2 }}</dd>{% endif %}
+            <dt>Total received</dt><dd>KES {{ payment_summary.received|floatformat:2 }}</dd>
+            <dt>Remaining balance</dt><dd><strong>KES {{ payment_summary.remaining|floatformat:2 }}</strong></dd>
+        </dl>
+        {% if payment_summary.is_paid %}
+            <p role="status">The booking balance has been paid in full.</p>
+        {% elif payment_summary.mpesa_received %}
+            <p>Your payment has been received. You can pay the remaining balance below.</p>
+        {% endif %}
+        <p>Worker payout: <strong>Not sent through KaziForce</strong>. Payment collection and worker receipt are recorded separately.</p>
+    </section>
+    <section class="workspace-panel">
+        <h2>Price breakdown</h2>
+        {% include "freelance/components/commission_breakdown.html" with breakdown=commission %}
+        <p>The commission is included in the agreed total. Transaction fees are excluded from this calculation.</p>
+    </section>
+    <section class="workspace-panel">
+        <h2>Pay with M-Pesa</h2>
+        {% if not sandbox_ready %}
+            <p>M-Pesa is currently unavailable. Please try again later.</p>
+        {% elif booking.status != "completed" %}
+            <p>Payment becomes available after the recruiter confirms completion.</p>
+        {% elif has_pending %}
+            <p role="status">We are checking your payment. You do not need to send another request.</p>
+        {% elif payment_summary.is_paid %}
+            <p>No further payment is required.</p>
+        {% elif payment_summary.other_pending > 0 %}
+            <p>A direct-payment report is awaiting recipient confirmation. Resolve it before sending another payment.</p>
+        {% elif is_recruiter and payment_summary.remaining >= 1 %}
+            <p>Recipient shortcode: <strong>{{ recipient_shortcode }}</strong>. Confirm the recipient and amount in your M-Pesa prompt.</p>
+            <form method="post" novalidate data-confirm-payment="{{ recipient_shortcode }}">
+                {% csrf_token %}
+                {% include "freelance/components/form.html" %}
+                <button class="button">Pay with M-Pesa</button>
+            </form>
+        {% elif payment_summary.remaining > 0 and payment_summary.remaining < 1 %}
+            <p>The remaining balance is below M-Pesa's whole-shilling minimum. Arrange the balance directly.</p>
+        {% endif %}
+        {% if form.errors and has_pending %}{% include "components/form_errors.html" %}{% endif %}
+    </section>
+    <section class="workspace-panel">
+        <h2>Payment history</h2>
+        {% for attempt in attempts %}
+            <article class="profile-record">
+                <h3>KES {{ attempt.amount }} · {{ attempt.payment_status_label }}</h3>
+                <p>KaziForce commission (10%): <strong>KES {{ attempt.commission.commission|floatformat:2 }}</strong> · Worker share before fees: <strong>KES {{ attempt.commission.worker_share|floatformat:2 }}</strong>.</p>
+                <p>{{ attempt.created_at|date:"j M Y, H:i" }} EAT · {{ attempt.masked_phone }} · Recipient shortcode {{ attempt.shortcode }}</p>
+                {% if attempt.status == "unknown" %}<p>We could not confirm submission. Contact support before making another payment request.</p>{% endif %}
+                {% if is_recruiter and attempt.status != "success" and attempt.status != "failed" %}
+                    <form method="post" action="{% url 'mpesa:check' booking_id=booking.pk pk=attempt.pk %}"
+                          {% if attempt.status == "pending" and attempt.checkout_request_id %}data-payment-check{% endif %}>
+                        {% csrf_token %}
+                        <button class="button button-secondary">Check payment status</button>
+                        <p class="small-copy" data-payment-check-message role="status"></p>
+                    </form>
+                {% endif %}
+            </article>
+        {% empty %}<p>No M-Pesa payments yet.</p>{% endfor %}
+    </section>
+{% endblock %}
+{% block extra_js %}{{ block.super }}<script src="{% static 'js/payments.js' %}" defer></script>{% endblock %}

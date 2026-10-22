@@ -23,7 +23,8 @@
         {% block footer %}
             {% include "components/footer.html" %}
         {% endblock %}
-        <script src="{% static 'js/site.js' %}" defer></script>
+        <script src="{% static 'js/site.js' %}?v=20261022-date-limits" defer></script>
+        <script src="{% static 'js/confirmations.js' %}?v=20261022" defer></script>
         {% block extra_js %}{% endblock %}
     </body>
 </html>

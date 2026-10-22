@@ -1,110 +1,213 @@
 # KaziForce
 
-A Django candidate–job matching application. Skill names are standardized against a versioned local ESCO reference catalogue. Matching uses TF-IDF, cosine similarity and recruiter priorities with saved evidence and explanations.
+KaziForce is a Django and PostgreSQL application for employment recruitment and short-term freelance work. Candidates maintain professional profiles, find suitable opportunities and track applications. Recruiters publish jobs, review applicants, arrange interviews and book freelancers.
 
-## Current stage
+## Features
 
-Candidates enter their professional information manually, including skills, education, certifications, work experience and portfolio links. CVs, degree documents and certificates are private attachments for recruiters to read. Candidates can start each job application with their saved profile, tailor an independent copy, save a private draft and choose attachments before submitting. Recruiters can publish, edit and close jobs with required/preferred skills, priorities, education and relevant experience requirements, read submitted applications and update their statuses. Local ESCO labels provide skill suggestions and deterministic standardization; all entered skill names remain visible with plain-language messages where needed. Candidates can request up to ten job recommendations scoring at least 70%, with an overall score and general guidance. Recruiters can review their ten highest applicant scores with detailed explanations and no minimum-score filter. Results preserve submitted evidence and reference versions.
+### Candidates
 
-## Local setup on Windows
+- Maintain skills, work experience, education, certifications, portfolio links and contact information.
+- Upload private CVs, degree documents and certificates. Information is entered manually; uploaded documents are not parsed or used for automatic extraction.
+- Start an application from a saved profile, tailor a separate copy for the job, save a draft and select supporting documents before submission.
+- View application progress and interview arrangements, including the recruiter's contact details.
+- Request up to ten job recommendations with a match score of at least 70%, with general guidance for improving the profile.
 
-The [administrator panel](docs/administration.md) at `/admin/` provides permission-aware summaries and read-only recruitment monitoring. Sign in with an active staff account's email and password.
+### Recruiters
 
-Candidates can add contact details and tailor them for each application. Recruiters can schedule, update and cancel interviews for shortlisted applicants, share recruiter contacts and track email delivery. See [interview invitations and contacts](docs/interviews.md).
+- Create, edit, publish and close jobs with structured skills, priorities, qualification and experience requirements.
+- Read submitted applications and documents, review applicant rankings and update application statuses.
+- Schedule, update and cancel interviews for shortlisted candidates. Physical meetings are the default; invitations share meeting details and recruiter contacts, with email-delivery tracking.
 
-Use Python 3.12 or later. Run these commands inside this folder:
+### Freelance work
+
+- Candidates can create a freelance profile, list services and rates, and switch availability for new bookings on or off.
+- Recruiters can find freelancers, publish short projects, discuss terms through private in-app messages and request bookings.
+- Contact details unlock after the worker accepts the booking and agrees to share them. No deposit is required.
+- Accepted bookings reserve the agreed dates. Completion, cancellation requests, payment reports and refund acknowledgements follow the saved agreement.
+- Recruiters can leave one rating and review per completed booking. Completed-work ratings appear in freelancer discovery.
+- Cash and direct payments are arranged outside KaziForce. The site records participant reports and confirmations; it does not collect, hold or transfer money.
+
+### Accounts and administration
+
+- Email-and-password sign-in and **Continue with Google**.
+- New public accounts, including Google registrations, must confirm their email using a six-digit code before accessing a workspace.
+- Codes expire after five minutes. Users can resend after one minute; only the newest code works.
+- Optional email two-step verification for ordinary users; required email codes for staff when the feature is activated.
+- Email password reset using expiring, single-use links. Google-only accounts manage their Google password through Google.
+- Existing users connect Google from **Account security**; matching email addresses never automatically merge accounts.
+- A branded Django administrator panel with model permissions, summaries, filtering and protected recruitment monitoring. Public registration cannot grant staff access.
+
+## Technology and matching
+
+- Python 3.12 or later; Django 5.2; PostgreSQL; django-allauth for Google identity and staged email-code sign-in.
+- Django templates with shared components, CSS and JavaScript. Each page has a descriptive template file.
+- A versioned local ESCO skill catalogue supports suggestions and skill-name standardization.
+- Matching combines skill coverage, recruiter priorities, TF-IDF cosine similarity, education and declared experience. Saved runs retain their inputs, reference versions and explanations.
+
+Candidates receive general recommendations; detailed score calculations are available to the recruiting owner. Recruiter rankings show up to ten applicants without the candidate recommendation threshold. All applications remain available for manual review. Scores describe profile alignment, are not hiring probabilities and never automatically change an application's status.
+
+## Run locally on Windows
+
+Run commands from the KaziForce project directory. The existing local checkout is:
+
+```text
+C:\Users\Nicole\Desktop\Assignments\IS Project 2\Kaziforce
+```
+
+For a new checkout, create a virtual environment and install the application dependencies:
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.lock.txt
-Copy-Item .env.example .env
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Set a random `DJANGO_SECRET_KEY` in `.env`. PostgreSQL is the default. The local project uses database `kaziforce`, login `kaziforce_app` and test database `test_kaziforce`. See [PostgreSQL setup and table names](docs/postgresql.md) for the connection, transfer tools, backups and test instructions. For a separate SQLite-only prototype, explicitly set `DATABASE_ENGINE=sqlite` in `.env`.
+Create `.env` from the example only if it does not already exist:
+
+```powershell
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+```
+
+Set a random `DJANGO_SECRET_KEY` and configure the PostgreSQL connection locally. Keep existing `.env` values when updating an installed project. The database names are:
+
+| Purpose | Name |
+| --- | --- |
+| Application database | `kaziforce` |
+| Application login | `kaziforce_app` |
+| Separate test database | `test_kaziforce` |
+
+The application login is not a PostgreSQL superuser and does not have database-creation privileges. Follow [PostgreSQL setup](docs/postgresql.md) for initial provisioning, connection settings, table names and backups. The existing local database is already configured.
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py migrate
-.\.venv\Scripts\python.exe manage.py createsuperuser
-.\.venv\Scripts\python.exe manage.py runserver
+.\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8001
 ```
 
-Open http://127.0.0.1:8000/. Keep `.env`, uploaded CVs and database files out of version control. Production requires a deployment-specific security review, HTTPS and `DJANGO_DEBUG=false`.
+Open [KaziForce](http://127.0.0.1:8001/), [sign in](http://127.0.0.1:8001/accounts/sign-in/) or [create an account](http://127.0.0.1:8001/accounts/create-account/).
 
-`requirements.txt` defines supported dependency ranges. `requirements.lock.txt` records the exact verified versions. Keep your own `.env` settings when updating the code. To preview temporarily with SQLite without editing `.env`, run `$env:DATABASE_ENGINE = 'sqlite'` in the server terminal before `runserver`.
+For a new staff account, run the following command and enter its credentials locally. Use a real email inbox because staff sign-in requires a code when email verification is enabled.
 
-## Accounts and email
+```powershell
+.\.venv\Scripts\python.exe manage.py createsuperuser
+```
 
-Public registration accepts Candidate and Recruiter roles only. It never grants Django staff or superuser permissions. Email addresses are unique regardless of case. Password validation and salted hashing use Django's built-in authentication components. The internal username is generated; users sign in with their email address.
+Administration is available at [the administrator panel](http://127.0.0.1:8001/admin/). A product role alone does not grant Django staff permissions.
 
-Password reset uses expiring, single-use Django tokens. In debug mode, messages appear in the server console instead of being sent. For delivery, configure `DJANGO_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend` and the `EMAIL_*` settings shown in `.env.example`. No outbound email service is configured by this implementation.
+PostgreSQL stores application records and uploaded-file metadata. The actual private files remain in `private_uploads/`; they are not stored inside PostgreSQL. SQLite is available only when explicitly selected for a separate isolated environment.
 
-The Terms and Privacy pages describe the current academic prototype. They need review before public use. Before deployment, configure PostgreSQL and HTTPS, email delivery, retention and deletion procedures, and sign-in abuse protection.
+## Configure email and Google sign-in
 
-## Front-end files
+Credentials belong in the ignored local `.env`, never in the README, screenshots or source control. The existing installation has Gmail delivery and Google sign-in connected; a fresh checkout needs its own configuration.
 
-Each page is a named template under `templates/`. `components/` contains navigation, footer, icons and form controls. Shared styling is in `static/css/site.css`; page-specific styles are in `landing.css` and `accounts.css`. `site.js` handles password visibility and error focus. `landing.js` manages video playback, reduced-motion preferences and still-image fallback.
+For Gmail delivery, configure `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `EMAIL_USE_TLS` and `DEFAULT_FROM_EMAIL`. Use a Google app password rather than the Gmail account password. After confirming receipt of the setup email, activate:
 
-The supplied video is encoded as a roughly 2 MB, silent 1080p MP4 for browser delivery. Its poster is a frame from the video. It autoplays when motion and data preferences allow, without an on-page playback control or scroll prompt. Six distinct photographs supplied by the project owner are used once each across the public and account pages. Their source filenames and placements are recorded in `docs/assets.md`.
+```dotenv
+DJANGO_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_TWO_STEP_ENABLED=true
+```
 
-## Project layout
+Check configuration without displaying credentials:
 
-Candidate pages are `templates/candidates/dashboard.html`, `profile.html` and `profile_edit.html`, using a shared workspace layout. `forms.css` provides shared field styles; `candidates.css` styles the workspace. `profile.js` adds repeatable entries and maintains formset indices. Without JavaScript, each section supports one new entry per save.
+```powershell
+.\.venv\Scripts\python.exe scripts/check_signin_setup.py
+```
 
-- `config`: project configuration and root routes.
-- `accounts`: user identity, authentication and roles.
-- `candidates`: manually entered profiles, private CV/degree/certificate documents, forms and ownership checks.
-- `jobs`: recruiter-owned vacancies, structured requirements and priorities, candidate job browsing and search. See [job requirements](docs/job-requirements.md).
-- `applications`: independent profile copies, private drafts, immutable submitted attachments and status tracking.
-- `matching`: ESCO imports and skill lookup, fixed public TF-IDF reference, profile/job scoring, private top-ten reviews and reproducible history. See [skill standardization](docs/skill-standardization.md) and [matching](docs/matching.md).
-- `pages`: public page routes.
-- `templates`: one named template per page plus shared components.
-- `static`: styles, scripts and approved public media assets.
-- `tests`: cross-module tests. Feature-specific tests can live in their app.
-- `docs`: architecture and implementation decisions.
+To explicitly send one setup message to the configured sender's own inbox:
 
-## Verification
+```powershell
+.\.venv\Scripts\python.exe scripts/check_signin_setup.py --test-email
+```
 
-The profile editor uses the signed-in account as its owner and rejects related entries from other profiles. It validates every section before saving everything in one transaction. Blank new entries are ignored. Skill names are unique per profile without case differences. Dates must be consistent, and external links accept HTTP or HTTPS only.
+New registrations cannot access a workspace if email delivery is unavailable. Existing sample accounts with non-deliverable addresses should not be enrolled in repeated email verification.
 
-Run `manage.py migrate` after updating. After importing ESCO, run `manage.py build_matching_corpus` to prepare the fixed public scoring reference. Candidates use **My matches**; recruiters open **Applicants → Review applicant rankings**. Scores support manual review and do not change application status. See [matching setup, formula and limitations](docs/matching.md).
+For Google, create a **Web application** OAuth client and save `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` locally. Register this exact authorized redirect URI:
 
-CVs accept PDF/DOCX, including scanned documents. Degree and certificate evidence accepts PDF/JPG/PNG. Files are limited to 5 MB, with up to 20 library documents and 10 attachments per application. File validation checks formats and signatures without extracting text. The extraction feature and parser dependencies have been removed. The replacement migration preserves existing CV originals and removes extraction-only database fields.
+```text
+http://127.0.0.1:8001/accounts/auth/google/login/callback/
+```
 
-Documents use the Git-ignored `private_uploads/` directory; never expose it through a public media route. Candidates choose which files to share for a job. The recruiter owning that job can read submitted copies, while candidate drafts remain private. See [manual profiles and applications](docs/manual-applications.md) for source organization, ownership, snapshots, storage and deployment notes.
+Restart Django after changing `.env`. The Google button appears when both credentials are configured. Only email and basic profile access are requested; this does not enable Gmail inbox access, Google Calendar or Google Meet. Use Chrome or Edge for Google sign-in if an embedded browser is rejected.
+
+See [sign-in and email setup](docs/sign-in-setup.md) for the complete configuration, code limits, account linking and recovery boundaries.
+
+## Matching reference setup
+
+The existing installation has an imported ESCO catalogue. For a fresh installation, follow [skill standardization](docs/skill-standardization.md) to import the reference, then build the fixed public TF-IDF corpus:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py build_matching_corpus
+```
+
+Candidates refresh recommendations from **My matches**. Recruiters open a job's **Applicants** and select **Review applicant rankings**. Refreshing creates a saved run; simply opening a page does not recalculate results. See [matching calculations and limitations](docs/matching.md).
+
+## Project structure
+
+| Directory | Responsibility |
+| --- | --- |
+| `config/` | Settings, root routes and administrator configuration |
+| `accounts/` | Identity, registration, email verification, Google linking and roles |
+| `candidates/` | Professional profiles, contact details and private document library |
+| `jobs/` | Recruiter vacancies, requirements and candidate job browsing |
+| `applications/` | Private drafts, submitted profile copies, attachments and interview workflows |
+| `matching/` | ESCO reference import, skill lookup, scoring and saved matching evidence |
+| `freelance/` | Services, projects, discovery, messages, bookings, payment reports and reviews |
+| `mpesa/` | Sandbox-only Daraja collections, callback hints and authenticated status checks |
+| `pages/` | Public pages and workspace presentation |
+| `templates/` | Named page templates and reusable components |
+| `static/` | CSS, JavaScript, fonts and public media |
+| `tests/` | Cross-module regression and security tests |
+| `scripts/` | Setup, configuration checks, data management and evaluation tools |
+| `docs/` | Setup instructions, workflows, verification records and acceptance checklist |
+| `evaluation/` | Versioned synthetic matching dataset and evaluation code |
+
+The supplied photographs, video and official Google sign-in logo are recorded in [asset documentation](docs/assets.md). The homepage video respects reduced-motion and data-saving preferences.
+
+## Security and privacy
+
+- Django password hashing, validation and CSRF protection; case-insensitive unique account emails.
+- Rate-limited sign-in, registration and code verification, with session-bound codes and limited attempts and resends.
+- Workspace access is withheld until required verification succeeds. An email delivery failure does not bypass verification.
+- Ownership checks protect profiles, applications, conversations, bookings and documents. Submitted applications retain their own profile and attachment copies.
+- Private uploads are served through authorized routes, not public media URLs. Candidates choose the documents shared with an application.
+- Staff access follows Django permissions. Protected monitoring records are read-only in administration; recruitment actions remain in the recruiter workspace.
+
+Keep `.env`, `.env.postgres`, `private_uploads/` and `.backups/` private. Database exports include account and personal information. Back up PostgreSQL and private files together. For public deployment, configure HTTPS, production hosts, secure settings and `DJANGO_DEBUG=false`, and review recovery, retention and operational arrangements.
+
+## Verification and remaining work
+
+Run the regression suite against the separate, pre-created PostgreSQL test database:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py check
-.\.venv\Scripts\python.exe manage.py test tests
+.\.venv\Scripts\python.exe manage.py test tests --keepdb
 .\.venv\Scripts\python.exe manage.py makemigrations --check --dry-run
 ```
 
-If Node.js is available, run `node --test tests/video.test.cjs` to check reduced-motion, save-data, background playback and failure fallbacks. Node is only needed for these front-end checks; the application runs on Django.
-
-For PostgreSQL, run `manage.py test tests --keepdb` using the pre-created `test_kaziforce` database. The dedicated application login does not have database-creation privileges. Tests include PostgreSQL concurrency verification; SQLite skips that test.
-
-## Freelance work
-
-Candidates can opt into freelance services through **Freelance work**. Recruiters can
-find available workers, publish short projects, discuss terms, request bookings,
-record cash/direct payments and review completed work. The employment flow remains
-separate. Read [freelance setup, workflows and payment boundaries](docs/freelance.md).
-Run `manage.py migrate` after updating to create the new PostgreSQL tables. M-Pesa
-collection/payouts are not connected.
-
-## Matching evaluation and acceptance testing
-
-Run the isolated evaluation from this folder:
+For focused authentication checks:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/evaluate_project.py
+.\.venv\Scripts\python.exe manage.py test tests.test_accounts tests.test_signin_security tests.test_registration_verification --keepdb
 ```
 
-This uses five fictional jobs, twenty profiles and 100 predeclared relevance labels with the full local ESCO reference. It measures rankings in both directions and checks the registration-to-application-to-recruiter workflow through actual HTTP forms with CSRF enforcement. A new temporary SQLite database, private storage and in-memory email keep it separate from development PostgreSQL, live accounts and uploads. No network download or email delivery is needed.
+The latest full PostgreSQL regression run passed 327 tests, including 20 M-Pesa sandbox tests. It used the separate test database and isolated feature settings; tests that require email verification explicitly enable it. Payment-provider calls were mocked, so this result does not establish external Daraja connectivity or callback delivery. Google sign-in, Gmail delivery and first-time email confirmation have also been exercised with real accounts. Real-inbox password-reset testing, complete participant acceptance testing and final documentation consolidation remain outstanding.
 
-Read the [evaluation report](docs/evaluation/report.md), [complete results](docs/evaluation/results.json) and [ranking spreadsheet](docs/evaluation/rankings.csv). These are initial synthetic engineering results, not validated hiring accuracy or completed participant testing. The [human acceptance checklist](docs/user-acceptance.md) records the user testing still to be done. Keep the original `evaluation/dataset-v1.json` labels unchanged; expand future evaluation in a new dataset version.
+If Node.js is available, `node --test tests/video.test.cjs` checks video playback and fallback behaviour. Node.js is not required to run the Django application.
 
-## Demonstration data
+The [matching evaluation report](docs/evaluation/report.md), [results](docs/evaluation/results.json) and [rankings](docs/evaluation/rankings.csv) describe a synthetic dataset of five jobs, twenty profiles and 100 relevance labels. These historical engineering results are separate from human acceptance testing and are not validated hiring accuracy. The evaluation workflow harness also needs rechecking against mandatory first-time email confirmation before its registration results are regenerated.
 
-The candidate and recruiter workspaces follow the supplied dashboard, profile, ranking and application mockups, with shared navigation, review panels and responsive tables. See [workspace structure and page flow](docs/workspace-design.md).
+A sandbox-only M-Pesa collection flow is available on completed freelance bookings. It records test transactions separately and never settles a worker's actual payment balance. Connect your own Daraja sandbox credentials and HTTPS callback using the [M-Pesa sandbox guide](docs/mpesa-sandbox.md). Live M-Pesa collection, worker payouts, Phone/Apple sign-in, Google Calendar/Meet integration and public hosting are not included.
 
-For fictional candidate profiles, jobs, submitted applications and ready-to-view matching results, see [local demo data](docs/demo-data.md). The helper records demo IDs separately, preserves existing accounts and supports removing the recorded batch.
+## Documentation
+
+| Topic | Guide |
+| --- | --- |
+| Database, table names and backups | [PostgreSQL](docs/postgresql.md) |
+| Authentication and email delivery | [Sign-in setup](docs/sign-in-setup.md) |
+| Candidate profiles and application copies | [Manual applications](docs/manual-applications.md) |
+| Job requirements | [Job requirements](docs/job-requirements.md) |
+| Skills and matching | [Skill standardization](docs/skill-standardization.md), [matching](docs/matching.md) |
+| Interviews and contacts | [Interviews](docs/interviews.md) |
+| Freelance workflows and payment boundaries | [Freelance work](docs/freelance.md), [contact privacy](docs/freelance-contact-privacy.md) |
+| Administrator permissions | [Administration](docs/administration.md) |
+| Page layout and navigation | [Workspace design](docs/workspace-design.md) |
+| Fictional accounts and records | [Recruitment sample data](docs/demo-data.md), [freelance sample data](docs/freelance-sample-data.md) |
+| Participant testing | [User acceptance checklist](docs/user-acceptance.md) |

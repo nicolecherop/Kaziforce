@@ -23,6 +23,7 @@
                 <p class="freelance-text">{{ booking.scope|contact_safe:booking.accepted_at }}</p>
                 <p>{{ booking.start_date|date:"j M Y" }} – {{ booking.end_date|date:"j M Y" }} · {{ booking.location|contact_safe:booking.accepted_at }}</p>
                 <h3>Full price: KES {{ booking.total_price|floatformat:2 }}</h3>
+                {% include "freelance/components/commission_breakdown.html" with breakdown=commission %}
                 {% if booking.deposit_amount %}
                     <p>Previously agreed advance payment: KES {{ booking.deposit_amount|floatformat:2 }} (included in the full price).</p>
                 {% else %}
@@ -35,7 +36,7 @@
                 <section class="workspace-panel">
                     <h2>Review and accept this booking</h2>
                     <p>Acceptance reserves these dates and shares the contact details below with this recruiter. If the terms need changing, discuss them before accepting.</p>
-                    <form method="post" novalidate>
+                    <form data-confirm-booking method="post" novalidate>
                         {% csrf_token %}
                         {% include "freelance/components/form.html" with form=accept_form %}
                         <button class="button" name="action" value="accept">Accept booking</button>
@@ -60,13 +61,17 @@
                     {% if completion_available_from %}
                         <p>You can mark work complete from {{ completion_available_from|date:"j M Y" }}, once the agreed work is finished.</p>
                     {% endif %}
+                    {% if is_recruiter and completion_blocked %}
+                        {% if booking.cancellation_requested_by_id %}<p>Resolve the cancellation request before confirming completion.</p>
+                        {% elif recruiter_completion_date %}<p>Completion confirmation is available from {{ recruiter_completion_date|date:"j M Y" }}.</p>{% endif %}
+                    {% endif %}
                     <div class="action-row">
                         {% for value,label in actions %}
-                            <form method="post">
+                            <form data-confirm-booking method="post">
                                 {% csrf_token %}
                                 <button class="button button-secondary"
                                         name="action"
-                                        value="{{ value }}">{{ label }}</button>
+                                        value="{{ value }}" {% if value == 'confirm_completion' and completion_blocked %}disabled{% endif %}>{{ label }}</button>
                             </form>
                         {% endfor %}
                     </div>
@@ -76,7 +81,7 @@
                 <details class="workspace-panel" {% if cancel_form.errors %}open{% endif %}>
                     <summary>Request cancellation</summary>
                     <p>The other party must agree before this confirmed booking is cancelled.</p>
-                    <form method="post" novalidate>
+                    <form data-confirm-booking method="post" novalidate>
                         {% csrf_token %}
                         {% include "freelance/components/form.html" with form=cancel_form %}
                         <button class="button button-secondary"
@@ -98,18 +103,18 @@
                         <p class="small-copy">Reported {{ payment.created_at|date:"j M Y, H:i" }} EAT{% if payment.confirmed_at %} · Receipt confirmed {{ payment.confirmed_at|date:"j M Y, H:i" }} EAT{% endif %}
                         </p>
                         {% if payment.status == "reported" or payment.status == "disputed" %}
-                            <form method="post"
+                            <form data-confirm-booking method="post"
                                   action="{% url 'freelance:payment_action' booking_id=booking.pk pk=payment.pk %}"
                                   class="action-row">
                                 {% csrf_token %}
                                 {% if payment.reported_by_id == user.pk %}
                                     <button class="button button-small button-secondary"
                                             name="action"
-                                            value="withdraw">Withdraw report</button>
+                                            data-confirm="Are you sure you want to withdraw this payment report?" value="withdraw">Withdraw report</button>
                                 {% else %}
                                     <button class="button button-small"
                                             name="action"
-                                            value="confirm">I received this payment</button>
+                                            data-confirm="Are you sure you received KES {{ payment.amount|floatformat:2 }}? This will be recorded as a confirmed receipt." value="confirm">I received this payment</button>
                                     {% if payment.status == "reported" %}
                                         <button class="button button-small button-secondary"
                                                 name="action"
@@ -129,7 +134,7 @@
                         {% if is_recruiter %}Report a payment you have made{% else %}Report a refund you have sent{% endif %}
                     </summary>
                     <p>Only report money already sent. The recipient must confirm receipt.</p>
-                    <form method="post" novalidate>
+                    <form data-confirm-booking method="post" novalidate>
                         {% csrf_token %}
                         {% include "freelance/components/form.html" with form=payment_form %}
                         <button class="button" name="action" value="report_payment">Save payment report</button>
@@ -140,7 +145,7 @@
                 <section class="workspace-panel">
                     <h2>Review this freelancer</h2>
                     <p>Share feedback on the quality, communication and reliability of this completed assignment.</p>
-                    <form method="post" novalidate>
+                    <form data-confirm-booking method="post" novalidate>
                         {% csrf_token %}
                         {% include "freelance/components/form.html" with form=review_form %}
                         <button class="button" name="action" value="review">Submit review</button>
@@ -172,8 +177,15 @@
         <aside>
             <section class="workspace-panel">
                 <h2>Payment summary</h2>
+                <h3>{{ payment_summary.label }}</h3>
+                <p>Received through M-Pesa: <strong>KES {{ payment_summary.mpesa_received|floatformat:2 }}</strong></p>
+                <p>Remaining booking balance: <strong>KES {{ payment_summary.remaining|floatformat:2 }}</strong></p>
+                <a class="panel-link" href="{% url 'mpesa:booking' booking_id=booking.pk %}">View M-Pesa payments →</a>
+                {% if booking.status != "completed" %}
+                    <p class="small-copy">M-Pesa payments become available after the recruiter confirms work completion.</p>
+                {% endif %}
                 <p>
-                    Confirmed received: <strong>KES {{ totals.received|floatformat:2 }}</strong>
+                    Confirmed worker receipts: <strong>KES {{ totals.received|floatformat:2 }}</strong>
                 </p>
                 <p>
                     Confirmed refunded: <strong>KES {{ totals.refunded|floatformat:2 }}</strong>
@@ -182,7 +194,7 @@
                     Net received: <strong>KES {{ totals.net|floatformat:2 }}</strong>
                 </p>
                 {% if booking.status != "cancelled" %}
-                    <h3>Remaining: KES {{ totals.remaining|floatformat:2 }}</h3>
+                    <h3>Worker receipt balance: KES {{ totals.remaining|floatformat:2 }}</h3>
                 {% else %}
                     <p>Use the cancellation agreement to determine any refund due.</p>
                 {% endif %}

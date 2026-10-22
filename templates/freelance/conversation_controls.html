@@ -12,7 +12,7 @@
             {% if user.pk == thread.recruiter_id and thread.recruiter_blocked or user.pk == thread.freelancer.user_id and thread.freelancer_blocked %}
                 <button class="button button-secondary" name="action" value="unblock">Remove my block</button>
             {% else %}
-                <button class="button button-secondary" name="action" value="block">Block this conversation</button>
+                <button class="button button-secondary" name="action" data-confirm="Are you sure you want to block this conversation? New messages and booking requests will be stopped." value="block">Block this conversation</button>
             {% endif %}
         </form>
         <h2 class="panel-subheading">Report a concern</h2>

@@ -88,7 +88,7 @@
                       action="{% url 'applications:status' application.pk %}">
                     {% csrf_token %}
                     {% include "components/form_field.html" with field=status_form.status %}
-                    <button class="button button-small" type="submit">Update status</button>
+                    <button class="button button-small" data-confirm="Are you sure you want to update this application status? The candidate will see the change." type="submit">Update status</button>
                 </form>
                 <a class="panel-link"
                    href="{% url 'matches:applicants' application.job_id %}">Back to candidate rankings →</a>

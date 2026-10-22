@@ -42,6 +42,9 @@
                         <td>{{ booking.get_status_display }}</td>
                         <td>
                             <a href="{% url 'freelance:booking' pk=booking.pk %}">View booking</a>
+                            {% if booking.status == "completed" %}
+                                <a class="panel-link" href="{% url 'mpesa:booking' booking_id=booking.pk %}">M-Pesa payments</a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% empty %}
