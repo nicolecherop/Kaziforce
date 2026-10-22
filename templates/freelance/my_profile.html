@@ -1,0 +1,51 @@
+{% extends "freelance/base.html" %}
+{% block title %}My freelance profile | KaziForce{% endblock %}
+{% block freelance_content %}
+    <header class="page-heading profile-heading">
+        <div>
+            <p class="eyebrow">Freelance work</p>
+            <h1>Your next assignment starts here.</h1>
+            <p>Offer services, manage your availability and keep track of your work.</p>
+        </div>
+        <a class="button" href="{% url 'freelance:profile_edit' %}">
+            {% if profile %}Edit freelance profile{% else %}Create freelance profile{% endif %}
+        </a>
+    </header>
+    {% if profile %}
+        <div class="workspace-split">
+            <div>
+                <section class="workspace-panel">
+                    <span class="score-pill">
+                        {% if profile.accepting_bookings and profile.share_professional_profile %}Accepting bookings{% else %}Not accepting bookings{% endif %}
+                    </span>
+                    <h2 class="panel-subheading">{{ profile.title }}</h2>
+                    <p class="freelance-text">{{ profile.about }}</p>
+                    <p>{{ profile.location }} · {{ profile.get_work_mode_display }}</p>
+                    <strong>KES {{ profile.rate|floatformat:2 }} · {{ profile.get_rate_unit_display }}</strong>
+                    <p>Available from {{ profile.available_from|date:"j M Y" }}</p>
+                    <h3>Services</h3>
+                    {% for service in profile.services.all %}
+                        <h3>{{ service.title }}</h3>
+                        <p class="freelance-text">{{ service.description }}</p>
+                    {% empty %}
+                        <p>Add your services to help recruiters find you.</p>
+                    {% endfor %}
+                </section>
+                {% include "freelance/components/reviews.html" %}
+            </div>
+            <aside class="workspace-panel side-panel">
+                <h2>Your availability</h2>
+                <p>Accepted bookings reserve their full date range. Turning off new bookings hides your listing and stops new enquiries.</p>
+                <p>Existing work and messages remain available.</p>
+                <a class="panel-link" href="{% url 'freelance:bookings' %}">View my bookings →</a>
+                <a href="{% url 'freelance:projects' %}">Explore projects →</a>
+            </aside>
+        </div>
+    {% else %}
+        <section class="workspace-panel empty-panel">
+            <h2>Make room for freelance work.</h2>
+            <p>Create a listing for consultancy, project work or short assignments. You can continue applying for jobs with the same account.</p>
+            <a class="button" href="{% url 'freelance:profile_edit' %}">Set up my services</a>
+        </section>
+    {% endif %}
+{% endblock %}

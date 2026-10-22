@@ -1,0 +1,13 @@
+{% load freelance_privacy %}
+<section class="workspace-panel">
+    <h2>Reviews from completed bookings</h2>
+    {% for review in reviews %}
+        <article class="freelance-review">
+            <strong>{{ review.rating }} / 5 · {{ review.booking.title|contact_safe }}</strong>
+            <p class="freelance-text">{{ review.comment|contact_safe }}</p>
+            <p class="small-copy">{{ review.created_at|date:"j M Y" }}</p>
+        </article>
+    {% empty %}
+        <p>No reviews yet. New freelancers can still receive bookings.</p>
+    {% endfor %}
+</section>

@@ -2,6 +2,8 @@
 
 Date: 21 October 2026. Result: the checked candidate and recruiter flows completed successfully. No application code changes were needed during this pass.
 
+This is the earlier recruitment browser pass. The later [verification follow-up](final-verification.md) records current freelance and administration checks, physical interviews and a completion-action fix. The component breakdown and mapping warnings described below were subsequently replaced on candidate pages with simpler guidance; those earlier observations do not describe the current candidate interface.
+
 This record describes agent-operated browser checks. It does **not** record human participants, user satisfaction or acceptance sign-off. The [human acceptance checklist](user-acceptance.md) remains pending.
 
 ## Environment and scope

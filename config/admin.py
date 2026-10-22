@@ -22,6 +22,24 @@ class KaziForceAdminSite(AdminSite):
     index_title = "Overview"
     index_template = "admin/overview.html"
 
+    def login(self, request, extra_context=None):
+        # Share the staged password/code flow; Django's direct staff login would
+        # otherwise establish an authenticated session before email verification.
+        from accounts.views import SignInView
+
+        request.current_app = self.name
+        return SignInView.as_view(
+            template_name="admin/login.html",
+            authentication_form=self.login_form,
+            extra_context={
+                **self.each_context(request),
+                "title": "Log in",
+                "subtitle": None,
+                "app_path": request.get_full_path(),
+                **(extra_context or {}),
+            },
+        )(request)
+
     @property
     def login_form(self):
         from accounts.admin_forms import AdminEmailAuthenticationForm

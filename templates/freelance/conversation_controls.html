@@ -1,0 +1,28 @@
+{% extends "freelance/base.html" %}
+{% block title %}Conversation controls | KaziForce{% endblock %}
+{% block freelance_content %}
+    <header class="page-heading">
+        <h1>Your conversation controls</h1>
+        <p>Blocking stops new messages and booking requests. Existing booking and payment records remain available.</p>
+    </header>
+    <section class="workspace-panel freelance-form">
+        <h2>Manage messaging</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% if user.pk == thread.recruiter_id and thread.recruiter_blocked or user.pk == thread.freelancer.user_id and thread.freelancer_blocked %}
+                <button class="button button-secondary" name="action" value="unblock">Remove my block</button>
+            {% else %}
+                <button class="button button-secondary" name="action" value="block">Block this conversation</button>
+            {% endif %}
+        </form>
+        <h2 class="panel-subheading">Report a concern</h2>
+        <p>Your report is available to authorised administrators. It is not shown to the other participant.</p>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% include "freelance/components/form.html" %}
+            <button class="button" name="action" value="report">Send report</button>
+        </form>
+        <a class="panel-link"
+           href="{% url 'freelance:conversation' pk=thread.pk %}">Back to conversation</a>
+    </section>
+{% endblock %}

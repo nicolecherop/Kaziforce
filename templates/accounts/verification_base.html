@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body_class %}account-page{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/accounts.css' %}?v=20261022-google-logo">{% endblock %}
+{% block content %}
+    <div class="shell section-space">
+        <section class="account-panel compact-panel">
+            {% if messages %}<div class="notice-list" role="status">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}
+            {% block verification_content %}{% endblock %}
+        </section>
+    </div>
+{% endblock %}

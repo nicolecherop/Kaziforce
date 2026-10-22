@@ -1,0 +1,17 @@
+{% extends "freelance/base.html" %}
+{% block title %}Manage freelance project | KaziForce{% endblock %}
+{% block freelance_content %}
+    <header class="page-heading">
+        <p class="eyebrow">Freelance work / Project details</p>
+        <h1>Outline your next project.</h1>
+        <p>Describe the assignment so freelancers can discuss a clear scope and price with you. Keep contact details and web links out of the project; share them in messages after a booking is accepted.</p>
+    </header>
+    <form method="post" class="workspace-panel freelance-form" novalidate>
+        {% csrf_token %}
+        {% include "freelance/components/form.html" %}
+        <div class="action-row">
+            <button class="button">Save project</button>
+            <a href="{% url 'freelance:projects' %}">Back to projects</a>
+        </div>
+    </form>
+{% endblock %}

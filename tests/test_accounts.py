@@ -4,6 +4,7 @@ import re
 
 from django.contrib.auth import get_user_model
 from django.core import mail
+from django.core.cache import cache
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
@@ -11,6 +12,9 @@ User = get_user_model()
 
 
 class AccountWorkflowTests(TestCase):
+    def setUp(self):
+        cache.clear()
+
     def registration_data(self, **changes):
         data = {
             "full_name": "Alex Testperson",
@@ -22,6 +26,10 @@ class AccountWorkflowTests(TestCase):
         }
         return data | changes
 
+    @override_settings(
+        EMAIL_TWO_STEP_ENABLED=True,
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    )
     def test_candidate_and_recruiter_registration(self):
         for role, template in [
             ("candidate", "candidates/dashboard.html"),
@@ -37,6 +45,14 @@ class AccountWorkflowTests(TestCase):
                         is_staff="true",
                         is_superuser="true",
                     ),
+                    follow=True,
+                )
+                self.assertTemplateUsed(response, "account/confirm_login_code.html")
+                self.assertNotIn("_auth_user_id", self.client.session)
+                code = re.search(r"\b\d{6}\b", mail.outbox[-1].body).group()
+                response = self.client.post(
+                    reverse("account_confirm_login_code"),
+                    {"code": code, "action": "verify"},
                     follow=True,
                 )
                 self.assertTemplateUsed(response, template)

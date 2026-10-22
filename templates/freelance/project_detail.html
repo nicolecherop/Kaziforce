@@ -1,0 +1,53 @@
+{% extends "freelance/base.html" %}
+{% load freelance_privacy %}
+{% load workspace_ui %}
+{% block title %}{{ project.title|contact_safe }} | KaziForce{% endblock %}
+{% block freelance_content %}
+    <a class="back-to-list" href="{% url 'freelance:projects' %}">← Back to projects</a>
+    <header class="page-heading">
+        <p class="eyebrow">Short assignment</p>
+        <h1>{{ project.title|contact_safe }}</h1>
+        <p>{{ project.recruiter.get_full_name|site_text|contact_safe }} · {{ project.get_status_display }}</p>
+    </header>
+    <div class="workspace-split">
+        <section class="workspace-panel">
+            <h2>Scope and deliverables</h2>
+            <p class="freelance-text">{{ project.description|contact_safe }}</p>
+            <h3>Relevant skills</h3>
+            <div class="skill-chips">
+                {% for skill in project.skills %}
+                    <span class="skill-chip">{{ skill|contact_safe }}</span>
+                {% empty %}
+                    <p>Discuss the skills needed with the recruiter.</p>
+                {% endfor %}
+            </div>
+            <h3 class="panel-subheading">Dates and location</h3>
+            <p>{{ project.start_date|date:"j M Y" }} – {{ project.end_date|date:"j M Y" }}</p>
+            <p>{{ project.location|contact_safe }} · {{ project.get_work_mode_display }}</p>
+            <strong>Total budget: KES {{ project.budget|floatformat:2 }}</strong>
+        </section>
+        <aside class="workspace-panel side-panel">
+            {% if user.role == "recruiter" %}
+                <h2>Manage this assignment</h2>
+                <p>Closing a project stops new enquiries. Existing conversations and booking agreements remain available.</p>
+                <a class="button button-full"
+                   href="{% url 'freelance:find' %}?project={{ project.pk }}">Find freelancers</a>
+                <a class="panel-link"
+                   href="{% url 'freelance:project_edit' pk=project.pk %}">Edit or close project</a>
+            {% else %}
+                <h2>Introduce your approach</h2>
+                <p>Explain how you would deliver the work and suggest a price. The recruiter can send a booking request after you agree the details.</p>
+                {% if profile %}
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% include "freelance/components/form.html" %}
+                        <button class="button button-full">Send proposal</button>
+                    </form>
+                {% else %}
+                    <a class="button button-full"
+                       href="{% url 'freelance:profile_edit' %}">Enable my freelance profile</a>
+                {% endif %}
+            {% endif %}
+        </aside>
+    </div>
+{% endblock %}

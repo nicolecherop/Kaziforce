@@ -1,0 +1,36 @@
+{% extends "freelance/base.html" %}
+{% load freelance_privacy %}
+{% load workspace_ui %}
+{% block title %}Freelance messages | KaziForce{% endblock %}
+{% block freelance_content %}
+    <header class="page-heading">
+        <p class="eyebrow">Freelance work / Messages</p>
+        <h1>Keep the conversation moving.</h1>
+        <p>Discuss assignments and agree the details before booking.</p>
+    </header>
+    {% for thread in page %}
+        <article class="workspace-panel">
+            <div class="section-title-row">
+                <h2>
+                    <a href="{% url 'freelance:conversation' pk=thread.pk %}">
+                        {% if user.role == "recruiter" %}{{ thread.freelancer.user.get_full_name|default:"Freelancer"|site_text|contact_safe:thread.contacts_unlocked }}{% else %}{{ thread.recruiter.get_full_name|default:"Recruiter"|site_text|contact_safe:thread.contacts_unlocked }}{% endif %}
+                    </a>
+                </h2>
+                {% if thread.unread %}
+                    <span class="score-pill">Unread messages</span>
+                {% endif %}
+            </div>
+            <p>
+                {% if thread.project %}{{ thread.project.title|contact_safe:thread.contacts_unlocked }}{% else %}{{ thread.freelancer.title|contact_safe:thread.contacts_unlocked }}{% endif %} · Updated {{ thread.updated_at|date:"j M Y, H:i" }} EAT{% if thread.blocked %} · Messaging blocked{% endif %}
+            </p>
+        </article>
+    {% empty %}
+        <section class="workspace-panel empty-panel">
+            <h2>Your conversations will appear here.</h2>
+            <p>
+                {% if user.role == "recruiter" %}Find a freelancer and send an enquiry to get started.{% else %}Enable your services or send a project proposal to start a conversation.{% endif %}
+            </p>
+        </section>
+    {% endfor %}
+    {% include "freelance/components/pagination.html" %}
+{% endblock %}

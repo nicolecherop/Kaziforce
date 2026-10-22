@@ -1,0 +1,43 @@
+{% extends "workspace/base.html" %}
+{% block title %}Account security | KaziForce{% endblock %}
+{% block content %}
+    <div class="shell section-space">
+        {% if messages %}<div class="notice-list" role="status">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}
+        <a href="{% url 'accounts:dashboard' %}">← Back to workspace</a>
+        <header class="page-heading">
+            <h1>Account security</h1>
+            <p>Manage how you sign in to KaziForce.</p>
+        </header>
+        <section class="workspace-panel">
+            <h2>Email two-step verification</h2>
+            {% if user.email_two_step_enabled or staff_verification_required %}
+                <p>Enabled. After your password, enter the code sent to your sign-in email.</p>
+            {% else %}
+                <p>Add an email verification code after your password.</p>
+            {% endif %}
+            {% if not email_codes_ready %}<p>Email verification is currently unavailable. Your current sign-in method is unchanged.</p>{% endif %}
+            <h2>Google sign-in</h2>
+            {% if google_connected %}<p>Your Google account is connected.</p>{% else %}<p>Connect Google to use the same KaziForce account without entering its password.</p>{% endif %}
+            {% if not google_signin_enabled %}<p>Google sign-in is currently unavailable.</p>{% endif %}
+            {% if user.has_usable_password %}
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% include "components/form_errors.html" %}
+                    {% include "components/form_field.html" with field=form.password %}
+                    <p>Confirm your current password to change these settings. Enabling or disabling email verification also requires an email code.</p>
+                    <div class="action-row">
+                        {% if email_codes_ready %}
+                            {% if user.email_two_step_enabled %}
+                                {% if not staff_verification_required %}<button class="button button-secondary" name="action" value="disable">Disable email verification</button>{% endif %}
+                            {% else %}<button class="button" name="action" value="enable">Enable email verification</button>{% endif %}
+                        {% endif %}
+                        {% if google_signin_enabled and not google_connected %}<button class="button button-secondary" name="action" value="connect_google">Connect Google</button>{% endif %}
+                        {% if google_connected %}<button class="button button-secondary" name="action" value="disconnect_google">Disconnect Google</button>{% endif %}
+                    </div>
+                </form>
+            {% else %}
+                <p>You sign in through Google. Manage your Google account's security settings to protect that sign-in.</p>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}

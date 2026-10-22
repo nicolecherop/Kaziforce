@@ -4,6 +4,8 @@ Status: **Pending human testing.** The automated evaluation report is engineerin
 
 Agent-operated [browser workflow checks](browser-verification.md) were completed on 21 October 2026 using fictional data in a disposable preview, including desktop and mobile views. These provide additional implementation evidence; the Human result entries below still require actual participants.
 
+The later [workflow verification follow-up](final-verification.md) adds freelance acceptance, contacts, completion, receipt confirmation, ratings, staff restrictions and physical interview checks. The PostgreSQL regression suite passed 254 tests after a completion-date usability fix. Human results remain pending.
+
 Use the local demo or a separate disposable database with fictional data. Give each participant the tasks below without explaining each click. Record whether they complete the task, the time taken, errors, assistance needed and their own comments. Do not enter real CVs or personal details into an uncontrolled demonstration.
 
 ## Candidate session
@@ -45,6 +47,24 @@ Use the local demo or a separate disposable database with fictional data. Give e
 | Review an application, interview, email record and saved score | Records are readable; decisions and saved evidence cannot be edited here | Pending |
 | Open a submitted attachment with appropriate permissions | Protected download works without exposing a public storage URL | Pending |
 | Use a limited staff account | Unpermitted counts, records and documents remain inaccessible | Pending |
+
+## Freelance session
+
+| Task | Expected result | Human result |
+| --- | --- | --- |
+| Enable a candidate's freelance profile | Only agreed professional information appears to recruiters; contact fields and uploads stay private | Pending |
+| Stop accepting new bookings | Listing disappears; existing bookings and messages remain accessible | Pending |
+| Publish a short project and send a proposal | A scoped conversation opens without a normal employment application | Pending |
+| Send and accept a booking request | Scope, dates, total price and cancellation terms are saved; both parties can see agreed contacts | Pending |
+| Try overlapping bookings | Only one can be accepted for the same dates | Pending |
+| Complete work, then report, query and confirm a cash payment | Reports and confirmed receipts remain distinct; the sender cannot confirm their own payment | Pending |
+| Request cancellation and record a refund | Cancellation requires the other party's agreement; refund receipt is confirmed separately | Pending |
+| Confirm work completion and rate it | Only the booking recruiter can leave one review after completion | Pending |
+| Block or report a conversation | New messaging stops; existing agreements remain manageable; reports are private to authorised staff | Pending |
+| Review freelancer administration | Agreement/payment evidence stays read-only; authorised staff can moderate reviews and handle concerns | Pending |
+| Try a phone number, email or link in a pre-booking enquiry | A clear warning appears and the message is not sent | Pending |
+| View a worker's portfolio before and after acceptance | External URLs are absent before acceptance and available only to the booked recruiter afterwards | Pending |
+| Add contact details to public services, projects or reviews | The affected field explains that contact details belong in the private conversation after booking | Pending |
 
 ## Navigation and accessibility session
 

@@ -82,6 +82,15 @@ If Node.js is available, run `node --test tests/video.test.cjs` to check reduced
 
 For PostgreSQL, run `manage.py test tests --keepdb` using the pre-created `test_kaziforce` database. The dedicated application login does not have database-creation privileges. Tests include PostgreSQL concurrency verification; SQLite skips that test.
 
+## Freelance work
+
+Candidates can opt into freelance services through **Freelance work**. Recruiters can
+find available workers, publish short projects, discuss terms, request bookings,
+record cash/direct payments and review completed work. The employment flow remains
+separate. Read [freelance setup, workflows and payment boundaries](docs/freelance.md).
+Run `manage.py migrate` after updating to create the new PostgreSQL tables. M-Pesa
+collection/payouts are not connected.
+
 ## Matching evaluation and acceptance testing
 
 Run the isolated evaluation from this folder:

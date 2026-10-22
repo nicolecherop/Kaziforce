@@ -13,6 +13,7 @@ class User(AbstractUser):
 
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.CANDIDATE)
+    email_two_step_enabled = models.BooleanField(default=False)
 
     class Meta:
         db_table = "users"

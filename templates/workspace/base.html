@@ -29,6 +29,7 @@
                     <a href="{% url 'candidates:profile' %}">My professional profile</a>
                 {% endif %}
                 <a href="{% url 'pages:home' %}">Back to home</a>
+                <a href="{% url 'accounts:security' %}">Account security</a>
                 <form method="post" action="{% url 'accounts:sign_out' %}">
                     {% csrf_token %}
                     <button class="text-button" type="submit">Sign out</button>
@@ -49,7 +50,7 @@
                 {% include "workspace/icon.html" with name="home" %}Overview</a>
                 {% if user.role == "candidate" %}
                     <a href="{% url 'candidates:profile' %}"
-                       {% if request.resolver_match.url_name == 'profile' or request.resolver_match.url_name == 'profile_edit' %}aria-current="page"{% endif %}>
+                       {% if request.resolver_match.app_name == 'candidates' and request.resolver_match.url_name == 'profile' or request.resolver_match.app_name == 'candidates' and request.resolver_match.url_name == 'profile_edit' %}aria-current="page"{% endif %}>
                     {% include "workspace/icon.html" with name="user" %}My profile</a>
                     <a href="{% url 'matches:jobs' %}"
                        {% if request.resolver_match.app_name == 'matches' %}aria-current="page"{% endif %}>
@@ -74,6 +75,9 @@
                        {% if request.resolver_match.app_name == 'applications' %}aria-current="page"{% endif %}>
                     {% include "workspace/icon.html" with name="file" %}Applications</a>
                 {% endif %}
+                <a href="{% url 'freelance:home' %}"
+                   {% if request.resolver_match.app_name == 'freelance' %}aria-current="page"{% endif %}>
+                {% include "workspace/icon.html" with name="case" %}Freelance work</a>
             </nav>
             <div class="sidebar-help">
                 <a href="{% url 'pages:help' %}">

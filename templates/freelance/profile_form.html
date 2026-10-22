@@ -1,0 +1,62 @@
+{% extends "freelance/base.html" %}
+{% block title %}Edit freelance profile | KaziForce{% endblock %}
+{% block freelance_content %}
+    <header class="page-heading">
+        <p class="eyebrow">Freelance work / My listing</p>
+        <h1>Offer your skills, on your terms.</h1>
+        <p>Introduce your services and choose when you are available for short assignments.</p>
+    </header>
+    <div class="workspace-split">
+        <form method="post" class="profile-form" novalidate>
+            {% csrf_token %}
+            <section class="workspace-panel">
+                <h2>Your freelance listing</h2>
+                {% include "freelance/components/form.html" %}
+            </section>
+            <section class="workspace-panel" data-formset="services" data-maximum="10">
+                <h2>Services you offer</h2>
+                <p>Add up to ten services. Your starting rate is a guide; agree the full price for each booking.</p>
+                {{ services.management_form }}{{ services.non_form_errors }}
+                <div data-entry-list>
+                    {% for entry in services %}
+                        <fieldset class="profile-entry" data-profile-entry>
+                            <legend>Service {{ forloop.counter }}</legend>
+                            {{ entry.non_field_errors }}{% for field in entry %}
+                            {% include "freelance/components/field.html" %}
+                    {% endfor %}
+                </fieldset>
+{% endfor %}
+</div>
+<template data-empty-entry>
+    <fieldset class="profile-entry" data-profile-entry>
+        <legend>
+            Service <span data-entry-number></span>
+        </legend>
+        {% for field in services.empty_form %}
+            {% include "freelance/components/field.html" %}
+        {% endfor %}
+    </fieldset>
+</template>
+<button type="button"
+        class="button button-secondary button-small"
+        data-add-entry>Add service</button>
+<p data-entry-limit hidden>You have reached ten services.</p>
+<span class="sr-only" role="status" data-entry-status></span>
+</section>
+<div class="action-row">
+    <button class="button" type="submit">Save freelance profile</button>
+    <a href="{% url 'freelance:profile' %}">Back to my listing</a>
+</div>
+</form>
+<aside class="workspace-panel side-panel">
+    <h2>One account, more possibilities.</h2>
+    <p>Your freelance listing sits alongside your professional profile. Your job applications continue as usual.</p>
+    <p>Recruiters can see the professional information you agree to share. Uploaded documents and contact details stay private. Keep contact details and web links out of your listing and services; portfolio links unlock for each recruiter after an accepted booking.</p>
+    <a href="{% url 'candidates:profile_edit' %}">Update skills, qualifications and portfolio →</a>
+</aside>
+</div>
+{% endblock %}
+{% block extra_js %}
+    {% load static %}
+    <script src="{% static 'js/profile.js' %}" defer></script>
+{% endblock %}

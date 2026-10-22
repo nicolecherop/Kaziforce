@@ -1,0 +1,83 @@
+{% extends "freelance/base.html" %}
+{% load freelance_privacy %}
+{% load workspace_ui %}
+{% block title %}{{ profile.title|contact_safe:contacts_unlocked }} | KaziForce{% endblock %}
+{% block freelance_content %}
+    <a class="back-to-list" href="{% url 'freelance:find' %}">← Back to freelancers</a>
+    <header class="page-heading">
+        <p class="eyebrow">Freelance services</p>
+        <h1>{{ profile.user.get_full_name|default:"Freelancer"|site_text|contact_safe:contacts_unlocked }}</h1>
+        <p>{{ profile.title|contact_safe:contacts_unlocked }} · {{ profile.location|contact_safe:contacts_unlocked }}</p>
+    </header>
+    <div class="workspace-split">
+        <div>
+            <section class="workspace-panel">
+                <h2>About my work</h2>
+                <p class="freelance-text">{{ profile.about|contact_safe:contacts_unlocked }}</p>
+                <p>{{ profile.get_work_mode_display }} · Available from {{ profile.available_from|date:"j M Y" }}</p>
+                <strong>KES {{ profile.rate|floatformat:2 }} · {{ profile.get_rate_unit_display }}</strong>
+                <p>Starting rate. Agree the full scope and price before booking.</p>
+                <h2>Services</h2>
+                {% for service in profile.services.all %}
+                    <h3>{{ service.title|contact_safe:contacts_unlocked }}</h3>
+                    <p class="freelance-text">{{ service.description|contact_safe:contacts_unlocked }}</p>
+                {% empty %}
+                    <p>Discuss your assignment with this freelancer.</p>
+                {% endfor %}
+            </section>
+            {% if professional %}
+                <section class="workspace-panel">
+                    <h2>Skills and professional background</h2>
+                    <div class="skill-chips">
+                        {% for skill in professional.skills.all %}
+                            <span class="skill-chip">{{ skill.name|contact_safe:contacts_unlocked }}</span>
+                        {% endfor %}
+                    </div>
+                    <h3 class="panel-subheading">Experience</h3>
+                    {% for item in professional.experience.all %}
+                        <h3>{{ item.job_title|site_text|contact_safe:contacts_unlocked }} · {{ item.company|site_text|contact_safe:contacts_unlocked }}</h3>
+                        <p>{{ item.start_date|date:"M Y" }} – {% if item.currently_working %}Present{% else %}{{ item.end_date|date:"M Y" }}{% endif %}
+                        </p>
+                        <p class="freelance-text">{{ item.description|site_text|contact_safe:contacts_unlocked }}</p>
+                    {% empty %}
+                        <p>No experience added.</p>
+                    {% endfor %}
+                    <h3>Education</h3>
+                    {% for item in professional.education.all %}
+                        <p>{{ item.qualification|site_text|contact_safe:contacts_unlocked }} · {{ item.institution|site_text|contact_safe:contacts_unlocked }}</p>
+                    {% empty %}
+                        <p>No qualifications added.</p>
+                    {% endfor %}
+                    <h3>Certifications</h3>
+                    {% for item in professional.certifications.all %}
+                        <p>{{ item.name|site_text|contact_safe:contacts_unlocked }} · {{ item.issuer|site_text|contact_safe:contacts_unlocked }}</p>
+                    {% empty %}
+                        <p>No certificates added.</p>
+                    {% endfor %}
+                    <h3>Portfolio</h3>
+                    {% if contacts_unlocked %}
+                        {% for item in professional.portfolio_links.all %}
+                            <p>
+                                <a href="{{ item.url }}" rel="noopener noreferrer" target="_blank">{{ item.title|contact_safe:contacts_unlocked }}</a>
+                            </p>
+                        {% empty %}
+                            <p>No portfolio links added.</p>
+                        {% endfor %}
+                    {% else %}
+                        <p>Portfolio links become available after the freelancer accepts a booking with you.</p>
+                    {% endif %}
+                </section>
+            {% endif %}
+            {% include "freelance/components/reviews.html" %}
+        </div>
+        <aside class="workspace-panel side-panel">
+            <h2>Start a conversation</h2>
+            <p>Discuss the scope, dates and price.</p>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% include "freelance/components/form.html" %}
+                <button class="button button-full">Send enquiry</button>
+            </form>
+        </aside>
+    </div>
+{% endblock %}

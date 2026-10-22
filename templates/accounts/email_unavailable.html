@@ -1,0 +1,7 @@
+{% extends "accounts/verification_base.html" %}
+{% block title %}Email verification unavailable | KaziForce{% endblock %}
+{% block verification_content %}
+    <h1>We couldn't send your code.</h1>
+    <p>Your sign-in has not been completed. Please try again later.</p>
+    <a href="{% url 'accounts:sign_in' %}">Return to sign in</a>
+{% endblock %}

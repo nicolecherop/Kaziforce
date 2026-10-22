@@ -1,0 +1,21 @@
+{% extends "accounts/verification_base.html" %}
+{% block title %}Confirm your email | KaziForce{% endblock %}
+{% block verification_content %}
+    <h1>Check your email.</h1>
+    {% if confirming_new_account %}<p>Confirm your email address to finish creating your account.</p>{% endif %}
+    <p>Enter the six-digit code sent to {{ masked_email }}. It expires five minutes after it was first requested.</p>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include "components/form_errors.html" %}
+        {% for field in form %}{% include "components/form_field.html" %}{% endfor %}
+        <button class="button button-full" name="action" value="verify">Verify and continue</button>
+    </form>
+    {% if can_resend %}
+        <form method="post">
+            {% csrf_token %}
+            <button class="text-button" name="action" value="resend">Send another code</button>
+        </form>
+        <p>You can request another code after one minute. Only the newest code will work.</p>
+    {% endif %}
+    <a href="{% url 'accounts:sign_in' %}">Return to sign in</a>
+{% endblock %}

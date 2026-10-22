@@ -1,0 +1,63 @@
+{% extends "freelance/base.html" %}
+{% load freelance_privacy %}
+{% load workspace_ui %}
+{% block title %}Freelance conversation | KaziForce{% endblock %}
+{% block freelance_content %}
+    <a class="back-to-list" href="{% url 'freelance:inbox' %}">← Back to messages</a>
+    <header class="page-heading">
+        <p class="eyebrow">Private conversation</p>
+        <h1>
+            {% if is_recruiter %}{{ thread.freelancer.user.get_full_name|default:"Freelancer"|site_text|contact_safe:contacts_unlocked }}{% else %}{{ thread.recruiter.get_full_name|default:"Recruiter"|site_text|contact_safe:contacts_unlocked }}{% endif %}
+        </h1>
+        <p>{% if thread.project %}{{ thread.project.title|contact_safe:contacts_unlocked }}{% else %}{{ thread.freelancer.title|contact_safe:contacts_unlocked }}{% endif %}</p>
+    </header>
+    <div class="workspace-split">
+        <section class="workspace-panel">
+            <div class="section-title-row">
+                <h2>Messages</h2>
+                <a href="{% url 'freelance:conversation' pk=thread.pk %}">Refresh messages</a>
+            </div>
+            <p class="small-copy">Times are in East Africa Time (UTC+3). Refresh to see new messages.</p>
+            <div class="freelance-messages" aria-label="Conversation history">
+                {% for message in thread_messages %}
+                    <article class="freelance-message {% if message.is_system %}system-message{% elif message.sender_id == user.pk %}from-me{% endif %}">
+                        <strong>
+                            {% if message.is_system %}Booking update{% else %}{{ message.sender.get_full_name|default:"Account holder"|site_text|contact_safe:contacts_unlocked }}{% endif %}
+                        </strong>
+                        <p class="freelance-text">{{ message.body|contact_safe:contacts_unlocked }}</p>
+                        <span class="small-copy">{{ message.created_at|date:"j M Y, H:i" }} EAT</span>
+                    </article>
+                {% empty %}
+                    <p>No messages yet.</p>
+                {% endfor %}
+            </div>
+            {% include "freelance/components/pagination.html" %}
+            {% if thread.blocked %}
+                <div class="inline-notice">Messaging is blocked. You can still manage existing bookings.</div>
+            {% else %}
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% include "freelance/components/form.html" %}
+                    <button class="button">Send message</button>
+                </form>
+            {% endif %}
+        </section>
+        <aside class="workspace-panel side-panel">
+            <h2>Agree the work</h2>
+            <p>Discuss scope, dates, price and cancellation terms here. A booking becomes confirmed when the freelancer accepts.</p>
+            {% if is_recruiter and not thread.blocked %}
+                <a class="button button-full"
+                   href="{% url 'freelance:book' conversation_id=thread.pk %}">Send booking request</a>
+            {% endif %}
+            <h3 class="panel-subheading">Bookings in this conversation</h3>
+            {% for booking in bookings %}
+                <a class="panel-link"
+                   href="{% url 'freelance:booking' pk=booking.pk %}">{{ booking.title|contact_safe:contacts_unlocked }} · {{ booking.get_status_display }}</a>
+            {% empty %}
+                <p>No bookings yet.</p>
+            {% endfor %}
+            <div class="panel-divider"></div>
+            <a href="{% url 'freelance:conversation_controls' pk=thread.pk %}">Report a concern or manage blocking</a>
+        </aside>
+    </div>
+{% endblock %}

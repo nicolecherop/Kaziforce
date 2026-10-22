@@ -18,3 +18,7 @@ Each selected photograph appears in one placement only. These are copies of the 
 | Employer section | `static/images/recruiter-team.jpg` | `pexels-gustavo-fring-7446581.jpg` |
 
 The remaining supplied images are not currently used. The photographs illustrate the interface and are not candidate records or testimonials.
+
+## Google sign-in logo
+
+`static/images/google-g-logo.png` is Google's official sign-in G mark from <https://developers.google.com/static/identity/images/g-logo.png>. It is used in sign-in, registration and Google confirmation buttons with its original colours and proportions. Branding reference: <https://developers.google.com/identity/branding-guidelines>.

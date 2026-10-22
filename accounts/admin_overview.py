@@ -11,6 +11,7 @@ from applications.interview_services import email_is_connected
 from applications.models import Application, Interview, InterviewEmail
 from jobs.models import JobPosting
 from matching.models import MatchRun, MatchResult
+from freelance.models import Booking, ConversationReport, Payment
 
 
 def can_view(user, model):
@@ -127,6 +128,44 @@ def overview_context(user):
                 "detail": "Scores and original matching evidence",
             }
         )
+    for model, label, queryset, detail in [
+        (
+            Booking,
+            "Freelance bookings",
+            Booking.objects.all(),
+            "Agreements, completion and payment history",
+        ),
+        (
+            Payment,
+            "Payment queries",
+            Payment.objects.filter(status="disputed"),
+            "Participant-reported payments awaiting resolution",
+        ),
+        (
+            ConversationReport,
+            "Conversation reports",
+            ConversationReport.objects.filter(is_resolved=False),
+            "Open concerns requiring review",
+        ),
+    ]:
+        if can_view(user, model):
+            cards.append(
+                {
+                    "label": label,
+                    "value": queryset.count(),
+                    "url": list_url(model)
+                    + (
+                        "?status__exact=disputed"
+                        if model == Payment
+                        else (
+                            "?is_resolved__exact=0"
+                            if model == ConversationReport
+                            else ""
+                        )
+                    ),
+                    "detail": detail,
+                }
+            )
     return {
         "overview_cards": cards,
         "application_statuses": application_statuses,

@@ -1,0 +1,8 @@
+{% extends "accounts/verification_base.html" %}
+{% block title %}Continue with Google | KaziForce{% endblock %}
+{% block verification_content %}
+    <h1>Continue with Google.</h1>
+    <p>Choose your Google account to continue.</p>
+    <form method="post">{% csrf_token %}<button class="button button-full">{% include 'components/google_button_content.html' %}</button></form>
+    <a href="{% url 'accounts:sign_in' %}">Return to sign in</a>
+{% endblock %}

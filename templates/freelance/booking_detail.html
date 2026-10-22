@@ -1,0 +1,223 @@
+{% extends "freelance/base.html" %}
+{% load freelance_privacy %}
+{% load workspace_ui %}
+{% block title %}{{ booking.title|contact_safe:booking.accepted_at }} | KaziForce{% endblock %}
+{% block freelance_content %}
+    <a class="back-to-list" href="{% url 'freelance:bookings' %}">← Back to bookings</a>
+    <header class="page-heading profile-heading">
+        <div>
+            <p class="eyebrow">Freelance agreement</p>
+            <h1>{{ booking.title|contact_safe:booking.accepted_at }}</h1>
+            <p>{{ booking.get_status_display }}</p>
+        </div>
+        <a class="button button-secondary"
+           href="{% url 'freelance:conversation' pk=booking.conversation_id %}">Open conversation</a>
+    </header>
+    {% for error in action_errors %}
+        <div class="form-errors" role="alert">{{ error }}</div>
+    {% endfor %}
+    <div class="workspace-split">
+        <div>
+            <section class="workspace-panel">
+                <h2>Agreed scope and deliverables</h2>
+                <p class="freelance-text">{{ booking.scope|contact_safe:booking.accepted_at }}</p>
+                <p>{{ booking.start_date|date:"j M Y" }} – {{ booking.end_date|date:"j M Y" }} · {{ booking.location|contact_safe:booking.accepted_at }}</p>
+                <h3>Full price: KES {{ booking.total_price|floatformat:2 }}</h3>
+                {% if booking.deposit_amount %}
+                    <p>Previously agreed advance payment: KES {{ booking.deposit_amount|floatformat:2 }} (included in the full price).</p>
+                {% else %}
+                    <p>No advance payment is required. Payment is recorded after completion.</p>
+                {% endif %}
+                <h3>Cancellation and refund agreement</h3>
+                <p class="freelance-text">{{ booking.cancellation_terms|contact_safe:booking.accepted_at }}</p>
+            </section>
+            {% if can_accept %}
+                <section class="workspace-panel">
+                    <h2>Review and accept this booking</h2>
+                    <p>Acceptance reserves these dates and shares the contact details below with this recruiter. If the terms need changing, discuss them before accepting.</p>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% include "freelance/components/form.html" with form=accept_form %}
+                        <button class="button" name="action" value="accept">Accept booking</button>
+                    </form>
+                </section>
+            {% endif %}
+            {% if booking.status == "requested" and booking.deposit_amount %}
+                <section class="workspace-panel">
+                    <p>This earlier request includes an advance payment. The recruiter needs to withdraw it and send a new booking without an advance payment.</p>
+                </section>
+            {% endif %}
+            {% if booking.cancellation_requested_by_id %}
+                <section class="workspace-panel">
+                    <h2>Cancellation requested</h2>
+                    <p class="freelance-text">{{ booking.cancellation_reason|contact_safe:booking.accepted_at }}</p>
+                    <p>The booking stays active until the other party agrees. Refunds are recorded separately.</p>
+                </section>
+            {% endif %}
+            {% if actions or completion_available_from %}
+                <section class="workspace-panel">
+                    <h2>Next step</h2>
+                    {% if completion_available_from %}
+                        <p>You can mark work complete from {{ completion_available_from|date:"j M Y" }}, once the agreed work is finished.</p>
+                    {% endif %}
+                    <div class="action-row">
+                        {% for value,label in actions %}
+                            <form method="post">
+                                {% csrf_token %}
+                                <button class="button button-secondary"
+                                        name="action"
+                                        value="{{ value }}">{{ label }}</button>
+                            </form>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+            {% if can_cancel %}
+                <details class="workspace-panel" {% if cancel_form.errors %}open{% endif %}>
+                    <summary>Request cancellation</summary>
+                    <p>The other party must agree before this confirmed booking is cancelled.</p>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% include "freelance/components/form.html" with form=cancel_form %}
+                        <button class="button button-secondary"
+                                name="action"
+                                value="request_cancel">Request cancellation</button>
+                    </form>
+                </details>
+            {% endif %}
+            <section class="workspace-panel">
+                <h2>Payment records</h2>
+                <p>Cash and direct payments are arranged between you. KaziForce records reports and receipt confirmations; it does not collect or hold this money.</p>
+                {% for payment in payments %}
+                    <article class="freelance-payment">
+                        <h3>{{ payment.get_kind_display }} · KES {{ payment.amount|floatformat:2 }}</h3>
+                        <p>{{ payment.get_method_display }} · {{ payment.get_status_display }}</p>
+                        {% if payment.reference %}
+                            <p>{{ payment.reference }}</p>
+                        {% endif %}
+                        <p class="small-copy">Reported {{ payment.created_at|date:"j M Y, H:i" }} EAT{% if payment.confirmed_at %} · Receipt confirmed {{ payment.confirmed_at|date:"j M Y, H:i" }} EAT{% endif %}
+                        </p>
+                        {% if payment.status == "reported" or payment.status == "disputed" %}
+                            <form method="post"
+                                  action="{% url 'freelance:payment_action' booking_id=booking.pk pk=payment.pk %}"
+                                  class="action-row">
+                                {% csrf_token %}
+                                {% if payment.reported_by_id == user.pk %}
+                                    <button class="button button-small button-secondary"
+                                            name="action"
+                                            value="withdraw">Withdraw report</button>
+                                {% else %}
+                                    <button class="button button-small"
+                                            name="action"
+                                            value="confirm">I received this payment</button>
+                                    {% if payment.status == "reported" %}
+                                        <button class="button button-small button-secondary"
+                                                name="action"
+                                                value="dispute">Query payment</button>
+                                    {% endif %}
+                                {% endif %}
+                            </form>
+                        {% endif %}
+                    </article>
+                {% empty %}
+                    <p>No payments reported.</p>
+                {% endfor %}
+            </section>
+            {% if can_pay %}
+                <details class="workspace-panel" {% if payment_form.errors %}open{% endif %}>
+                    <summary>
+                        {% if is_recruiter %}Report a payment you have made{% else %}Report a refund you have sent{% endif %}
+                    </summary>
+                    <p>Only report money already sent. The recipient must confirm receipt.</p>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% include "freelance/components/form.html" with form=payment_form %}
+                        <button class="button" name="action" value="report_payment">Save payment report</button>
+                    </form>
+                </details>
+            {% endif %}
+            {% if can_review %}
+                <section class="workspace-panel">
+                    <h2>Review this freelancer</h2>
+                    <p>Share feedback on the quality, communication and reliability of this completed assignment.</p>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% include "freelance/components/form.html" with form=review_form %}
+                        <button class="button" name="action" value="review">Submit review</button>
+                    </form>
+                </section>
+            {% elif booking.review %}
+                <section class="workspace-panel">
+                    <h2>Booking review</h2>
+                    {% if booking.review.is_hidden %}
+                        <p>This review is currently hidden by an administrator.</p>
+                    {% else %}
+                        <strong>{{ booking.review.rating }} / 5</strong>
+                        <p class="freelance-text">{{ booking.review.comment }}</p>
+                    {% endif %}
+                </section>
+            {% endif %}
+            <section class="workspace-panel">
+                <h2>Booking history</h2>
+                <ol class="freelance-timeline">
+                    {% for item in events %}
+                        <li>
+                            <p>{{ item.description|contact_safe:booking.accepted_at }}</p>
+                            <span class="small-copy">{{ item.created_at|date:"j M Y, H:i" }} EAT · {{ item.actor.get_full_name|default:"Account holder"|site_text|contact_safe:booking.accepted_at }}</span>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </section>
+        </div>
+        <aside>
+            <section class="workspace-panel">
+                <h2>Payment summary</h2>
+                <p>
+                    Confirmed received: <strong>KES {{ totals.received|floatformat:2 }}</strong>
+                </p>
+                <p>
+                    Confirmed refunded: <strong>KES {{ totals.refunded|floatformat:2 }}</strong>
+                </p>
+                <p>
+                    Net received: <strong>KES {{ totals.net|floatformat:2 }}</strong>
+                </p>
+                {% if booking.status != "cancelled" %}
+                    <h3>Remaining: KES {{ totals.remaining|floatformat:2 }}</h3>
+                {% else %}
+                    <p>Use the cancellation agreement to determine any refund due.</p>
+                {% endif %}
+                <p class="small-copy">Unconfirmed reports are not counted as received. Receipt confirmations come from the participants.</p>
+            </section>
+            <section class="workspace-panel">
+                <h2>Recruiter contact</h2>
+                <h3>{{ booking.recruiter_name|site_text|contact_safe:booking.accepted_at }}</h3>
+                {% if booking.accepted_at or is_recruiter %}
+                    {% if booking.recruiter_email|contact_email %}
+                        <p>
+                            <a href="mailto:{{ booking.recruiter_email }}">{{ booking.recruiter_email }}</a>
+                        </p>
+                    {% endif %}
+                    {% if booking.recruiter_phone %}
+                        <p>{{ booking.recruiter_phone }}</p>
+                    {% endif %}
+                {% else %}
+                    <p>Shared when you accept the booking.</p>
+                {% endif %}
+                <h2>Freelancer contact</h2>
+                {% if booking.accepted_at %}
+                    <h3>{{ booking.freelancer_name|site_text|contact_safe:booking.accepted_at }}</h3>
+                    {% if booking.freelancer_email|contact_email %}
+                        <p>
+                            <a href="mailto:{{ booking.freelancer_email }}">{{ booking.freelancer_email }}</a>
+                        </p>
+                    {% endif %}
+                    {% if booking.freelancer_phone %}
+                        <p>{{ booking.freelancer_phone }}</p>
+                    {% endif %}
+                {% else %}
+                    <p>Shared when the freelancer accepts the booking.</p>
+                {% endif %}
+            </section>
+        </aside>
+    </div>
+{% endblock %}

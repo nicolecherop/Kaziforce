@@ -1,0 +1,56 @@
+{% extends "freelance/base.html" %}
+{% load freelance_privacy %}
+{% load workspace_ui %}
+{% block title %}Freelance bookings | KaziForce{% endblock %}
+{% block freelance_content %}
+    <header class="page-heading">
+        <p class="eyebrow">Freelance work / Bookings</p>
+        <h1>Your work, from agreement to completion.</h1>
+        <p>Follow booking requests, confirmed assignments and payments in one place.</p>
+    </header>
+    <form method="get" class="workspace-panel action-row">
+        <label for="booking-status">Booking status</label>
+        <select id="booking-status" name="status">
+            <option value="">All bookings</option>
+            {% for value,label in statuses %}
+                <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button class="button button-small">Filter</button>
+    </form>
+    <div class="workspace-table-wrap">
+        <table class="workspace-table">
+            <thead>
+                <tr>
+                    <th scope="col">Assignment</th>
+                    <th scope="col">Dates</th>
+                    <th scope="col">Total price</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in page %}
+                    <tr>
+                        <th scope="row">
+                            {{ booking.title|contact_safe:booking.accepted_at }}<span class="cell-subtitle">
+                            {% if user.role == "recruiter" %}{{ booking.conversation.freelancer.user.get_full_name|site_text|contact_safe:booking.accepted_at }}{% else %}{{ booking.recruiter_name|site_text|contact_safe:booking.accepted_at }}{% endif %}
+                            </span>
+                        </th>
+                        <td>{{ booking.start_date|date:"j M Y" }} – {{ booking.end_date|date:"j M Y" }}</td>
+                        <td>KES {{ booking.total_price|floatformat:2 }}</td>
+                        <td>{{ booking.get_status_display }}</td>
+                        <td>
+                            <a href="{% url 'freelance:booking' pk=booking.pk %}">View booking</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">No bookings to show yet. Your requests and agreements will appear here.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "freelance/components/pagination.html" %}
+{% endblock %}

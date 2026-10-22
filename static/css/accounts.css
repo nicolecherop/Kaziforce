@@ -36,6 +36,9 @@
 .terms-field a { text-decoration: underline; }
 .compact-panel { max-width: 520px; width: calc(100% - 40px); margin: 60px auto; min-height: 55vh; }
 .compact-panel h1 { font-size: 42px; }
+.account-divider { text-align: center; margin: 20px 0; color: var(--muted); }
+.account-panel .text-button { border: 0; background: none; color: var(--blue); font: inherit; padding: 12px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.account-panel .text-button:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 @media (max-width: 1150px) {
   .account-layout { gap: 32px; grid-template-columns: 1fr 1fr; }
   .account-heading h1 { font-size: 44px; }
@@ -65,3 +68,6 @@
   .role-option input { right: 12px; top: 14px; }
 }
 @media (max-width: 440px) { .registration-layout .form-grid { grid-template-columns: 1fr; } .field-label { font-size: 14px; } }
+
+/* Preserve the official Google mark's proportions inside sign-in buttons. */
+.google-brand-mark { width: 20px; height: 20px; flex: 0 0 20px; object-fit: contain; background: white; border-radius: 50%; }

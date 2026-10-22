@@ -1,0 +1,13 @@
+{% if field.is_hidden %}{{ field }}{{ field.errors }}{% elif field.field.widget.input_type == "checkbox" %}
+    <div class="field checkbox-field">
+        <label>
+            {{ field }} <span>{{ field.label }}</span>
+        </label>
+        {% if field.help_text %}
+            <p class="field-hint">{{ field.help_text }}</p>
+        {% endif %}
+        {{ field.errors }}
+    </div>
+{% else %}
+    {% include "components/form_field.html" %}
+{% endif %}

@@ -1,6 +1,6 @@
 """Account endpoints and role-specific entry pages."""
 
-from django.contrib.auth import login
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import PermissionDenied
@@ -18,11 +18,44 @@ class SignInView(LoginView):
     template_name = "accounts/sign_in.html"
     authentication_form = EmailAuthenticationForm
 
+    def post(self, request, *args, **kwargs):
+        from allauth.core import ratelimit
+
+        key = request.POST.get("username", "").strip().lower()
+        blocked = ratelimit.consume_or_429(request, action="login", key=key)
+        if blocked:
+            return blocked
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        from allauth.account.internal.flows.login import perform_password_login
+        from allauth.account.models import Login
+
+        user = form.get_user()
+        destination = self.get_success_url()
+        # A partially completed challenge never retains an earlier authenticated session.
+        logout(self.request)
+        return perform_password_login(
+            self.request,
+            {"email": user.email},
+            Login(user=user, email=user.email, redirect_url=destination),
+        )
+
 
 @require_http_methods(["GET", "POST"])
 def create_account(request):
     if request.user.is_authenticated:
         return redirect("accounts:dashboard")
+    if request.method == "POST":
+        from allauth.core import ratelimit
+
+        blocked = ratelimit.consume_or_429(
+            request,
+            action="login",
+            key="signup:" + request.POST.get("email", "").strip().lower(),
+        )
+        if blocked:
+            return blocked
     selected_role = request.GET.get("role", User.Role.CANDIDATE)
     if selected_role not in {User.Role.CANDIDATE, User.Role.RECRUITER}:
         selected_role = User.Role.CANDIDATE
@@ -33,7 +66,12 @@ def create_account(request):
     if request.method == "POST" and form.is_valid():
         try:
             with transaction.atomic():
+                from allauth.account.models import EmailAddress
+
                 user = form.save()
+                EmailAddress.objects.create(
+                    user=user, email=user.email, primary=True, verified=False
+                )
         except IntegrityError:
             # A concurrent registration may win after form validation.
             if User.objects.filter(email__iexact=form.cleaned_data["email"]).exists():
@@ -44,8 +82,20 @@ def create_account(request):
             else:
                 raise
         else:
-            login(request, user)
-            return redirect("accounts:dashboard")
+            from allauth.account.internal.flows.login import perform_password_login
+            from allauth.account.models import Login
+            from django.urls import reverse
+
+            logout(request)
+            return perform_password_login(
+                request,
+                {"email": user.email},
+                Login(
+                    user=user,
+                    email=user.email,
+                    redirect_url=reverse("accounts:dashboard"),
+                ),
+            )
     return render(request, "accounts/create_account.html", {"form": form})
 
 

@@ -1,0 +1,9 @@
+Your KaziForce verification code is:
+
+{{ code }}
+
+Enter this code in the KaziForce window where you requested it. The verification process expires five minutes after the initial request. A new code replaces the previous one.
+
+Do not share this code. KaziForce will never ask you to send it in a message.
+
+If you did not request this code, you can ignore this email.

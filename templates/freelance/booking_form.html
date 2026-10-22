@@ -1,0 +1,27 @@
+{% extends "freelance/base.html" %}
+{% load freelance_privacy %}
+{% load workspace_ui %}
+{% block title %}Request a freelance booking | KaziForce{% endblock %}
+{% block freelance_content %}
+    <header class="page-heading">
+        <p class="eyebrow">Freelance work / Booking request</p>
+        <h1>Agree a clear starting point.</h1>
+        <p>Send the terms you discussed to {{ thread.freelancer.user.get_full_name|default:"the freelancer"|site_text|contact_safe }} for acceptance.</p>
+    </header>
+    <div class="workspace-split">
+        <form method="post" class="workspace-panel" novalidate>
+            {% csrf_token %}
+            {% include "freelance/components/form.html" %}
+            <div class="action-row">
+                <button class="button">Send booking request</button>
+                <a href="{% url 'freelance:conversation' pk=thread.pk %}">Back to conversation</a>
+            </div>
+        </form>
+        <aside class="workspace-panel side-panel">
+            <h2>Before you book</h2>
+            <p>Agree deliverables, full dates and the total price. Accepted bookings reserve their full date range.</p>
+            <p>No advance payment is required. Record payment after the work is completed.</p>
+            <p>Both parties' contact details become available within the booking once the worker accepts.</p>
+        </aside>
+    </div>
+{% endblock %}

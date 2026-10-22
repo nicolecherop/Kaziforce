@@ -26,6 +26,11 @@ INSTALLED_APPS = [
     "applications",
     "matching",
     "pages",
+    "freelance",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -33,6 +38,8 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
+    "accounts.security_middleware.VerifiedSessionMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -120,3 +127,65 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "KaziForce <noreply@localho
 
 # Candidate display threshold; this does not change scores or recruiter rankings.
 MATCH_RECOMMENDATION_MIN_SCORE = 70
+
+# Google identity uses only basic profile/email scopes, never Gmail/Calendar access.
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+ACCOUNT_ADAPTER = "accounts.auth_adapters.AccountAdapter"
+SOCIALACCOUNT_ADAPTER = "accounts.auth_adapters.GoogleAccountAdapter"
+SOCIALACCOUNT_FORMS = {"signup": "accounts.social_forms.GoogleSignupForm"}
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_LOGIN_BY_CODE_ENABLED = (
+    False  # No email-only route around password verification.
+)
+ACCOUNT_LOGIN_BY_CODE_TIMEOUT = 300
+ACCOUNT_LOGIN_BY_CODE_MAX_ATTEMPTS = 5
+ACCOUNT_LOGIN_BY_CODE_SUPPORTS_RESEND = 3
+ACCOUNT_LOGIN_BY_CODE_TRUST_ENABLED = False
+ACCOUNT_LOGIN_TIMEOUT = 600
+ACCOUNT_LOGIN_BY_CODE_FORMAT = {"length": 6, "numeric": True, "dashed": False}
+ACCOUNT_SESSION_REMEMBER = False
+SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = False
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = False
+SOCIALACCOUNT_LOGIN_ON_GET = False
+SOCIALACCOUNT_STORE_TOKENS = False
+ACCOUNT_LOGOUT_ON_GET = False
+ACCOUNT_SIGNUP_REDIRECT_URL = LOGIN_REDIRECT_URL
+ACCOUNT_RATE_LIMITS = {
+    "login": "20/m/ip,10/m/key",
+    "login_failed": "5/5m/key,20/5m/ip",
+    "confirm_login_code": "10/m/ip,5/m/key",
+}
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
+GOOGLE_SIGNIN_ENABLED = bool(GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET)
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APPS": (
+            [{"client_id": GOOGLE_CLIENT_ID, "secret": GOOGLE_CLIENT_SECRET, "key": ""}]
+            if GOOGLE_SIGNIN_ENABLED
+            else []
+        ),
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online", "prompt": "select_account"},
+        "OAUTH_PKCE_ENABLED": True,
+    }
+}
+# Activation is explicit: never require inbox codes while SMTP is unconfigured.
+EMAIL_TWO_STEP_ENABLED = os.getenv("EMAIL_TWO_STEP_ENABLED", "false").lower() == "true"
+EMAIL_TIMEOUT = 15
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "security_rate_limits",
+        "OPTIONS": {"MAX_ENTRIES": 10000},
+    }
+}
+TEMPLATES[0]["OPTIONS"]["context_processors"].append(
+    "accounts.auth_context.auth_options"
+)

@@ -1,0 +1,74 @@
+{% extends "freelance/base.html" %}
+{% load freelance_privacy %}
+{% load workspace_ui %}
+{% block title %}Find freelancers | KaziForce{% endblock %}
+{% block freelance_content %}
+    <header class="page-heading profile-heading">
+        <div>
+            <p class="eyebrow">Freelance work / Talent</p>
+            <h1>Find the right skills for your next project.</h1>
+            <p>Explore services, check availability and agree a booking directly.</p>
+        </div>
+        <a class="button" href="{% url 'freelance:project_create' %}">Post a project</a>
+    </header>
+    <div class="workspace-split freelance-search-layout">
+        <div>
+            <form method="get" class="workspace-panel">
+                <label for="project-choice">Find people for one of your projects</label>
+                <div class="action-row">
+                    <select id="project-choice" name="project">
+                        <option value="">Browse all freelancers</option>
+                        {% for item in projects %}
+                            <option value="{{ item.pk }}"
+                                    {% if project.pk == item.pk %}selected{% endif %}>{{ item.title|contact_safe }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="button button-small">Show people</button>
+                </div>
+            </form>
+            {% if project %}
+                <div class="inline-notice">
+                    <strong>People for {{ project.title|contact_safe }}</strong>
+                    <p>Relevant skills, availability, work arrangement and comparable starting rates guide this list. Ratings support your review. Confirm the full price with the worker.</p>
+                    <a href="{% url 'freelance:project_detail' pk=project.pk %}">View project</a>
+                </div>
+            {% endif %}
+            <div class="freelance-card-grid">
+                {% for profile in page %}
+                    <article class="workspace-panel freelance-card">
+                        <div class="person-cell">
+                            <span class="initial-avatar">{{ profile.user.get_full_name|site_text|contact_safe|initials }}</span>
+                            <div>
+                                <h2>{{ profile.user.get_full_name|default:"Freelancer"|site_text|contact_safe }}</h2>
+                                <p>{{ profile.location|contact_safe }}</p>
+                            </div>
+                        </div>
+                        <h3>{{ profile.title|contact_safe }}</h3>
+                        <p>{{ profile.about|contact_safe|truncatechars:160 }}</p>
+                        <p>KES {{ profile.rate|floatformat:2 }} · {{ profile.get_rate_unit_display }}</p>
+                        <p>{{ profile.get_work_mode_display }} · Available {{ profile.available_from|date:"j M" }}</p>
+                        <p>
+                            {% if profile.review_count %}★ {{ profile.average_rating|floatformat:1 }} / 5 · {{ profile.review_count }} review{{ profile.review_count|pluralize }}{% else %}New · No reviews yet{% endif %}
+                        </p>
+                        <a class="button button-small"
+                           href="{% url 'freelance:worker' pk=profile.pk %}">View services &amp; contact</a>
+                    </article>
+                {% empty %}
+                    <section class="workspace-panel empty-panel">
+                        <h2>No freelancers to show yet.</h2>
+                        <p>Try different filters, or publish a project so freelancers can send a proposal.</p>
+                    </section>
+                {% endfor %}
+            </div>
+            {% include "freelance/components/pagination.html" %}
+        </div>
+        <aside>
+            <form method="get" class="workspace-panel">
+                <h2>Refine your search</h2>
+                {% include "freelance/components/form.html" %}
+                <button class="button button-full">Apply filters</button>
+                <a class="panel-link" href="{% url 'freelance:find' %}">Clear filters</a>
+            </form>
+        </aside>
+    </div>
+{% endblock %}

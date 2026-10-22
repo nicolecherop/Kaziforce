@@ -1,0 +1,55 @@
+{% extends "freelance/base.html" %}
+{% load freelance_privacy %}
+{% load workspace_ui %}
+{% block title %}Freelance projects | KaziForce{% endblock %}
+{% block freelance_content %}
+    <header class="page-heading profile-heading">
+        <div>
+            <p class="eyebrow">Freelance work / Projects</p>
+            <h1>{% if own %}Bring the right people into your project.{% else %}Find your next assignment.{% endif %}</h1>
+            <p>
+                {% if own %}Publish short assignments and agree the details directly with freelancers.{% else %}Explore consultancies, projects and short assignments. Relevant skills help order your opportunities.{% endif %}
+            </p>
+        </div>
+        {% if own %}
+            <a class="button" href="{% url 'freelance:project_create' %}">Post a project</a>
+        {% endif %}
+    </header>
+    <form class="workspace-panel action-row" method="get">
+        <label for="project-search">Search projects</label>
+        <input id="project-search"
+               name="q"
+               value="{{ q }}"
+               maxlength="120"
+               placeholder="Title, location or description">
+        <button class="button button-small">Search</button>
+    </form>
+    {% for project in page %}
+        <article class="workspace-panel">
+            <div class="section-title-row">
+                <h2>
+                    <a href="{% url 'freelance:project_detail' pk=project.pk %}">{{ project.title|contact_safe }}</a>
+                </h2>
+                <span class="skill-chip">{{ project.get_status_display }}</span>
+            </div>
+            <p>{{ project.recruiter.get_full_name|site_text|contact_safe }} · {{ project.location|contact_safe }} · {{ project.get_work_mode_display }}</p>
+            <p>{{ project.description|contact_safe|truncatechars:220 }}</p>
+            <div class="skill-chips">
+                {% for skill in project.skills %}
+                    <span class="skill-chip">{{ skill|contact_safe }}</span>
+                {% endfor %}
+            </div>
+            <p class="panel-subheading">{{ project.start_date|date:"j M Y" }} – {{ project.end_date|date:"j M Y" }} · Budget KES {{ project.budget|floatformat:2 }}</p>
+            <a href="{% url 'freelance:project_detail' pk=project.pk %}">
+            {% if own %}Manage project{% else %}View project &amp; send proposal{% endif %} →</a>
+        </article>
+    {% empty %}
+        <section class="workspace-panel empty-panel">
+            <h2>No projects to show yet.</h2>
+            <p>
+                {% if own %}Post your first assignment to start receiving proposals.{% else %}Check back for new assignments or make your freelance profile available to recruiters.{% endif %}
+            </p>
+        </section>
+    {% endfor %}
+    {% include "freelance/components/pagination.html" %}
+{% endblock %}

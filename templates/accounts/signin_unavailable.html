@@ -1,0 +1,7 @@
+{% extends "accounts/verification_base.html" %}
+{% block title %}Sign-in unavailable | KaziForce{% endblock %}
+{% block verification_content %}
+    <h1>Unable to sign in.</h1>
+    <p>Please check your account details or try another sign-in method.</p>
+    <a href="{% url 'accounts:sign_in' %}">Return to sign in</a>
+{% endblock %}
