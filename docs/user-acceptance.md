@@ -15,7 +15,7 @@ Use the local demo or a separate disposable database with fictional data. Give e
 | Create a Candidate account and sign in | Candidate workspace opens; no recruiter controls | Pending |
 | Add headline, skills, education, certification, experience and portfolio | Entries save and appear in the professional profile | Pending |
 | Upload a CV, degree and certificate | Files remain private; no extraction or automatic profile changes | Pending |
-| Request matches and open match details | Up to ten roles scoring at least 70% appear; details show the overall score, public requirements and general guidance without calculation breakdowns | Pending |
+| Request matches and open match details | Up to ten roles scoring at least 60% appear; details show the overall score, public requirements and general guidance without calculation breakdowns | Pending |
 | View matches when none qualify | A clear empty state offers profile updates and browsing all open jobs without low-score filler | Pending |
 | Add a skill with an unfamiliar or ambiguous name | The entered name remains visible with a plain-language acknowledgement or suggestion to be more specific | Pending |
 | Open a job, tailor its application and save a draft | Application starts from the saved profile; tailoring leaves the main profile intact | Pending |

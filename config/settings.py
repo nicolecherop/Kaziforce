@@ -127,7 +127,7 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "KaziForce <noreply@localhost>")
 
 # Candidate display threshold; this does not change scores or recruiter rankings.
-MATCH_RECOMMENDATION_MIN_SCORE = 70
+MATCH_RECOMMENDATION_MIN_SCORE = 60
 
 # Google identity uses only basic profile/email scopes, never Gmail/Calendar access.
 AUTHENTICATION_BACKENDS = [

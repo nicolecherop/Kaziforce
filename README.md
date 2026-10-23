@@ -10,7 +10,7 @@ KaziForce is a Django and PostgreSQL application for employment recruitment and 
 - Upload private CVs, degree documents and certificates. Information is entered manually; uploaded documents are not parsed or used for automatic extraction.
 - Start an application from a saved profile, tailor a separate copy for the job, save a draft and select supporting documents before submission.
 - View application progress and interview arrangements, including the recruiter's contact details.
-- Request up to ten job recommendations with a match score of at least 70%, with general guidance for improving the profile.
+- Request up to ten job recommendations with a match score of at least 60%, with general guidance for improving the profile.
 
 ### Recruiters
 
@@ -193,6 +193,8 @@ The latest full PostgreSQL regression run passed 327 tests, including 20 M-Pesa 
 If Node.js is available, `node --test tests/video.test.cjs` checks video playback and fallback behaviour. Node.js is not required to run the Django application.
 
 The [matching evaluation report](docs/evaluation/report.md), [results](docs/evaluation/results.json) and [rankings](docs/evaluation/rankings.csv) describe a synthetic dataset of five jobs, twenty profiles and 100 relevance labels. These historical engineering results are separate from human acceptance testing and are not validated hiring accuracy. The evaluation workflow harness also needs rechecking against mandatory first-time email confirmation before its registration results are regenerated.
+
+The expanded [v2 evaluation report](docs/evaluation/v2/report.md) adds 200 fictional profiles, 40 jobs, 60 freelancers and 20 projects: 8,000 employment pairs and 1,200 freelance pairs. Reproduce it with `.\.venv\Scripts\python.exe scripts/evaluate_expanded.py`. It runs in a disposable database with network access and payments disabled. The [expanded evaluation guide](docs/evaluation/expanded-guide.md) explains the metrics and the 400-pair blind review pack; independent human grades remain pending. Existing v1 evidence is preserved.
 
 A sandbox-only M-Pesa collection flow is available on completed freelance bookings. It records test transactions separately and never settles a worker's actual payment balance. Connect your own Daraja sandbox credentials and HTTPS callback using the [M-Pesa sandbox guide](docs/mpesa-sandbox.md). Live M-Pesa collection, worker payouts, Phone/Apple sign-in, Google Calendar/Meet integration and public hosting are not included.
 

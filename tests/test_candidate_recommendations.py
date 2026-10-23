@@ -74,9 +74,9 @@ class CandidateRecommendationTests(TestCase):
         self.results = list(self.saved_run.results.order_by("rank"))
 
     def test_inclusive_threshold_counts_and_previews_are_consistent(self):
-        MatchResult.objects.filter(pk=self.results[0].pk).update(score=Decimal("69.99"))
-        MatchResult.objects.filter(pk=self.results[1].pk).update(score=Decimal("70.00"))
-        MatchResult.objects.filter(pk=self.results[2].pk).update(score=Decimal("70.01"))
+        MatchResult.objects.filter(pk=self.results[0].pk).update(score=Decimal("59.99"))
+        MatchResult.objects.filter(pk=self.results[1].pk).update(score=Decimal("60.00"))
+        MatchResult.objects.filter(pk=self.results[2].pk).update(score=Decimal("60.01"))
         MatchResult.objects.filter(pk=self.results[3].pk).update(score=None, rank=None)
         expected = [self.results[1].pk, self.results[2].pk] + [
             result.pk for result in self.results[4:12]
@@ -120,7 +120,7 @@ class CandidateRecommendationTests(TestCase):
         self.assertEqual(response.context["jobs"].count(), 14)
 
     def test_no_strong_matches_has_clear_empty_states_without_filler(self):
-        MatchResult.objects.filter(run=self.saved_run).update(score=Decimal("69.99"))
+        MatchResult.objects.filter(run=self.saved_run).update(score=Decimal("59.99"))
         for name in ("matches:jobs", "accounts:dashboard"):
             response = self.client.get(reverse(name))
             self.assertContains(response, "No strong matches right now.")

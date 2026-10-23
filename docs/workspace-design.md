@@ -6,7 +6,7 @@ The three supplied workspace mockups guide page structure: a shared top bar and 
 
 **Overview → My profile → My matches → Match details → Job details → Application editor → My applications**
 
-Dashboard and My matches share a selector for up to ten available roles scoring at least 70%; the dashboard previews three and shows the same capped count. Candidate match details use a separate named template with an overall score, public requirements and general guidance. Recruiter calculation details stay in the recruiting owner's review page. See [matching rules](matching.md#candidate-recommendations-and-guidance).
+Dashboard and My matches share a selector for up to ten available roles scoring at least 60%; the dashboard previews three and shows the same capped count. Candidate match details use a separate named template with an overall score, public requirements and general guidance. Recruiter calculation details stay in the recruiting owner's review page. See [matching rules](matching.md#candidate-recommendations-and-guidance).
 
 The dashboard reads real saved profile-section, matching and application counts. The completion ring measures five professional sections, not eligibility for a job; the portfolio is optional. Visiting the dashboard never generates scores. Saved recommendations show a notice when outdated.
 

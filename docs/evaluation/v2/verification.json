@@ -1,0 +1,17 @@
+{
+  "repeated_ranking_digest_identical": true,
+  "ranking_digest": "c8b573f575d8d78db0efe64f6acd8e16c2295350d6c89fec29bb796125394305",
+  "protected_file_hashes": {
+    "evaluation\\dataset-v1.json": "00f271d89dbe0241ce03c7b521c3285bab748abb2043a4ddb6bd9fd2049115c9",
+    "docs\\evaluation\\report.md": "640552aeeb9ba768d5bcceb5c220b2950db0c04e4a8d3459fc7eca687dad341b",
+    "docs\\evaluation\\results.json": "b7a9c306c4c5baea5f340afb8b49c220b8f0d50dc5d3b583f2f67f244fc160b1",
+    "docs\\evaluation\\rankings.csv": "6c102628f491e3c417e278ee2a2f3b66f822ae6abcf8ff00441e2f7dda876109",
+    "docs\\evaluation\\v2\\reviewer-1.csv": "dc0a0fc94ec9c89333ad5075a1b215c4658e8af7f7ea3b0c55c28c0bf6ca3d81",
+    "docs\\evaluation\\v2\\reviewer-2.csv": "dc0a0fc94ec9c89333ad5075a1b215c4658e8af7f7ea3b0c55c28c0bf6ca3d81",
+    "docs\\evaluation\\v2\\adjudication.csv": "ae314a6f182d370da5586907c0e057a7c085c7003e02c20b636318816740df14",
+    "docs\\evaluation\\v2\\blind-review-packets.json": "7e8783094c146af94a3cf86f8bd81768be47902d312a3488e3e9bb55c37fe12d"
+  },
+  "v1_evidence_unchanged": true,
+  "review_packets_unchanged": true,
+  "matching_and_dataset_unit_tests_passed": 14
+}
