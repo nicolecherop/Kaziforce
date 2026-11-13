@@ -13,7 +13,7 @@
             <div class="section-title-row">
                 <h2>
                     <a href="{% url 'freelance:conversation' pk=thread.pk %}">
-                        {% if user.role == "recruiter" %}{{ thread.freelancer.user.get_full_name|default:"Freelancer"|site_text|contact_safe:thread.contacts_unlocked }}{% else %}{{ thread.recruiter.get_full_name|default:"Recruiter"|site_text|contact_safe:thread.contacts_unlocked }}{% endif %}
+                        {% if user.active_workspace == "recruiter" %}{{ thread.freelancer.user.get_full_name|default:"Freelancer"|site_text|contact_safe:thread.contacts_unlocked }}{% else %}{{ thread.recruiter.get_full_name|default:"Recruiter"|site_text|contact_safe:thread.contacts_unlocked }}{% endif %}
                     </a>
                 </h2>
                 {% if thread.unread %}
@@ -28,7 +28,7 @@
         <section class="workspace-panel empty-panel">
             <h2>Your conversations will appear here.</h2>
             <p>
-                {% if user.role == "recruiter" %}Find a freelancer and send an enquiry to get started.{% else %}Enable your services or send a project proposal to start a conversation.{% endif %}
+                {% if user.active_workspace == "recruiter" %}Find a freelancer and send an enquiry to get started.{% else %}Enable your services or send a project proposal to start a conversation.{% endif %}
             </p>
         </section>
     {% endfor %}

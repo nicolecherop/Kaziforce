@@ -12,7 +12,7 @@ def candidate_recommendations(user, run):
     """Return the top ten scored, currently available jobs in their original saved rank order."""
     if (
         run is None
-        or user.role != "candidate"
+        or user.active_workspace != "candidate"
         or run.kind != MatchRun.Kind.JOBS
         or run.owner_id != user.pk
     ):
@@ -32,6 +32,7 @@ def candidate_recommendations(user, run):
             job__in=JobPosting.objects.accepting_applications(),
         )
         .exclude(job_id__in=applied_jobs)
+        .exclude(job__recruiter=user)
         .select_related("job")
         .order_by("rank", "pk")[:RECOMMENDATION_LIMIT]
     )

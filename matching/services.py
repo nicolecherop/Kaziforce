@@ -10,8 +10,9 @@ from .vectorization import digest
 
 
 def generate_matches(user, job=None):
-    if (job is None and user.role != "candidate") or (
-        job is not None and (user.role != "recruiter" or job.recruiter_id != user.pk)
+    if (job is None and user.active_workspace != "candidate") or (
+        job is not None
+        and (user.active_workspace != "recruiter" or job.recruiter_id != user.pk)
     ):
         raise MatchingError("You cannot request matches for this workspace.")
     corpus = active_corpus()

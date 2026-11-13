@@ -5,7 +5,7 @@
         {% for interview in upcoming_interviews %}
             <article class="profile-record">
                 <h3><a href="{% url 'applications:detail' interview.application_id %}#interview">{{ interview.application.job.title|site_text }}</a></h3>
-                {% if user.role == "recruiter" %}<p>{{ interview.application.candidate_name|site_text }}</p>{% else %}<p>{{ interview.application.job.company|site_text }}</p>{% endif %}
+                {% if user.active_workspace == "recruiter" %}<p>{{ interview.application.candidate_name|site_text }}</p>{% else %}<p>{{ interview.application.job.company|site_text }}</p>{% endif %}
                 <p>{{ interview.starts_at|timezone:"Africa/Nairobi"|date:"j M Y, H:i" }} · EAT (UTC+3) · {{ interview.get_format_display }}</p>
                 <a href="{% url 'applications:detail' interview.application_id %}#interview">View invitation and contact details →</a>
             </article>

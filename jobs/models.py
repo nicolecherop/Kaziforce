@@ -241,7 +241,7 @@ class SavedJob(models.Model):
         ]
 
     def clean(self):
-        if self.candidate_id and self.candidate.role != "candidate":
+        if self.candidate_id and not self.candidate.has_workspace("candidate"):
             raise ValidationError(
                 {"candidate": "Saved jobs belong to candidate accounts."}
             )

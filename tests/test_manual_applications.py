@@ -159,6 +159,52 @@ class ManualApplicationTests(TestCase):
             "suggestions", [field.name for field in CandidateDocument._meta.fields]
         )
 
+    def test_general_supporting_documents_upload_without_extraction(self):
+        for name, contents in [
+            ("reference.docx", word_file()),
+            ("transcript.pdf", b"%PDF-1.7\nTranscript"),
+            ("sample.png", b"\x89PNG\r\n\x1a\nimage"),
+        ]:
+            with self.subTest(name=name), patch(
+                "candidates.cv_views.start_import"
+            ) as extract:
+                response = self.client.post(
+                    reverse("candidates:documents"),
+                    {
+                        "kind": "general",
+                        "title": "Supporting evidence",
+                        "fill_profile": "on",
+                        "file": SimpleUploadedFile(name, contents),
+                    },
+                )
+                self.assertRedirects(response, reverse("candidates:documents"))
+                extract.assert_not_called()
+                document = self.candidate.documents.get(original_name=name)
+                self.assertEqual(
+                    document.get_kind_display(), "General supporting document"
+                )
+                response = self.client.post(
+                    reverse("candidates:cv_import", args=[document.pk])
+                )
+                self.assertNotEqual(response.status_code, 500)
+                self.assertNotIn("cv_review", response.get("Location", ""))
+        self.profile.refresh_from_db()
+        self.assertEqual(self.profile.headline, "Main headline")
+
+    def test_general_document_is_copied_and_shared_only_with_application_owner(self):
+        document = self.document(kind="general", name="reference.pdf")
+        application = self.submit(documents=[str(document.pk)])
+        attachment = application.attachments.get()
+        self.assertEqual(attachment.kind, "general")
+        self.assertEqual(attachment.get_kind_display(), "General supporting document")
+        url = reverse("applications:attachment_file", args=[attachment.pk])
+        self.client.force_login(self.other_recruiter)
+        self.assertEqual(self.client.get(url).status_code, 404)
+        self.client.force_login(self.recruiter)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(b"".join(response.streaming_content).startswith(b"%PDF-"))
+
     def test_invalid_document_formats_signatures_macros_and_size_rejected(self):
         for kind, name, content in [
             ("cv", "cv.exe", b"MZ"),

@@ -34,7 +34,7 @@
                     <tr>
                         <th scope="row">
                             {{ booking.title|contact_safe:booking.accepted_at }}<span class="cell-subtitle">
-                            {% if user.role == "recruiter" %}{{ booking.conversation.freelancer.user.get_full_name|site_text|contact_safe:booking.accepted_at }}{% else %}{{ booking.recruiter_name|site_text|contact_safe:booking.accepted_at }}{% endif %}
+                            {% if user.active_workspace == "recruiter" %}{{ booking.conversation.freelancer.user.get_full_name|site_text|contact_safe:booking.accepted_at }}{% else %}{{ booking.recruiter_name|site_text|contact_safe:booking.accepted_at }}{% endif %}
                             </span>
                         </th>
                         <td>{{ booking.start_date|date:"j M Y" }} – {{ booking.end_date|date:"j M Y" }}</td>

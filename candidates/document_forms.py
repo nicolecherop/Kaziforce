@@ -20,8 +20,9 @@ class DocumentUploadForm(forms.ModelForm):
         fields = ["kind", "title", "file"]
         labels = {"kind": "Document type", "title": "Document title", "file": "File"}
         help_texts = {
-            "title": "For example, My CV or BSc Computer Science.",
-            "file": "Up to 5 MB. CVs: PDF or DOCX. Degrees and certificates: PDF, JPG or PNG.",
+            "kind": "Choose General supporting document for transcripts, reference letters, cover letters, professional licences or work samples.",
+            "title": "For example, My CV, BSc Computer Science or Reference letter.",
+            "file": "Up to 5 MB. CVs: PDF or DOCX. Degrees and certificates: PDF, JPG or PNG. General supporting documents: PDF, DOCX, JPG or PNG.",
         }
         widgets = {
             "file": forms.ClearableFileInput(
@@ -41,11 +42,12 @@ class DocumentUploadForm(forms.ModelForm):
             char for char in PureWindowsPath(upload.name).name if char.isprintable()
         )[:200]
         extension = Path(upload.name).suffix.lower()
-        allowed = (
-            {".pdf", ".docx"}
-            if data.get("kind") == "cv"
-            else {".pdf", ".jpg", ".jpeg", ".png"}
-        )
+        allowed = {
+            "cv": {".pdf", ".docx"},
+            "degree": {".pdf", ".jpg", ".jpeg", ".png"},
+            "certificate": {".pdf", ".jpg", ".jpeg", ".png"},
+            "general": {".pdf", ".docx", ".jpg", ".jpeg", ".png"},
+        }.get(data.get("kind"), set())
         if extension not in allowed:
             self.add_error("file", "Choose a supported format for this document type.")
             return data

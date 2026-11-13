@@ -1,5 +1,5 @@
 <div class="match-notice">
-    {% if user.role == "candidate" %}
+    {% if user.active_workspace == "candidate" %}
         <p>Recommendations are a starting point for your job search. A match score does not guarantee a job offer.</p>
         {% if run %}
             <p class="small-copy">Last updated {{ run.created_at|date:"j M Y, H:i" }}</p>

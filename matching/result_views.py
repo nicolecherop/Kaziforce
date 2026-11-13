@@ -138,11 +138,11 @@ def match_detail(request, result_id):
     queryset = MatchResult.objects.select_related(
         "run__corpus__catalogue", "job", "application"
     )
-    if request.user.role == "candidate":
+    if request.user.active_workspace == "candidate":
         queryset = queryset.filter(
             run__owner=request.user, run__kind="jobs", candidate=request.user
         )
-    elif request.user.role == "recruiter":
+    elif request.user.active_workspace == "recruiter":
         queryset = queryset.filter(
             run__owner=request.user,
             run__kind="applicants",
@@ -158,10 +158,10 @@ def match_detail(request, result_id):
         "historical": not run_is_current(
             result.run,
             request.user,
-            result.job if request.user.role == "recruiter" else None,
+            result.job if request.user.active_workspace == "recruiter" else None,
         ),
     }
-    if request.user.role == "candidate":
+    if request.user.active_workspace == "candidate":
         template = "matching/candidate_match_detail.html"
     else:
         context["candidate_evidence"] = result.input_snapshot["profile"]

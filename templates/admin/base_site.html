@@ -5,4 +5,12 @@
       href="{% static 'css/admin.css' %}">{% endblock %}
 {% block extrahead %}{{ block.super }}<script src="{% static 'js/confirmations.js' %}?v=20261112-deadlines" defer></script>{% endblock %}
 {% block branding %}<div id="site-name"><a href="{% url 'admin:index' %}">KaziForce <span>Administration</span></a></div>{% endblock %}
-{% block nav-global %}{% endblock %}
+{% block nav-global %}
+{% if user.is_authenticated and user.is_staff %}
+<form method="post" action="{% url 'accounts:switch_workspace' %}">
+    {% csrf_token %}
+    <button type="submit" name="workspace" value="candidate">Candidate workspace</button>
+    <button type="submit" name="workspace" value="recruiter">Recruiter workspace</button>
+</form>
+{% endif %}
+{% endblock %}

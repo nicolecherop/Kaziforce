@@ -7,7 +7,7 @@ def recruiter_required(view):
     @login_required
     @wraps(view)
     def guarded(request, *args, **kwargs):
-        if request.user.role != "recruiter":
+        if request.user.active_workspace != "recruiter":
             raise PermissionDenied("This page is available to recruiter accounts.")
         return view(request, *args, **kwargs)
 

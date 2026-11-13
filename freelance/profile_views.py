@@ -27,7 +27,9 @@ from .contact_rules import contact_sharing_allowed
 @workspace_required
 def home(request):
     return redirect(
-        "freelance:profile" if request.user.role == "candidate" else "freelance:find"
+        "freelance:profile"
+        if request.user.active_workspace == "candidate"
+        else "freelance:find"
     )
 
 
@@ -80,6 +82,7 @@ def find(request):
             request.user.freelance_projects.all(), pk=form.cleaned_data["project"]
         )
     profiles = freelance_search(form.cleaned_data, project) if valid else []
+    profiles = [profile for profile in profiles if profile.user_id != request.user.pk]
     page = Paginator(profiles, 12).get_page(request.GET.get("page"))
     return render(
         request,

@@ -27,7 +27,7 @@
             <strong>Total budget: KES {{ project.budget|floatformat:2 }}</strong>
         </section>
         <aside class="workspace-panel side-panel">
-            {% if user.role == "recruiter" %}
+            {% if user.active_workspace == "recruiter" %}
                 <h2>Manage this assignment</h2>
                 <p>Closing a project stops new enquiries. Existing conversations and booking agreements remain available.</p>
                 <a class="button button-full"

@@ -1,13 +1,13 @@
 <aside class="workspace-panel side-panel">
     <span class="icon-tile">{% include "workspace/icon.html" with name="file" %}</span>
     <h2>Your CV &amp; supporting documents</h2>
-    <p>Keep your original CV, degrees and certificates ready for recruiters to review.</p>
+    <p>Keep your CV, degrees, certificates, transcripts, reference letters and work samples ready to attach to applications.</p>
     <a class="upload-link"
        href="{% url 'candidates:documents' %}"
        {% if editing %}target="_blank" rel="noopener"{% endif %}>
         {% include "workspace/icon.html" with name="file" %}
         <strong>Manage your documents</strong>
-        <span>CV: PDF or DOCX · Evidence: PDF, JPG or PNG
+        <span>CV: PDF or DOCX · Degrees/certificates: PDF, JPG or PNG<br>General documents: PDF, DOCX, JPG or PNG
             <br>
         Up to 5 MB per file</span>
     </a>

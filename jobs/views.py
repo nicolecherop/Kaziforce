@@ -17,7 +17,9 @@ from pages.presentation import company_search_labels
 @require_GET
 def opportunities(request):
     jobs = with_saved_status(
-        JobPosting.objects.accepting_applications().prefetch_related("skills"),
+        JobPosting.objects.accepting_applications()
+        .exclude(recruiter=request.user)
+        .prefetch_related("skills"),
         request.user,
     )
     query = request.GET.get("q", "").strip()[:160]

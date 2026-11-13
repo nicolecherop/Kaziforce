@@ -69,7 +69,10 @@ def initiate_payment(booking_id, actor, fields):
             .select_related("conversation")
             .get(pk=booking_id)
         )
-        if actor.pk != booking.conversation.recruiter_id or actor.role != "recruiter":
+        if (
+            actor.pk != booking.conversation.recruiter_id
+            or actor.active_workspace != "recruiter"
+        ):
             raise PermissionDenied
         phone = normalize_phone(fields["phone_number"])
         amount = Decimal(str(fields["amount"]))
@@ -143,7 +146,7 @@ def reconcile_payment(attempt_id, actor):
         )
         if (
             actor.pk != attempt.booking.conversation.recruiter_id
-            or actor.role != "recruiter"
+            or actor.active_workspace != "recruiter"
         ):
             raise PermissionDenied
         if attempt.status in {"success", "failed"}:
@@ -174,8 +177,13 @@ def reconcile_payment(attempt_id, actor):
     code = str(result.get("ResultCode", ""))
     if code.isdigit() and len(code) <= 16:
         new_status = "success" if code == "0" else "failed"
-        MpesaTransaction.objects.filter(
-            pk=attempt.pk, status__in=["initiating", "pending", "unknown"]
-        ).update(status=new_status, result_code=code)
+        with transaction.atomic():
+            changed = MpesaTransaction.objects.filter(
+                pk=attempt.pk, status__in=["initiating", "pending", "unknown"]
+            ).update(status=new_status, result_code=code)
+            if changed:
+                from accounts.workflow_updates import payment_update
+
+                payment_update(attempt, new_status)
     attempt.refresh_from_db()
     return attempt

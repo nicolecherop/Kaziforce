@@ -7,7 +7,7 @@ KaziForce is a Django and PostgreSQL application for employment recruitment and 
 ### Candidates
 
 - Maintain skills, work experience, education, certifications, portfolio links and contact information.
-- Upload private CVs, degree documents and certificates. Fill in your profile manually or import editable suggestions from a text-based PDF or Word CV, then review and select details before saving. See [CV import](docs/cv-import.md).
+- Upload private CVs, degree documents and certificates. Use **General supporting document** for transcripts, reference letters, cover letters, professional licences and work samples (PDF, DOCX, JPG or PNG; up to 5 MB each). Supporting documents are stored without extraction. Fill in your profile manually or import editable suggestions from a text-based PDF or Word CV, then review and select details before saving. See [CV import](docs/cv-import.md).
 - Save favourite jobs privately and return to them from **Saved jobs**. Closed and expired roles remain visible with their current status.
 - Start an application from a saved profile, tailor a separate copy for the job, save a draft and select supporting documents before submission.
 - View application progress and interview arrangements, including the recruiter's contact details.
@@ -30,6 +30,9 @@ KaziForce is a Django and PostgreSQL application for employment recruitment and 
 - Cash and direct payments are arranged outside KaziForce. The site records participant reports and confirmations; it does not collect, hold or transfer money.
 
 ### Accounts and administration
+
+- Use one account and email for both Candidate and Recruiter workspaces. Switch from the account menu; profiles, applications and hiring records remain separate.
+- Receive private in-app notifications and email updates for application decisions, interviews and booking/payment activity. Control update emails from **Notification settings**. See [Workspaces and notifications](docs/workspaces-and-notifications.md).
 
 - Email-and-password sign-in and **Continue with Google**.
 - New public accounts, including Google registrations, must confirm their email using a six-digit code before accessing a workspace.

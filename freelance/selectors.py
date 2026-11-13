@@ -13,10 +13,12 @@ def visible_profiles():
     reviews = Q(conversations__bookings__review__is_hidden=False)
     return (
         FreelancerProfile.objects.filter(
+            Q(user__role="candidate") | Q(user__candidate_workspace_enabled=True)
+        )
+        .filter(
             accepting_bookings=True,
             share_professional_profile=True,
             user__is_active=True,
-            user__role="candidate",
         )
         .select_related("user", "user__candidate_profile")
         .prefetch_related("services", "user__candidate_profile__skills")
@@ -32,12 +34,18 @@ def visible_profiles():
 
 
 def visible_projects():
-    return FreelanceProject.objects.filter(
-        status="open",
-        end_date__gte=timezone.localdate(),
-        recruiter__is_active=True,
-        recruiter__role="recruiter",
-    ).select_related("recruiter")
+    return (
+        FreelanceProject.objects.filter(
+            Q(recruiter__role="recruiter")
+            | Q(recruiter__recruiter_workspace_enabled=True)
+        )
+        .filter(
+            status="open",
+            end_date__gte=timezone.localdate(),
+            recruiter__is_active=True,
+        )
+        .select_related("recruiter")
+    )
 
 
 def profile_reviews(profile):
@@ -124,7 +132,11 @@ def freelance_search(data, project=None):
 def inbox_for(user):
     from .access import conversations_for
 
-    field = "recruiter_read_at" if user.role == "recruiter" else "freelancer_read_at"
+    field = (
+        "recruiter_read_at"
+        if user.active_workspace == "recruiter"
+        else "freelancer_read_at"
+    )
     unread = (
         Message.objects.filter(conversation=OuterRef("pk"))
         .exclude(sender=user)

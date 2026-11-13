@@ -3,7 +3,7 @@
 import logging
 from datetime import timedelta
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.mail import EmailMessage, get_connection
 from django.db import DatabaseError, transaction
 from django.shortcuts import get_object_or_404
@@ -26,6 +26,8 @@ INTERVIEW_FIELDS = (
 
 
 def owned_application(user, application_id, lock=False):
+    if user.active_workspace != "recruiter":
+        raise PermissionDenied("Open your recruiter workspace to manage applications.")
     queryset = Application.objects
     if lock:
         queryset = queryset.select_for_update()
@@ -47,7 +49,7 @@ def save_interview(user, application_id, details):
     with transaction.atomic():
         application = owned_application(user, application_id, lock=True)
         if (
-            user.role != "recruiter"
+            user.active_workspace != "recruiter"
             or application.status != Application.Status.SHORTLISTED
         ):
             raise ValidationError(
@@ -103,8 +105,21 @@ def change_application_status(user, application_id, status):
             raise ValidationError(
                 "Cancel the upcoming interview before changing this application status."
             )
+        if (
+            user.active_workspace != "recruiter"
+            or status not in dict(Application.Status.choices)
+            or status == "draft"
+        ):
+            raise ValidationError(
+                "Choose a valid application decision from your recruiter workspace."
+            )
+        if application.status == status:
+            return
         application.status = status
         application.save(update_fields=["status", "updated_at"])
+        from accounts.workflow_updates import application_decision
+
+        application_decision(application)
 
 
 def queue_email(interview, action):
@@ -156,6 +171,9 @@ def queue_email(interview, action):
         body="\n\n".join(body),
         reply_to=interview.recruiter_email,
     )
+    from accounts.workflow_updates import interview_update
+
+    interview_update(interview, notification, action)
     transaction.on_commit(lambda: attempt_delivery(notification.pk))
 
 

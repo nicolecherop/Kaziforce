@@ -81,6 +81,10 @@ def save_application(user, job_id, snapshot, application_data, submit):
         with transaction.atomic():
             get_user_model().objects.select_for_update().get(pk=user.pk)
             job = JobPosting.objects.select_for_update().get(pk=job_id)
+            if user.active_workspace != "candidate" or job.recruiter_id == user.pk:
+                raise ValidationError(
+                    "You cannot apply to your own job. Use your candidate workspace to apply to other roles."
+                )
             if not job.accepts_applications:
                 raise ValidationError(
                     "This job is no longer accepting applications. Your application has not been submitted."
@@ -148,6 +152,10 @@ def save_application(user, job_id, snapshot, application_data, submit):
                         )
                     new_files.append((attachment.file.storage, attachment.file.name))
                     attachment.save()
+            if submit:
+                from accounts.workflow_updates import application_submitted
+
+                application_submitted(application)
             return application
     except Exception:
         # Database rollback cannot undo a filesystem write.

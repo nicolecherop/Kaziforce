@@ -15,7 +15,7 @@ from .services import start_conversation
 
 @workspace_required
 def projects(request):
-    own = request.user.role == "recruiter"
+    own = request.user.active_workspace == "recruiter"
     qs = request.user.freelance_projects.all() if own else visible_projects()
     q = request.GET.get("q", "")[:120].strip()
     if q:
@@ -72,7 +72,7 @@ def project_edit(request, pk=None):
 @workspace_required
 @require_http_methods(["GET", "POST"])
 def project_detail(request, pk):
-    if request.user.role == "recruiter":
+    if request.user.active_workspace == "recruiter":
         project = get_object_or_404(request.user.freelance_projects.all(), pk=pk)
     else:
         project = get_object_or_404(visible_projects(), pk=pk)
@@ -81,7 +81,7 @@ def project_detail(request, pk):
     ).first()
     form = MessageForm(request.POST if request.method == "POST" else None)
     if request.method == "POST":
-        if request.user.role != "candidate" or not profile:
+        if request.user.active_workspace != "candidate" or not profile:
             messages.error(
                 request,
                 "Enable your freelance profile before sending a project proposal.",

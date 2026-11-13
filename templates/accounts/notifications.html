@@ -1,0 +1,30 @@
+{% extends "workspace/base.html" %}
+{% block title %}Notifications | KaziForce{% endblock %}
+{% block workspace_content %}
+<header class="page-heading">
+    <p class="eyebrow">Your account / Notifications</p>
+    <h1>Your latest updates.</h1>
+    <p>Application and booking updates from both workspaces, together in one place.</p>
+    <a href="{% url 'accounts:notification_settings' %}">Notification settings</a>
+</header>
+{% for item in page %}
+<article class="workspace-panel">
+    <p class="small-copy">{{ item.workspace|capfirst }} · {{ item.created_at|date:"j M Y, H:i" }} EAT{% if not item.read_at %} · Unread{% endif %}</p>
+    <h2>{{ item.title }}</h2>
+    <p>{{ item.body|linebreaksbr }}</p>
+    <form method="post" action="{% url 'accounts:open_notification' item.pk %}">
+        {% csrf_token %}
+        <button class="button button-small" type="submit">Open in {{ item.workspace }} workspace →</button>
+    </form>
+</article>
+{% empty %}
+<div class="workspace-panel empty-panel"><h2>You are up to date.</h2><p>New application decisions, interview updates and booking activity will appear here.</p></div>
+{% endfor %}
+{% if page.has_other_pages %}
+<nav class="view-links" aria-label="Notification pages">
+    {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">← Previous</a>{% endif %}
+    <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Next →</a>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}

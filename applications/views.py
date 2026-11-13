@@ -83,6 +83,9 @@ def inbox(request):
 @require_http_methods(["GET", "POST"])
 def application_edit(request, job_id):
     job = get_object_or_404(JobPosting, pk=job_id)
+    if job.recruiter_id == request.user.pk:
+        messages.error(request, "You cannot apply to your own job.")
+        return redirect("jobs:detail", job_id=job.pk)
     application = request.user.applications.filter(job=job).first()
     if application and application.status != "draft":
         return redirect("applications:detail", application_id=application.pk)
@@ -201,9 +204,9 @@ def application_edit(request, job_id):
 
 def accessible_application(user, application_id):
     queryset = Application.objects.select_related("job", "candidate", "interview")
-    if user.role == "candidate":
+    if user.active_workspace == "candidate":
         queryset = queryset.filter(candidate=user)
-    elif user.role == "recruiter":
+    elif user.active_workspace == "recruiter":
         queryset = queryset.filter(job__recruiter=user).exclude(status="draft")
     else:
         queryset = queryset.none()
@@ -230,7 +233,7 @@ def application_detail(request, application_id):
                 )
                 .order_by("-run__created_at")
                 .first()
-                if request.user.role == "recruiter"
+                if request.user.active_workspace == "recruiter"
                 else None
             ),
         },

@@ -4,7 +4,7 @@
     <header class="page-heading">
         <p class="eyebrow">CV &amp; documents</p>
         <h1>Your experience, supported.</h1>
-        <p>Keep your CV, degrees and certificates ready to attach to an application. Fill in your professional details in <a href="{% url 'candidates:profile_edit' %}">your profile</a>.</p>
+        <p>Keep your CV, qualifications and supporting documents ready to attach to an application. Fill in your professional details in <a href="{% url 'candidates:profile_edit' %}">your profile</a>.</p>
     </header>
     <div class="document-library-layout">
         <section class="document-upload-panel" aria-labelledby="upload-title">
@@ -12,8 +12,15 @@
                 <span class="section-kicker">Your document library</span>
                 <h2 id="upload-title">Add a document.</h2>
                 <p>Recruiters can read the original files you attach to a submitted application.</p>
-                <p class="small-copy">Files stay private until you choose to share them with a job application. Scanned documents are welcome.</p>
+                <p class="small-copy">Files stay private until you attach them to a submitted application. Supporting documents are stored for recruiters to read, without extraction. Scanned PDFs and images are accepted for supporting documents; CV import needs selectable text.</p>
             </div>
+            <h3>What you can add</h3>
+            <ul>
+                <li><strong>CV:</strong> your curriculum vitae or resume.</li>
+                <li><strong>Degree or qualification:</strong> degree and diploma documents.</li>
+                <li><strong>Certificate:</strong> training and professional certifications.</li>
+                <li><strong>General supporting document:</strong> transcripts, reference letters, cover letters, professional licences and work samples requested by an employer.</li>
+            </ul>
             <form method="post" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
                 {% if form.errors %}
@@ -68,7 +75,7 @@
                     </details>
                 </article>
             {% empty %}
-                <p class="empty-state">Your uploaded CVs, degrees and certificates will appear here.</p>
+                <p class="empty-state">Your uploaded CVs, qualifications and supporting documents will appear here.</p>
             {% endfor %}
         </section>
     </div>

@@ -64,7 +64,7 @@ def upcoming_interviews(user):
     ).select_related("application__job")
     interviews = (
         interviews.filter(application__candidate=user)
-        if user.role == "candidate"
+        if user.active_workspace == "candidate"
         else interviews.filter(application__job__recruiter=user)
     )
     return interviews.order_by("starts_at", "pk")[:5]

@@ -18,3 +18,9 @@
   .job-skill-list li { align-items: flex-start; flex-direction: column; gap: 10px; }
   .job-qualification-list > div { grid-template-columns: 1fr; gap: 10px; }
 }
+
+/* Bookmark controls share the same saved state across job lists and details. */
+.button.job-bookmark { width: 44px; min-width: 44px; height: 44px; padding: 10px; }
+.job-bookmark svg { display: block; flex-shrink: 0; }
+.button.job-bookmark[aria-pressed="true"] { color: var(--blue); background: #eef3ff; }
+.job-bookmark:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }

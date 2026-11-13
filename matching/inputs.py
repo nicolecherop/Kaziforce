@@ -79,6 +79,7 @@ def collect_inputs(user, job=None):
         jobs = list(
             JobPosting.objects.accepting_applications()
             .exclude(pk__in=submitted_jobs)
+            .exclude(recruiter=user)
             .prefetch_related("skills")
             .order_by("pk")[:501]
         )

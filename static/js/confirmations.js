@@ -19,6 +19,8 @@
         is_staff: "admin access",
         is_superuser: "full administrator permissions",
         role: "account role",
+        candidate_workspace_enabled: "candidate workspace access",
+        recruiter_workspace_enabled: "recruiter workspace access",
         groups: "access groups",
         user_permissions: "account permissions",
         permissions: "group permissions",

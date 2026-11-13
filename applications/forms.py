@@ -25,6 +25,7 @@ class ApplicationForm(forms.Form):
         required=False,
         widget=forms.CheckboxSelectMultiple,
         label="Attach documents",
+        help_text="Choose up to 10 files from your library, including your CV, qualifications, transcripts, reference letters or work samples. Only selected files are shared when you submit.",
     )
 
     def __init__(self, *args, user, **kwargs):

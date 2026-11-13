@@ -3,5 +3,9 @@
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ request.get_full_path }}">
     <input type="hidden" name="action" value="{% if saved %}remove{% else %}save{% endif %}">
-    <button type="submit" class="button button-small button-secondary" aria-label="{% if saved %}Unsave{% else %}Save{% endif %} {{ job.title|site_text }}" aria-pressed="{% if saved %}true{% else %}false{% endif %}">{% if saved %}Saved ✓{% else %}Save job{% endif %}</button>
+    <button type="submit" class="button button-small button-secondary job-bookmark" aria-label="{% if saved %}Unsave{% else %}Save{% endif %} {{ job.title|site_text }}" title="{% if saved %}Remove from saved jobs{% else %}Save job{% endif %}" aria-pressed="{% if saved %}true{% else %}false{% endif %}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="{% if saved %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z" />
+        </svg>
+    </button>
 </form>

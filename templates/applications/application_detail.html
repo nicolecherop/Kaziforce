@@ -3,7 +3,7 @@
 {% block title %}Application | KaziForce{% endblock %}
 {% block workspace_content %}
     <a class="back-to-list"
-       href="{% if user.role == 'recruiter' %}
+       href="{% if user.active_workspace == 'recruiter' %}
 {% url 'applications:applicants' application.job_id %}
 {% else %}
 {% url 'applications:mine' %}
@@ -29,7 +29,7 @@
             {% else %}
                 <div class="inline-notice">
                     <strong>
-                        {% if user.role == "recruiter" %}{{ application.candidate_name|default:application.candidate_email|site_text }}{% else %}Your submitted application{% endif %}
+                        {% if user.active_workspace == "recruiter" %}{{ application.candidate_name|default:application.candidate_email|site_text }}{% else %}Your submitted application{% endif %}
                     </strong>
                     <p>This is the information and documents submitted for this role. Later changes to the candidate's main profile do not change this copy.</p>
                 </div>
@@ -77,10 +77,10 @@
         </div>
         <aside class="workspace-panel side-panel">
             <h2>
-                {% if user.role == "recruiter" %}{{ application.candidate_name|default:application.candidate_email|site_text }}{% else %}Your application{% endif %}
+                {% if user.active_workspace == "recruiter" %}{{ application.candidate_name|default:application.candidate_email|site_text }}{% else %}Your application{% endif %}
             </h2>
             {% include "applications/components/progress.html" %}
-            {% if user.role == "recruiter" %}
+            {% if user.active_workspace == "recruiter" %}
                 <div class="panel-divider"></div>
                 <h3>Your next decision</h3>
                 <form class="status-form"

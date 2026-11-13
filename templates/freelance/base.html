@@ -4,7 +4,7 @@
 {% endblock %}
 {% block workspace_content %}
     <nav class="view-links" aria-label="Freelance navigation">
-        {% if user.role == "candidate" %}
+        {% if user.active_workspace == "candidate" %}
             <a href="{% url 'freelance:profile' %}"
                {% if request.resolver_match.url_name == 'profile' or request.resolver_match.url_name == 'profile_edit' %}aria-current="page"{% endif %}>My freelance profile</a>
         {% else %}
@@ -13,7 +13,7 @@
         {% endif %}
         <a href="{% url 'freelance:projects' %}"
            {% if 'project' in request.resolver_match.url_name %}aria-current="page"{% endif %}>
-            {% if user.role == "recruiter" %}My projects{% else %}Find projects{% endif %}
+            {% if user.active_workspace == "recruiter" %}My projects{% else %}Find projects{% endif %}
         </a>
         <a href="{% url 'freelance:bookings' %}"
            {% if request.resolver_match.url_name == 'bookings' or request.resolver_match.url_name == 'booking' or request.resolver_match.url_name == 'book' %}aria-current="page"{% endif %}>Bookings</a>

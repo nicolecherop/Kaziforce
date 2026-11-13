@@ -33,8 +33,12 @@ def overview_context(user):
     if can_view(user, User):
         counts = User.objects.aggregate(
             total=Count("pk"),
-            candidates=Count("pk", filter=Q(role="candidate")),
-            recruiters=Count("pk", filter=Q(role="recruiter")),
+            candidates=Count(
+                "pk", filter=Q(role="candidate") | Q(candidate_workspace_enabled=True)
+            ),
+            recruiters=Count(
+                "pk", filter=Q(role="recruiter") | Q(recruiter_workspace_enabled=True)
+            ),
             inactive=Count("pk", filter=Q(is_active=False)),
         )
         cards.append(

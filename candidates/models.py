@@ -32,7 +32,8 @@ class CandidateProfile(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="candidate_profile",
-        limit_choices_to={"role": "candidate"},
+        limit_choices_to=models.Q(role="candidate")
+        | models.Q(candidate_workspace_enabled=True),
     )
     headline = models.CharField(max_length=160, blank=True)
     location = models.CharField(max_length=120, blank=True)
@@ -48,7 +49,7 @@ class CandidateProfile(models.Model):
         db_table = "candidate_profiles"
 
     def clean(self):
-        if self.user_id and self.user.role != "candidate":
+        if self.user_id and not self.user.has_workspace("candidate"):
             raise ValidationError(
                 {"user": "A professional profile must belong to a candidate."}
             )
@@ -183,6 +184,7 @@ class CandidateDocument(models.Model):
         CV = "cv", "CV"
         DEGREE = "degree", "Degree or qualification"
         CERTIFICATE = "certificate", "Certificate"
+        GENERAL = "general", "General supporting document"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(

@@ -1,10 +1,24 @@
 from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
-from . import views
+from . import views, workspace_views
 from .security_views import security
 
 app_name = "accounts"
 urlpatterns = [
+    path(
+        "workspace/switch/", workspace_views.switch_workspace, name="switch_workspace"
+    ),
+    path("notifications/", workspace_views.notifications, name="notifications"),
+    path(
+        "notifications/settings/",
+        workspace_views.notification_settings,
+        name="notification_settings",
+    ),
+    path(
+        "notifications/<int:pk>/open/",
+        workspace_views.open_notification,
+        name="open_notification",
+    ),
     path("security/", security, name="security"),
     path("sign-in/", views.SignInView.as_view(), name="sign_in"),
     path("create-account/", views.create_account, name="create_account"),

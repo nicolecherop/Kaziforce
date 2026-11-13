@@ -101,13 +101,17 @@ def create_account(request):
 
 @login_required
 def dashboard(request):
-    if request.user.is_active and request.user.is_staff:
+    if (
+        request.user.is_active
+        and request.user.is_staff
+        and not request.session.get("kaziforce_workspace")
+    ):
         return redirect("admin:index")
-    if request.user.role == User.Role.RECRUITER:
+    if request.user.active_workspace == User.Role.RECRUITER:
         return render(
             request, "recruiters/dashboard.html", recruiter_dashboard(request.user)
         )
-    elif request.user.role == User.Role.CANDIDATE:
+    elif request.user.active_workspace == User.Role.CANDIDATE:
         return render(
             request,
             "candidates/dashboard.html",

@@ -16,7 +16,7 @@
     {% include "workspace/icons.html" %}
     <header class="workspace-topbar">
         <a class="brand" href="{% url 'accounts:dashboard' %}">Kaziforce</a>
-        <span class="descriptor">Talent matching</span>
+        <span class="descriptor">{{ user.active_workspace_label }} workspace</span>
         <details class="account-menu">
             <summary aria-label="Account menu for {{ user.get_full_name|default:'my account'|site_text }}">
                 <span class="initial-avatar">{{ user.get_full_name|site_text|initials }}</span>
@@ -24,8 +24,19 @@
                 <span aria-hidden="true">⌄</span>
             </summary>
             <div class="account-menu-panel">
-                <p>{{ user.get_role_display }} workspace</p>
-                {% if user.role == "candidate" %}
+                <p>{{ user.active_workspace_label }} workspace</p>
+                <form method="post" action="{% url 'accounts:switch_workspace' %}">
+                    {% csrf_token %}
+                    {% if user.active_workspace == "recruiter" %}
+                        <button class="text-button" type="submit" name="workspace" value="candidate">Switch to Candidate</button>
+                    {% else %}
+                        <button class="text-button" type="submit" name="workspace" value="recruiter">Switch to Recruiter</button>
+                    {% endif %}
+                </form>
+                <a href="{% url 'accounts:notifications' %}">Notifications{% if unread_update_count %} ({{ unread_update_count }}){% endif %}</a>
+                <a href="{% url 'accounts:notification_settings' %}">Notification settings</a>
+                {% if user.is_staff %}<a href="{% url 'admin:index' %}">Administration</a>{% endif %}
+                {% if user.active_workspace == "candidate" %}
                     <a href="{% url 'candidates:profile' %}">My professional profile</a>
                 {% endif %}
                 <a href="{% url 'pages:home' %}">Back to home</a>
@@ -42,13 +53,13 @@
     <div class="candidate-layout">
         <aside class="candidate-sidebar" aria-label="Workspace">
             <p class="sidebar-caption">
-                {% if user.role == "candidate" %}Your career{% else %}Your team{% endif %}
+                {% if user.active_workspace == "candidate" %}Your career{% else %}Your team{% endif %}
             </p>
             <nav class="workspace-navigation" aria-label="Workspace navigation">
                 <a href="{% url 'accounts:dashboard' %}"
                    {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}>
                 {% include "workspace/icon.html" with name="home" %}Overview</a>
-                {% if user.role == "candidate" %}
+                {% if user.active_workspace == "candidate" %}
                     <a href="{% url 'candidates:profile' %}"
                        {% if request.resolver_match.app_name == 'candidates' and request.resolver_match.url_name == 'profile' or request.resolver_match.app_name == 'candidates' and request.resolver_match.url_name == 'profile_edit' %}aria-current="page"{% endif %}>
                     {% include "workspace/icon.html" with name="user" %}My profile</a>

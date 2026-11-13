@@ -6,7 +6,19 @@ from pages.presentation import public_text
 
 @admin.register(User)
 class KaziForceUserAdmin(UserAdmin):
-    fieldsets = UserAdmin.fieldsets + (("KaziForce", {"fields": ("role",)}),)
+    fieldsets = UserAdmin.fieldsets + (
+        (
+            "KaziForce",
+            {
+                "fields": (
+                    "role",
+                    "candidate_workspace_enabled",
+                    "recruiter_workspace_enabled",
+                    "email_updates",
+                )
+            },
+        ),
+    )
     add_fieldsets = UserAdmin.add_fieldsets + (
         ("KaziForce", {"fields": ("email", "role")}),
     )

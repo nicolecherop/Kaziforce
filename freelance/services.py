@@ -28,8 +28,14 @@ RESERVING_STATES = [Booking.Status.ACCEPTED, Booking.Status.COMPLETION_REQUESTED
 ZERO = Decimal("0.00")
 
 
-def event(booking, actor, description):
-    BookingEvent.objects.create(booking=booking, actor=actor, description=description)
+def event(booking, actor, description, *, send_update=True):
+    record = BookingEvent.objects.create(
+        booking=booking, actor=actor, description=description
+    )
+    from accounts.workflow_updates import booking_update
+
+    if send_update:
+        booking_update(booking, actor, record)
     Message.objects.create(
         conversation_id=booking.conversation_id,
         sender=actor,
@@ -96,10 +102,17 @@ def start_conversation(actor, freelancer_id, body, project_id=None):
             raise PermissionDenied
     else:
         project = None
-        if actor.role != "recruiter":
+        if actor.active_workspace != "recruiter":
             raise PermissionDenied
         recruiter = actor
-    if recruiter.role != "recruiter" or profile.user.role != "candidate":
+    if not recruiter.has_workspace("recruiter") or not profile.user.has_workspace(
+        "candidate"
+    ):
+        raise PermissionDenied
+    if recruiter.pk == profile.user_id:
+        raise ValidationError("You cannot enquire about or book your own services.")
+    expected = "recruiter" if actor.pk == recruiter.pk else "candidate"
+    if actor.active_workspace != expected:
         raise PermissionDenied
     conversation, _ = Conversation.objects.get_or_create(
         recruiter=recruiter, freelancer=profile, project=project
@@ -112,6 +125,9 @@ def start_conversation(actor, freelancer_id, body, project_id=None):
 
 def send_message_locked(conversation, actor, body):
     if actor.pk not in {conversation.recruiter_id, conversation.freelancer.user_id}:
+        raise PermissionDenied
+    expected = "recruiter" if actor.pk == conversation.recruiter_id else "candidate"
+    if actor.active_workspace != expected:
         raise PermissionDenied
     if conversation.blocked:
         raise ValidationError(
@@ -154,7 +170,7 @@ def request_booking(conversation_id, actor, fields):
         .select_related("freelancer__user", "recruiter")
         .get(pk=conversation_id)
     )
-    if actor.pk != conversation.recruiter_id or actor.role != "recruiter":
+    if actor.pk != conversation.recruiter_id or actor.active_workspace != "recruiter":
         raise PermissionDenied
     for name in ("title", "scope", "location", "cancellation_terms", "recruiter_name"):
         validate_no_contacts(fields.get(name, ""), BOOKING_CONTACT_MESSAGE)
@@ -179,8 +195,14 @@ def booking_transition(booking_id, actor, action, data=None):
         .select_related("conversation__freelancer__user", "conversation__recruiter")
         .get(pk=booking_id)
     )
-    recruiter = actor.pk == booking.conversation.recruiter_id
-    worker = actor.pk == booking.conversation.freelancer.user_id
+    recruiter = (
+        actor.pk == booking.conversation.recruiter_id
+        and actor.active_workspace == "recruiter"
+    )
+    worker = (
+        actor.pk == booking.conversation.freelancer.user_id
+        and actor.active_workspace == "candidate"
+    )
     if not (recruiter or worker):
         raise PermissionDenied
     data = data or {}
@@ -253,7 +275,12 @@ def booking_transition(booking_id, actor, action, data=None):
             )
         booking.cancellation_requested_by = None
         # Keep the reason in the event history even after another request.
-        event(booking, actor, public_text(booking.cancellation_reason)[:250])
+        event(
+            booking,
+            actor,
+            public_text(booking.cancellation_reason)[:250],
+            send_update=False,
+        )
         booking.cancellation_reason = ""
     elif (
         action == "request_completion" and worker and status == Booking.Status.ACCEPTED
@@ -335,8 +362,14 @@ def report_payment(booking_id, actor, fields):
         .select_related("conversation__freelancer")
         .get(pk=booking_id)
     )
-    recruiter = actor.pk == booking.conversation.recruiter_id
-    worker = actor.pk == booking.conversation.freelancer.user_id
+    recruiter = (
+        actor.pk == booking.conversation.recruiter_id
+        and actor.active_workspace == "recruiter"
+    )
+    worker = (
+        actor.pk == booking.conversation.freelancer.user_id
+        and actor.active_workspace == "candidate"
+    )
     if not (recruiter or worker):
         raise PermissionDenied
     if fields["kind"] == Payment.Kind.DEPOSIT:
@@ -402,6 +435,11 @@ def payment_transition(payment_id, actor, action):
     }
     if actor.pk not in participants:
         raise PermissionDenied
+    expected = (
+        "recruiter" if actor.pk == booking.conversation.recruiter_id else "candidate"
+    )
+    if actor.active_workspace != expected:
+        raise PermissionDenied
     reporter = payment.reported_by_id == actor.pk
     if action == "withdraw" and reporter and payment.status in {"reported", "disputed"}:
         payment.status = Payment.Status.WITHDRAWN
@@ -432,7 +470,10 @@ def leave_review(booking_id, actor, fields):
         .select_related("conversation")
         .get(pk=booking_id)
     )
-    if actor.pk != booking.conversation.recruiter_id:
+    if (
+        actor.pk != booking.conversation.recruiter_id
+        or actor.active_workspace != "recruiter"
+    ):
         raise PermissionDenied
     validate_no_contacts(fields.get("comment", ""))
     if booking.status != Booking.Status.COMPLETED:

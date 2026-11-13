@@ -1,0 +1,13 @@
+{% extends "workspace/base.html" %}
+{% block title %}Notification settings | KaziForce{% endblock %}
+{% block workspace_content %}
+<header class="page-heading"><h1>Notification settings</h1><p>Choose whether application and booking updates also arrive in your account email inbox. This setting applies to both workspaces.</p></header>
+<section class="workspace-panel">
+    <form method="post">
+        {% csrf_token %}
+        {% include "components/checkbox_field.html" with field=form.email_updates %}
+        <p>In-app notifications remain available. Sign-in codes, password reset emails and interview invitations are not affected.</p>
+        <button class="button button-small" type="submit">Save preferences</button>
+    </form>
+</section>
+{% endblock %}

@@ -63,6 +63,13 @@ class ApplicationAttachment(models.Model):
     title = models.CharField(max_length=160, blank=True)
     kind = models.CharField(max_length=12)
 
+    def get_kind_display(self):
+        from candidates.models import CandidateDocument
+
+        return dict(CandidateDocument.Kind.choices).get(
+            self.kind, "Supporting document"
+        )
+
     class Meta:
         db_table = "application_attachments"
         ordering = ["kind", "original_name"]

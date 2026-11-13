@@ -10,7 +10,7 @@ def candidate_required(view):
     @login_required
     @wraps(view)
     def guarded(request, *args, **kwargs):
-        if request.user.role != "candidate":
+        if request.user.active_workspace != "candidate":
             raise PermissionDenied("This page is available to candidate accounts.")
         return view(request, *args, **kwargs)
 

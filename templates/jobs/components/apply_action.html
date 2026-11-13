@@ -1,4 +1,6 @@
-{% if application and application.status != "draft" %}
+{% if job.recruiter_id == user.pk %}
+    <p class="small-copy">You posted this job. Switch to your recruiter workspace to manage it.</p>
+{% elif application and application.status != "draft" %}
     <a class="button button-small"
        href="{% url 'applications:detail' application.pk %}">View your application →</a>
 {% elif job.accepts_applications %}

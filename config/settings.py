@@ -39,6 +39,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "accounts.workspaces.WorkspaceMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "accounts.security_middleware.VerifiedSessionMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -55,6 +56,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "accounts.update_alerts.workspace_notifications",
             ]
         },
     }
@@ -200,3 +202,6 @@ MPESA_SANDBOX = {
     "callback_url": os.getenv("MPESA_SANDBOX_CALLBACK_URL", ""),
 }
 ACCOUNT_RATE_LIMITS["mpesa_sandbox"] = "10/m/key,30/m/ip"
+
+# Origin used in account update emails; configure the HTTPS origin when deployed.
+SITE_URL = os.getenv("DJANGO_SITE_URL", "http://127.0.0.1:8001")
