@@ -51,6 +51,9 @@ def capture_job(job):
                 "experience_priority",
             )
         },
+        "application_deadline": (
+            job.application_deadline.isoformat() if job.application_deadline else None
+        ),
         "education_level_label": job.get_education_level_display(),
         "minimum_experience_years": (
             str(job.minimum_experience_years)
@@ -74,7 +77,7 @@ def collect_inputs(user, job=None):
         profile = professional_profile(snapshot_from_profile(user))
         submitted_jobs = user.applications.exclude(status="draft").values("job_id")
         jobs = list(
-            JobPosting.objects.filter(status="open")
+            JobPosting.objects.accepting_applications()
             .exclude(pk__in=submitted_jobs)
             .prefetch_related("skills")
             .order_by("pk")[:501]

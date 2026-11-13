@@ -7,14 +7,16 @@ KaziForce is a Django and PostgreSQL application for employment recruitment and 
 ### Candidates
 
 - Maintain skills, work experience, education, certifications, portfolio links and contact information.
-- Upload private CVs, degree documents and certificates. Information is entered manually; uploaded documents are not parsed or used for automatic extraction.
+- Upload private CVs, degree documents and certificates. Fill in your profile manually or import editable suggestions from a text-based PDF or Word CV, then review and select details before saving. See [CV import](docs/cv-import.md).
+- Save favourite jobs privately and return to them from **Saved jobs**. Closed and expired roles remain visible with their current status.
 - Start an application from a saved profile, tailor a separate copy for the job, save a draft and select supporting documents before submission.
 - View application progress and interview arrangements, including the recruiter's contact details.
-- Request up to ten job recommendations with a match score of at least 60%, with general guidance for improving the profile.
+- Request your top ten available job recommendations without a minimum match score, with general guidance for improving the profile.
 
 ### Recruiters
 
 - Create, edit, publish and close jobs with structured skills, priorities, qualification and experience requirements.
+- Set optional [application deadlines](docs/job-deadlines.md), extend them, or explicitly reopen closed postings. Expired jobs stop accepting applications automatically.
 - Read submitted applications and documents, review applicant rankings and update application statuses.
 - Schedule, update and cancel interviews for shortlisted candidates. Physical meetings are the default; invitations share meeting details and recruiter contacts, with email-delivery tracking.
 
@@ -44,7 +46,7 @@ KaziForce is a Django and PostgreSQL application for employment recruitment and 
 - A versioned local ESCO skill catalogue supports suggestions and skill-name standardization.
 - Matching combines skill coverage, recruiter priorities, TF-IDF cosine similarity, education and declared experience. Saved runs retain their inputs, reference versions and explanations.
 
-Candidates receive general recommendations; detailed score calculations are available to the recruiting owner. Recruiter rankings show up to ten applicants without the candidate recommendation threshold. All applications remain available for manual review. Scores describe profile alignment, are not hiring probabilities and never automatically change an application's status.
+Candidates receive general recommendations; detailed score calculations are available to the recruiting owner. Recruiter rankings show up to ten applicants without a minimum-score threshold. All applications remain available for manual review. Scores describe profile alignment, are not hiring probabilities and never automatically change an application's status.
 
 ## Run locally on Windows
 
@@ -188,13 +190,15 @@ For focused authentication checks:
 .\.venv\Scripts\python.exe manage.py test tests.test_accounts tests.test_signin_security tests.test_registration_verification --keepdb
 ```
 
-The latest full PostgreSQL regression run passed 327 tests, including 20 M-Pesa sandbox tests. It used the separate test database and isolated feature settings; tests that require email verification explicitly enable it. Payment-provider calls were mocked, so this result does not establish external Daraja connectivity or callback delivery. Google sign-in, Gmail delivery and first-time email confirmation have also been exercised with real accounts. Real-inbox password-reset testing, complete participant acceptance testing and final documentation consolidation remain outstanding.
+The latest full PostgreSQL regression run passed 427 tests on 12 November 2026, including 35 CV import tests as well as job-deadline and account-profile-prefill coverage. All nine JavaScript confirmation checks also passed. It used the separate test database and isolated feature settings; tests that require email verification explicitly enable it. Payment-provider calls were mocked, so this result does not establish external Daraja connectivity or callback delivery. Google sign-in, Gmail delivery and first-time email confirmation have also been exercised with real accounts. Real-inbox password-reset testing, complete participant acceptance testing and final documentation consolidation remain outstanding.
 
 If Node.js is available, `node --test tests/video.test.cjs` checks video playback and fallback behaviour. Node.js is not required to run the Django application.
 
 The [matching evaluation report](docs/evaluation/report.md), [results](docs/evaluation/results.json) and [rankings](docs/evaluation/rankings.csv) describe a synthetic dataset of five jobs, twenty profiles and 100 relevance labels. These historical engineering results are separate from human acceptance testing and are not validated hiring accuracy. The evaluation workflow harness also needs rechecking against mandatory first-time email confirmation before its registration results are regenerated.
 
 The expanded [v2 evaluation report](docs/evaluation/v2/report.md) adds 200 fictional profiles, 40 jobs, 60 freelancers and 20 projects: 8,000 employment pairs and 1,200 freelance pairs. Reproduce it with `.\.venv\Scripts\python.exe scripts/evaluate_expanded.py`. It runs in a disposable database with network access and payments disabled. The [expanded evaluation guide](docs/evaluation/expanded-guide.md) explains the metrics and the 400-pair blind review pack; independent human grades remain pending. Existing v1 evidence is preserved.
+
+To explore the expanded scenarios in the local website, run `.\.venv\Scripts\python.exe scripts/import_evaluation_data.py`. The [expanded account guide](docs/expanded-accounts.md) explains the 200 candidate accounts, ten recruiters, listings, sample applications and private local sign-in file. The importer backs up PostgreSQL, preserves existing users and does not send email or create payments or ratings.
 
 A sandbox-only M-Pesa collection flow is available on completed freelance bookings. It records test transactions separately and never settles a worker's actual payment balance. Connect your own Daraja sandbox credentials and HTTPS callback using the [M-Pesa sandbox guide](docs/mpesa-sandbox.md). Live M-Pesa collection, worker payouts, Phone/Apple sign-in, Google Calendar/Meet integration and public hosting are not included.
 

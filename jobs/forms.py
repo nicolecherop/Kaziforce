@@ -2,15 +2,53 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import BaseInlineFormSet, inlineformset_factory
 from .models import JobPosting, JobSkill
+from config.date_fields import configure_future_dates
+from django.utils import timezone
 
 
 class JobPostingForm(forms.ModelForm):
+    reopen_applications = forms.BooleanField(
+        required=False,
+        label="Reopen applications for this job",
+        help_text="Only select this if you want to accept applications again. Choose a current or future deadline, or leave it blank.",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        configure_future_dates(self, "application_deadline", end=None)
+        if self.instance.status != JobPosting.Status.CLOSED:
+            self.fields.pop("reopen_applications", None)
+
+    def clean(self):
+        data = super().clean()
+        deadline = data.get("application_deadline")
+        if (
+            data.get("reopen_applications")
+            and deadline
+            and deadline < timezone.localdate()
+        ):
+            self.add_error(
+                "application_deadline",
+                "Choose today or a future deadline before reopening applications.",
+            )
+        return data
+
+    def save(self, commit=True):
+        job = super().save(commit=False)
+        if self.cleaned_data.get("reopen_applications"):
+            job.status = JobPosting.Status.OPEN
+        if commit:
+            job.save()
+            self.save_m2m()
+        return job
+
     class Meta:
         model = JobPosting
         fields = [
             "title",
             "company",
             "location",
+            "application_deadline",
             "description",
             "requirements",
             "education_level",
@@ -30,6 +68,9 @@ class JobPostingForm(forms.ModelForm):
             "experience_priority": "Experience priority",
         }
         widgets = {
+            "application_deadline": forms.DateInput(
+                format="%Y-%m-%d", attrs={"type": "date"}
+            ),
             "description": forms.Textarea(attrs={"rows": 3}),
             "requirements": forms.Textarea(attrs={"rows": 2}),
             "experience_details": forms.Textarea(

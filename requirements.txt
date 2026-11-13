@@ -2,3 +2,5 @@ Django>=5.2,<5.3
 psycopg[binary]>=3.2,<4
 python-dotenv>=1.1,<2
 django-allauth[socialaccount]==65.20.1
+pypdf==7.0.1
+defusedxml==0.7.1

@@ -1,10 +1,12 @@
 {% if application and application.status != "draft" %}
     <a class="button button-small"
        href="{% url 'applications:detail' application.pk %}">View your application →</a>
-{% elif job.status == "open" %}
+{% elif job.accepts_applications %}
     <a class="button button-small"
        href="{% url 'applications:edit' job.pk %}">
     {% if application %}Continue draft{% else %}Start application{% endif %} →</a>
+{% elif job.is_expired and job.status == "open" %}
+    <p class="small-copy">The application deadline has passed.</p>
 {% else %}
     <p class="small-copy">This job is closed to new applications.</p>
 {% endif %}

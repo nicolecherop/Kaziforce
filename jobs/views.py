@@ -7,6 +7,7 @@ from candidates.access import candidate_required
 from .access import recruiter_required
 from .forms import JobPostingForm, JobSkillFormSet
 from .models import JobPosting
+from .saved_selectors import with_saved_status
 from matching.skills import standardize_skills
 from matching.models import MatchResult
 from pages.presentation import company_search_labels
@@ -15,7 +16,10 @@ from pages.presentation import company_search_labels
 @candidate_required
 @require_GET
 def opportunities(request):
-    jobs = JobPosting.objects.filter(status="open").prefetch_related("skills")
+    jobs = with_saved_status(
+        JobPosting.objects.accepting_applications().prefetch_related("skills"),
+        request.user,
+    )
     query = request.GET.get("q", "").strip()[:160]
     if query:
         jobs = jobs.filter(
@@ -32,7 +36,9 @@ def opportunities(request):
 @candidate_required
 @require_GET
 def job_detail(request, job_id):
-    job = get_object_or_404(JobPosting, pk=job_id)
+    job = get_object_or_404(
+        with_saved_status(JobPosting.objects.all(), request.user), pk=job_id
+    )
     application = request.user.applications.filter(job=job).first()
     return render(
         request,

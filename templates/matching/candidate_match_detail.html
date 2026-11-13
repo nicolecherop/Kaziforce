@@ -18,20 +18,18 @@
         </div>
         <div class="heading-actions">
             <a class="button button-small"
-               href="{% url 'jobs:detail' result.job_id %}">View job and apply →</a>
+               href="{% url 'jobs:detail' result.job_id %}">{% if result.job.accepts_applications %}View job and apply{% else %}View job details{% endif %} →</a>
         </div>
     </header>
+    {% include "jobs/components/timeline.html" with job=result.job %}
+    {% if not result.job.accepts_applications %}<p class="inline-notice">This job is no longer accepting applications. Existing applications remain available.</p>{% endif %}
     {% if historical %}
         <p class="inline-notice">Your profile or available jobs have changed since this match was saved. Update your matches to see current recommendations.</p>
     {% endif %}
     <div class="match-detail-grid">
         <section class="workspace-panel evidence-panel">
             <h2>Considering this opportunity?</h2>
-            {% if strong_match %}
-                <p>This role may be a good fit for your professional background. Read the full requirements to decide whether it suits your interests and experience.</p>
-            {% else %}
-                <p>Review the role's requirements and decide whether they fit your experience and career goals. You can browse other opportunities at any time.</p>
-            {% endif %}
+            <p>Review the role's requirements and decide whether they fit your experience and career goals. You can browse other opportunities at any time.</p>
             <h3>Put your experience into words</h3>
             <p>Keep your profile accurate and up to date. Describe work you have done and include relevant qualifications, certificates and supporting documents.</p>
             <p>You can tailor a separate application for this role while keeping your information truthful.</p>

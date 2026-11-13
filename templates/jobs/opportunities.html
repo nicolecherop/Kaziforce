@@ -10,6 +10,7 @@
     <nav class="view-links" aria-label="Job discovery">
         <a href="{% url 'matches:jobs' %}">Recommended for you</a>
         <a aria-current="page" href="{% url 'jobs:opportunities' %}">Browse all jobs</a>
+        <a href="{% url 'jobs:saved' %}">Saved jobs</a>
     </nav>
     <form class="job-search workspace-panel" method="get">
         <label class="sr-only" for="job-search">Search jobs, companies or locations</label>
@@ -32,6 +33,7 @@
                             <a href="{% url 'jobs:detail' job.pk %}">{{ job.title|site_text }}</a>
                         </h2>
                         <p>{{ job.company|site_text }} · {{ job.location }}</p>
+                        {% if job.application_deadline %}{% include "jobs/components/timeline.html" %}{% endif %}
                         <p class="browse-description">{{ job.description|truncatechars:150|site_text }}</p>
                         <div class="skill-chips">
                             {% for skill in job.skills.all|slice:":4" %}
@@ -39,8 +41,10 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <a class="button button-secondary button-small"
-                       href="{% url 'jobs:detail' job.pk %}">View role →</a>
+                    <div class="heading-actions">
+                        <a class="button button-secondary button-small" href="{% url 'jobs:detail' job.pk %}">View role →</a>
+                        {% include "jobs/components/save_button.html" with saved=job.is_saved %}
+                    </div>
                 </article>
             {% empty %}
                 <div class="workspace-panel empty-panel">

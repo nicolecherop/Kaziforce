@@ -47,7 +47,13 @@ def overview_context(user):
         )
     if can_view(user, JobPosting):
         counts = JobPosting.objects.aggregate(
-            total=Count("pk"), open=Count("pk", filter=Q(status="open"))
+            total=Count("pk"),
+            open=Count(
+                "pk",
+                filter=Q(
+                    pk__in=JobPosting.objects.accepting_applications().values("pk")
+                ),
+            ),
         )
         cards.append(
             {

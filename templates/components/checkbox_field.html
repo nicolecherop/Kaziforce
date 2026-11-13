@@ -1,0 +1,5 @@
+<div class="field checkbox-field">
+    <label>{{ field }} <span>{{ field.label }}</span></label>
+    {% if field.help_text %}<p class="field-hint">{{ field.help_text }}</p>{% endif %}
+    {% if field.errors %}<div class="field-errors">{{ field.errors }}</div>{% endif %}
+</div>

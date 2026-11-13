@@ -56,8 +56,10 @@
                        {% if request.resolver_match.app_name == 'matches' %}aria-current="page"{% endif %}>
                     {% include "workspace/icon.html" with name="spark" %}My matches</a>
                     <a href="{% url 'jobs:opportunities' %}"
-                       {% if request.resolver_match.app_name == 'jobs' %}aria-current="page"{% endif %}>
+                       {% if request.resolver_match.app_name == 'jobs' and request.resolver_match.url_name != 'saved' %}aria-current="page"{% endif %}>
                     {% include "workspace/icon.html" with name="search" %}Find jobs</a>
+                    <a href="{% url 'jobs:saved' %}" {% if request.resolver_match.app_name == 'jobs' and request.resolver_match.url_name == 'saved' %}aria-current="page"{% endif %}>
+                        {% include "workspace/icon.html" with name="case" %}Saved jobs</a>
                     <a href="{% url 'applications:mine' %}"
                        {% if request.resolver_match.app_name == 'applications' %}aria-current="page"{% endif %}>
                     {% include "workspace/icon.html" with name="file" %}My applications</a>

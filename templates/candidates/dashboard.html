@@ -55,8 +55,8 @@
                         <div class="workspace-panel empty-panel">
                             <span class="icon-tile">{% include "workspace/icon.html" with name="spark" %}</span>
                             {% if match_run %}
-                                <h3>No strong matches right now.</h3>
-                                <p>Keep your profile up to date or browse available jobs.</p>
+                                <h3>No available matches right now.</h3>
+                                <p>Update your matches or browse available jobs.</p>
                                 <a class="button button-small"
                                    href="{% url 'jobs:opportunities' %}">Browse all jobs</a>
                             {% else %}

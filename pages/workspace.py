@@ -51,7 +51,7 @@ def recruiter_dashboard(user):
     )
     return {
         "recent_jobs": jobs[:4],
-        "open_job_count": jobs.filter(status="open").count(),
+        "open_job_count": jobs.accepting_applications().count(),
         "application_count": applications.count(),
         "shortlisted_count": applications.filter(status="shortlisted").count(),
         "upcoming_interviews": upcoming_interviews(user),

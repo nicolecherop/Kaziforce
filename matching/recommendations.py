@@ -1,16 +1,15 @@
 """Select candidate recommendations without changing saved matching evidence."""
 
-from django.conf import settings
-
 from applications.models import Application
 from jobs.models import JobPosting
+from jobs.saved_selectors import with_saved_status
 from .models import MatchResult, MatchRun
 
 RECOMMENDATION_LIMIT = 10
 
 
 def candidate_recommendations(user, run):
-    """Return strong, currently available jobs in their original saved rank order."""
+    """Return the top ten scored, currently available jobs in their original saved rank order."""
     if (
         run is None
         or user.role != "candidate"
@@ -25,10 +24,12 @@ def candidate_recommendations(user, run):
         .values("job_id")
     )
     return (
-        run.results.filter(
+        with_saved_status(run.results.all(), user, "job_id")
+        .filter(
             candidate=user,
-            score__gte=settings.MATCH_RECOMMENDATION_MIN_SCORE,
-            job__status=JobPosting.Status.OPEN,
+            score__isnull=False,
+            rank__isnull=False,
+            job__in=JobPosting.objects.accepting_applications(),
         )
         .exclude(job_id__in=applied_jobs)
         .select_related("job")

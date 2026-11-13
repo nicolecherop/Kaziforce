@@ -466,7 +466,7 @@ def write_report(output, report):
         )
     lines += [
         "",
-        "Employment offline rankings use all 40 open fixture jobs and all 200 profiles. Recruiter ranking is a counterfactual comparison of all profiles, not a claim that every person applied. Candidate threshold policy applies the current configured minimum and top-ten limit; it does not simulate submitted-job exclusions. Candidate relevance shares recruiter suitability labels and does not measure personal preferences.",
+        "Employment offline rankings use all 40 open fixture jobs and all 200 profiles. Recruiter ranking is a counterfactual comparison of all profiles, not a claim that every person applied. Candidate display policy takes the top ten scored jobs with no minimum-score cutoff; it does not simulate submitted-job exclusions. Candidate relevance shares recruiter suitability labels and does not measure personal preferences.",
         "",
         "The keyword baseline counts exact case-folded skill labels only, with scenario IDs breaking ties. It is a transparent weak comparator, not a reproduction of every keyword recruitment system. The production engine and its weights were not modified or tuned. Employment score ties use scenario IDs; stored production rankings use UUIDs. Freelance ties use stable fixture UUIDs.",
         "",
@@ -476,7 +476,7 @@ def write_report(output, report):
         "",
         "The larger set is harder than v1, and its percentages are not directly comparable because the roles, relevance prevalence and cutoffs differ. Compare methods within this frozen v2 set instead.",
         "",
-        "The candidate threshold policy returns jobs for only a subset of profiles. This is a precision/coverage trade-off, not evidence that profiles without recommendations are unsuitable for employment. Review the coverage and recall alongside precision before considering any threshold change.",
+        "The candidate display policy returns up to ten scored jobs per profile. A top-ranked job can still have a low match score; review coverage and recall alongside precision. Profiles without recommendations should not be treated as unsuitable for employment.",
         "",
         "Production scoring does not necessarily outperform the exact-label baseline in both ranking directions. Candidate NDCG can favour the baseline on these designed labels. Retain those results; do not alter the labels or formula to manufacture superiority. Human judgements are needed before choosing improvements.",
         "",

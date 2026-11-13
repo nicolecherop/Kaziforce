@@ -23,7 +23,11 @@
                     </div>
                 {% endif %}
                 {% for field in form %}
-                    {% include "components/form_field.html" %}
+                    {% if field.name == "fill_profile" %}
+                        {% include "components/checkbox_field.html" %}
+                    {% else %}
+                        {% include "components/form_field.html" %}
+                    {% endif %}
                 {% endfor %}
                 <button class="button" type="submit">Upload document ↗</button>
             </form>
@@ -31,7 +35,7 @@
         <section class="profile-section" aria-labelledby="documents-title">
             <div class="section-heading">
                 <h2 id="documents-title">Your documents</h2>
-                <p>Up to 20 documents, 5 MB each. Uploading a file leaves your profile unchanged.</p>
+                <p>Up to 20 documents, 5 MB each. You can review CV suggestions before adding them to your profile.</p>
             </div>
             {% for document in documents %}
                 <article class="document-card">
@@ -44,6 +48,12 @@
                                target="_blank"
                                rel="noopener">Open document ↗</a>
                             <a href="{% url 'candidates:document_file' document.pk %}">Download</a>
+                            {% if document.kind == "cv" %}
+                                <form method="post" action="{% url 'candidates:cv_import' document.pk %}">
+                                    {% csrf_token %}
+                                    <button class="button button-small button-secondary" type="submit">Fill profile from CV</button>
+                                </form>
+                            {% endif %}
                         </div>
                     </div>
                     <details class="document-delete">

@@ -3,7 +3,7 @@
 {% block title %}Create an account | KaziForce{% endblock %}
 {% block body_class %}account-page{% endblock %}
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/accounts.css' %}?v=20261022-google-logo">
+    <link rel="stylesheet" href="{% static 'css/accounts.css' %}?v=20261112-google-brand">
 {% endblock %}
 {% block content %}
     <div class="account-layout shell registration-layout">
@@ -28,7 +28,7 @@
             {% if google_signin_enabled %}
                 <form method="post" action="{% url 'google_login' %}">
                     {% csrf_token %}
-                    <button class="button button-secondary button-full">{% include 'components/google_button_content.html' %}</button>
+                    <button class="google-signin-button">{% include 'components/google_button_content.html' %}</button>
                 </form>
                 <p class="account-divider">or create an account with your email</p>
             {% endif %}

@@ -96,3 +96,8 @@
   .save-bar .button { min-height: 46px; }
   .profile-section-links { column-gap: 18px; font-size: 12px; }
 }
+
+/* Reviewed CV import uses the existing profile form layout. */
+.cv-source-text { max-height: 60vh; overflow: auto; overflow-wrap: anywhere; font-size: 13px; line-height: 1.6; padding-block: 16px; }
+.cv-field-choices label { display: flex; align-items: center; gap: 10px; margin-block: 10px; }
+.cv-field-choices input[type="checkbox"] { width: 18px; height: 18px; flex: 0 0 18px; }

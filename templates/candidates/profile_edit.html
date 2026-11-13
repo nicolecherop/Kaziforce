@@ -61,6 +61,15 @@
                     <h2 id="edit-contact-title">Contact information</h2>
                     <p>Add the details recruiters can use to contact you. You can review or change them for each application before submitting.</p>
                     <div class="entry-fields">
+                        {% if user.get_full_name %}
+                            <div class="field">
+                                <div class="field-label"><label for="profile-account-name">Full name</label></div>
+                                <div class="input-wrap">
+                                    <input id="profile-account-name" type="text" value="{{ user.get_full_name }}" readonly autocomplete="name" aria-describedby="profile-account-name-hint">
+                                </div>
+                                <p class="field-hint" id="profile-account-name-hint">From your KaziForce account.</p>
+                            </div>
+                        {% endif %}
                         {% for field in form.contact_fields %}
                             {% include "candidates/components/profile_field.html" %}
                         {% endfor %}

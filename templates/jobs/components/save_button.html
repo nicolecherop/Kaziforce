@@ -1,0 +1,7 @@
+{% load workspace_ui %}
+<form method="post" action="{% url 'jobs:save' job.pk %}">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+    <input type="hidden" name="action" value="{% if saved %}remove{% else %}save{% endif %}">
+    <button type="submit" class="button button-small button-secondary" aria-label="{% if saved %}Unsave{% else %}Save{% endif %} {{ job.title|site_text }}" aria-pressed="{% if saved %}true{% else %}false{% endif %}">{% if saved %}Saved ✓{% else %}Save job{% endif %}</button>
+</form>

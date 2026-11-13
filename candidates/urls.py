@@ -1,8 +1,13 @@
 from django.urls import path
-from . import document_views, views
+from . import cv_views, document_views, views
 
 app_name = "candidates"
 urlpatterns = [
+    path(
+        "documents/<uuid:document_id>/import/", cv_views.start_import, name="cv_import"
+    ),
+    path("profile/import/<slug:token>/", cv_views.review_import, name="cv_review"),
+    path("profile/import/<slug:token>/save/", cv_views.save_import, name="cv_save"),
     path("profile/", views.profile, name="profile"),
     path("profile/edit/", views.profile_edit, name="profile_edit"),
     path("documents/", document_views.documents, name="documents"),

@@ -7,6 +7,7 @@
             <a href="{% url 'matches:detail' result.pk %}">{{ result.input_snapshot.job.title|site_text }}</a>
         </h3>
         <p>{{ result.input_snapshot.job.company|site_text }} · {{ result.job.location }}</p>
+        {% if result.job.application_deadline %}{% include "jobs/components/timeline.html" with job=result.job %}{% endif %}
     </div>
     <div class="skill-chips">
         {% for skill in result.input_snapshot.job.skills|slice:":3" %}
@@ -14,6 +15,8 @@
         {% endfor %}
     </div>
     <span class="score-pill">{{ result.score|floatformat:0 }}% match</span>
-    <a class="button button-small"
-       href="{% url 'matches:detail' result.pk %}">View match</a>
+    <div class="heading-actions">
+        <a class="button button-small" href="{% url 'matches:detail' result.pk %}">View match</a>
+        {% include "jobs/components/save_button.html" with job=result.job saved=result.is_saved %}
+    </div>
 </article>

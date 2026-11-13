@@ -37,7 +37,7 @@ The browser helper uses delegated input events, so newly added skill rows also w
 
 ## Application provenance
 
-At submission, candidate and job skill names are resolved together against the same selected catalogue. profile_snapshot.skill_standardization and job_snapshot.structured_requirements.skill_standardization contain original names, statuses, mapped URIs/labels, catalogue version/language/source/checksum and normalization version. Later profile edits, job edits and catalogue activations do not change those stored JSON copies. Older applications without these keys remain readable without invented historical mappings. No new extraction or document parsing is involved.
+At submission, candidate and job skill names are resolved together against the same selected catalogue. profile_snapshot.skill_standardization and job_snapshot.structured_requirements.skill_standardization contain original names, statuses, mapped URIs/labels, catalogue version/language/source/checksum and normalization version. Later profile edits, job edits and catalogue activations do not change those stored JSON copies. Older applications without these keys remain readable without invented historical mappings. Skill standardization uses saved profile information, including any CV suggestions the candidate has reviewed and explicitly saved; raw CV text is not passed directly into matching.
 
 ## Verification
 

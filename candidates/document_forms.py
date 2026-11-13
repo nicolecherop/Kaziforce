@@ -9,6 +9,12 @@ MAX_FILE_BYTES = 5 * 1024 * 1024
 
 
 class DocumentUploadForm(forms.ModelForm):
+    fill_profile = forms.BooleanField(
+        label="Fill profile from this CV",
+        required=False,
+        help_text="For CV uploads only. Review and edit suggested details before saving. Use a Word file or a PDF with selectable text.",
+    )
+
     class Meta:
         model = CandidateDocument
         fields = ["kind", "title", "file"]

@@ -68,6 +68,12 @@ def documents(request):
                 request,
                 "Your document has been uploaded. Choose it when applying for a job.",
             )
+            if document.kind == CandidateDocument.Kind.CV and form.cleaned_data.get(
+                "fill_profile"
+            ):
+                from .cv_views import start_import
+
+                return start_import(request, document.pk)
             return redirect("candidates:documents")
     return render(
         request,

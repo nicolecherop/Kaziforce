@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.urls import reverse
 
 from applications.models import Application
@@ -73,13 +73,13 @@ class CandidateRecommendationTests(TestCase):
         self.client.force_login(self.candidate)
         self.results = list(self.saved_run.results.order_by("rank"))
 
-    def test_inclusive_threshold_counts_and_previews_are_consistent(self):
+    def test_top_ten_include_low_scores_and_counts_and_previews_are_consistent(self):
         MatchResult.objects.filter(pk=self.results[0].pk).update(score=Decimal("59.99"))
         MatchResult.objects.filter(pk=self.results[1].pk).update(score=Decimal("60.00"))
         MatchResult.objects.filter(pk=self.results[2].pk).update(score=Decimal("60.01"))
         MatchResult.objects.filter(pk=self.results[3].pk).update(score=None, rank=None)
-        expected = [self.results[1].pk, self.results[2].pk] + [
-            result.pk for result in self.results[4:12]
+        expected = [result.pk for result in self.results[:3]] + [
+            result.pk for result in self.results[4:11]
         ]
         response = self.client.get(reverse("matches:jobs"))
         self.assertEqual([row.pk for row in response.context["results"]], expected)
@@ -112,33 +112,45 @@ class CandidateRecommendationTests(TestCase):
         )
         self.assertTrue(response.context["stale"])
 
-    @override_settings(MATCH_RECOMMENDATION_MIN_SCORE=90)
-    def test_threshold_is_configurable_and_browsing_is_not_filtered(self):
-        MatchResult.objects.filter(run=self.saved_run).update(score=Decimal("89.99"))
-        self.assertFalse(candidate_recommendations(self.candidate, self.saved_run).exists())
+    def test_zero_scores_remain_eligible_and_browsing_is_not_filtered(self):
+        MatchResult.objects.filter(run=self.saved_run).update(score=Decimal("0.00"))
+        rows = list(candidate_recommendations(self.candidate, self.saved_run))
+        self.assertEqual(
+            [row.pk for row in rows], [row.pk for row in self.results[:10]]
+        )
         response = self.client.get(reverse("jobs:opportunities"))
         self.assertEqual(response.context["jobs"].count(), 14)
 
-    def test_no_strong_matches_has_clear_empty_states_without_filler(self):
-        MatchResult.objects.filter(run=self.saved_run).update(score=Decimal("59.99"))
+    def test_no_available_matches_has_clear_empty_states(self):
+        JobPosting.objects.all().update(status="closed")
         for name in ("matches:jobs", "accounts:dashboard"):
             response = self.client.get(reverse(name))
-            self.assertContains(response, "No strong matches right now.")
+            self.assertContains(response, "No available matches right now.")
             self.assertContains(
-                response, "Keep your profile up to date or browse available jobs."
+                response, "Update your matches or browse available jobs."
             )
             self.assertEqual(response.context["recommended_count"], 0)
             self.assertNotContains(response, self.results[0].job.title)
+
+    def test_fewer_than_ten_eligible_results_are_not_padded(self):
+        MatchResult.objects.filter(run=self.saved_run).exclude(
+            pk__in=[row.pk for row in self.results[:2]]
+        ).update(score=None, rank=None)
+        MatchResult.objects.filter(pk=self.results[0].pk).update(score=Decimal("12.00"))
+        rows = list(candidate_recommendations(self.candidate, self.saved_run))
+        self.assertEqual([row.pk for row in rows], [row.pk for row in self.results[:2]])
 
     def test_no_run_prompts_for_first_matches_and_other_owners_cannot_supply_results(
         self,
     ):
         self.assertFalse(candidate_recommendations(self.other, self.saved_run).exists())
-        self.assertFalse(candidate_recommendations(self.recruiter, self.saved_run).exists())
+        self.assertFalse(
+            candidate_recommendations(self.recruiter, self.saved_run).exists()
+        )
         self.client.force_login(self.other)
         response = self.client.get(reverse("matches:jobs"))
         self.assertContains(response, "Your matches start here")
-        self.assertNotContains(response, "No strong matches right now.")
+        self.assertNotContains(response, "No available matches right now.")
         # A foreign candidate result cannot be displayed even in an owned run.
         MatchResult.objects.filter(pk=self.results[0].pk).update(candidate=self.other)
         self.assertNotIn(

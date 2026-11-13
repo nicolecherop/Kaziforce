@@ -1,0 +1,79 @@
+{% extends "candidates/base.html" %}
+{% block title %}Review CV details | KaziForce{% endblock %}
+{% block candidate_content %}
+<header class="page-heading">
+    <p class="eyebrow">My profile / Import from CV</p>
+    <h1>Review your CV details.</h1>
+    <p>We have prepared suggestions from {{ draft.filename }}. Edit them and choose what to add. Your profile changes only when you save.</p>
+</header>
+<div class="workspace-split">
+    <form method="post" action="{% url 'candidates:cv_save' token %}" class="profile-form" novalidate>
+        {% csrf_token %}
+        {% if has_errors %}
+            <div class="form-errors" role="alert" tabindex="-1" data-form-errors>
+                <p>Your changes have not been saved. Check the highlighted details, or uncheck entries you do not want to add.</p>
+            </div>
+        {% endif %}
+        {{ form.non_field_errors }}
+        <section class="profile-section" aria-labelledby="cv-basic-title">
+            <h2 id="cv-basic-title">Professional and contact details</h2>
+            <p>Check the details you want to use, then correct their values below. Details already filled in on your profile are unchecked initially. Your sign-in email and account name stay the same.</p>
+            <fieldset class="profile-entry">
+                <legend>{{ form.selected_fields.label }}</legend>
+                <div class="cv-field-choices">{{ form.selected_fields }}</div>
+                {{ form.selected_fields.errors }}
+            </fieldset>
+            <div class="entry-fields">
+                {% for field in form %}
+                    {% if field.name != "selected_fields" %}
+                        {% include "candidates/components/profile_field.html" %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+        {% for section in sections %}
+        <section class="profile-section" aria-labelledby="cv-{{ section.prefix }}-title">
+            <h2 id="cv-{{ section.prefix }}-title">{{ section.title }}</h2>
+            <p>Checked entries will be added alongside your saved information. Matching existing entries are skipped.</p>
+            {{ section.formset.management_form }}
+            {% if section.formset.non_form_errors %}<div class="field-errors" role="alert">{{ section.formset.non_form_errors }}</div>{% endif %}
+            {% for entry in section.formset %}
+                <fieldset class="profile-entry">
+                    <legend>{{ section.title }} entry {{ forloop.counter }}</legend>
+                    <label class="remove-entry">{{ entry.include }} <span>{{ entry.include.label }}</span></label>
+                    {{ entry.non_field_errors }}
+                    <div class="entry-fields">
+                        {% for field in entry.visible_fields %}
+                            {% if field.name != "include" %}{% include "candidates/components/profile_field.html" %}{% endif %}
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            {% empty %}
+                <p class="empty-state">No new entries identified here. You can add them in your profile editor after this review.</p>
+            {% endfor %}
+        </section>
+        {% endfor %}
+        <div class="save-bar">
+            <p>Save only details that accurately describe your experience.</p>
+            <button class="button" type="submit">Save selected details</button>
+        </div>
+    </form>
+    <aside class="workspace-panel side-panel">
+        <h2>Your original CV</h2>
+        <a href="{% url 'candidates:document_file' draft.document_id %}?view=1" target="_blank" rel="noopener">Open original CV ↗</a>
+        {% for note in draft.suggestions.notes %}<p class="small-copy">{{ note }}</p>{% endfor %}
+        {% for warning in draft.warnings %}<p class="small-copy">{{ warning }}</p>{% endfor %}
+        <details>
+            <summary>View text read from your CV</summary>
+            <div class="cv-source-text">{{ draft.source|linebreaksbr }}</div>
+        </details>
+        <div class="panel-divider"></div>
+        <p class="small-copy">This review is available for 30 minutes. Your original document stays in your private library. Choose which documents to share when applying.</p>
+        <form method="post" action="{% url 'candidates:cv_save' token %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="cancel">
+            <button type="submit" class="button button-secondary">Discard suggestions</button>
+        </form>
+    </aside>
+</div>
+{% endblock %}

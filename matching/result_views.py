@@ -3,7 +3,6 @@
 from uuid import UUID
 
 from django.contrib import messages
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, OperationalError
 from django.http import Http404
@@ -163,10 +162,6 @@ def match_detail(request, result_id):
         ),
     }
     if request.user.role == "candidate":
-        context["strong_match"] = (
-            result.score is not None
-            and result.score >= settings.MATCH_RECOMMENDATION_MIN_SCORE
-        )
         template = "matching/candidate_match_detail.html"
     else:
         context["candidate_evidence"] = result.input_snapshot["profile"]

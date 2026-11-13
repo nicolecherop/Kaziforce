@@ -1,0 +1,7 @@
+<p class="small-copy">
+    {% if job.application_deadline %}
+        Apply by <time datetime="{{ job.application_deadline|date:'Y-m-d' }}">{{ job.application_deadline|date:"j M Y" }}</time> · 11:59 p.m. EAT
+    {% else %}
+        No application deadline set.
+    {% endif %}
+</p>

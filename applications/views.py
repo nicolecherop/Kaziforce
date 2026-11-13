@@ -86,8 +86,15 @@ def application_edit(request, job_id):
     application = request.user.applications.filter(job=job).first()
     if application and application.status != "draft":
         return redirect("applications:detail", application_id=application.pk)
-    if job.status != "open":
-        messages.error(request, "This job is closed to applications.")
+    if not job.accepts_applications:
+        messages.error(
+            request,
+            (
+                "The application deadline has passed."
+                if job.is_expired and job.status == "open"
+                else "This job is closed to applications."
+            ),
+        )
         return redirect("jobs:detail", job_id=job.pk)
     snapshot = (
         application.profile_snapshot

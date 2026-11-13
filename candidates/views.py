@@ -1,6 +1,7 @@
 """Candidate-only endpoints. Ownership comes from the session, never a posted ID."""
 
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
@@ -77,7 +78,12 @@ def profile(request):
 def profile_edit(request):
     instance = profile_for(request.user) or CandidateProfile(user=request.user)
     data = request.POST if request.method == "POST" else None
-    form = ProfileForm(data, instance=instance)
+    # Suggest sign-in details only for a blank, unbound contact field. POSTed
+    # values (including an explicit blank) always remain the user's choice.
+    initial = None
+    if request.method == "GET" and not instance.contact_email:
+        initial = {"contact_email": request.user.email}
+    form = ProfileForm(data, instance=instance, initial=initial)
     sections = [
         {
             "prefix": prefix,
@@ -94,6 +100,8 @@ def profile_edit(request):
         if form.is_valid() and all(valid_sections):
             try:
                 with transaction.atomic():
+                    # Coordinate normal edits with reviewed CV imports for this owner.
+                    get_user_model().objects.select_for_update().get(pk=request.user.pk)
                     saved_profile = form.save()
                     for section in sections:
                         section["formset"].instance = saved_profile

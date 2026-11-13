@@ -135,9 +135,7 @@ def main():
                 for s in profiles[row["profile_id"]]["snapshot"]["skills"]
             }
             row["keyword_overlap"] = len(job_keys & profile_keys)
-        employment = employment_summary(
-            dataset, ranking, Decimal(str(settings.MATCH_RECOMMENDATION_MIN_SCORE))
-        )
+        employment = employment_summary(dataset, ranking, Decimal("0"))
         print(
             "Evaluating 20 freelance projects against 60 workers using production search...",
             flush=True,

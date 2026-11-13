@@ -23,6 +23,7 @@
         user_permissions: "account permissions",
         permissions: "group permissions",
         status: "status",
+        application_deadline: "application deadline",
         recruiter: "recruiter ownership",
         is_hidden: "review visibility",
         is_resolved: "report resolution",
@@ -57,6 +58,9 @@
         if (form.hasAttribute("data-confirm-payment")) {
             const amount = form.elements.namedItem("amount")?.value || "the entered amount";
             return `Are you sure you want to request an M-Pesa payment of KES ${amount} to shortcode ${form.dataset.confirmPayment}? Check the recipient and amount before approving the phone prompt.`;
+        }
+        if (form.hasAttribute("data-confirm-job") && form.elements.namedItem("reopen_applications")?.checked) {
+            return "Are you sure you want to reopen this job? Eligible candidates will be able to submit applications again.";
         }
         const initial = initialAdminValues.get(form);
         if (initial) {

@@ -81,9 +81,9 @@ def save_application(user, job_id, snapshot, application_data, submit):
         with transaction.atomic():
             get_user_model().objects.select_for_update().get(pk=user.pk)
             job = JobPosting.objects.select_for_update().get(pk=job_id)
-            if job.status != JobPosting.Status.OPEN:
+            if not job.accepts_applications:
                 raise ValidationError(
-                    "This job has closed. Your application has not been submitted."
+                    "This job is no longer accepting applications. Your application has not been submitted."
                 )
             application, _ = Application.objects.select_for_update().get_or_create(
                 candidate=user, job=job
@@ -122,6 +122,11 @@ def save_application(user, job_id, snapshot, application_data, submit):
                         "requirements",
                     )
                 }
+                application.job_snapshot["application_deadline"] = (
+                    job.application_deadline.isoformat()
+                    if job.application_deadline
+                    else None
+                )
                 application.job_snapshot["structured_requirements"] = (
                     job.structured_requirements(
                         dict(mapping, skills=mapping["skills"][len(candidate_names) :])

@@ -2,6 +2,8 @@
 
 import uuid
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.functions import Lower
@@ -11,6 +13,15 @@ class Priority(models.IntegerChoices):
     STANDARD = 1, "Standard"
     IMPORTANT = 2, "Important"
     HIGH = 3, "High"
+
+
+class JobPostingQuerySet(models.QuerySet):
+    def accepting_applications(self, on_date=None):
+        day = on_date if on_date is not None else timezone.localdate()
+        return self.filter(status="open").filter(
+            models.Q(application_deadline__isnull=True)
+            | models.Q(application_deadline__gte=day)
+        )
 
 
 class JobPosting(models.Model):
@@ -55,6 +66,13 @@ class JobPosting(models.Model):
         choices=Priority.choices, default=Priority.STANDARD
     )
     status = models.CharField(max_length=8, choices=Status.choices, default=Status.OPEN)
+    application_deadline = models.DateField(
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text="Optional. Applications close at the end of this date in East Africa Time (EAT).",
+    )
+    objects = JobPostingQuerySet.as_manager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -81,6 +99,57 @@ class JobPosting(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def is_expired(self):
+        return bool(
+            self.application_deadline
+            and self.application_deadline < timezone.localdate()
+        )
+
+    @property
+    def accepts_applications(self):
+        return self.status == self.Status.OPEN and not self.is_expired
+
+    @property
+    def application_status(self):
+        if self.status == self.Status.CLOSED:
+            return "Closed"
+        return "Deadline passed" if self.is_expired else "Open"
+
+    @property
+    def application_status_style(self):
+        return "open" if self.accepts_applications else "closed"
+
+    def clean(self):
+        super().clean()
+        if (
+            self.application_deadline
+            and self.application_deadline < timezone.localdate()
+        ):
+            previous = (
+                None
+                if self._state.adding
+                else type(self)
+                .objects.filter(pk=self.pk)
+                .values("application_deadline", "status")
+                .first()
+            )
+            changed = (
+                not previous
+                or previous["application_deadline"] != self.application_deadline
+            )
+            reopening = (
+                previous
+                and previous["status"] == self.Status.CLOSED
+                and self.status == self.Status.OPEN
+            )
+            if changed or reopening:
+                raise ValidationError(
+                    {
+                        "application_deadline": "Choose today or a future application deadline."
+                    }
+                )
 
     def structured_requirements(self, standardization=None):
         """JSON-safe job requirements, including labels for submitted copies."""
@@ -151,3 +220,28 @@ class JobSkill(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class SavedJob(models.Model):
+    candidate = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="saved_jobs"
+    )
+    job = models.ForeignKey(
+        JobPosting, on_delete=models.CASCADE, related_name="saved_by"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "saved_jobs"
+        ordering = ["-created_at", "-pk"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["candidate", "job"], name="unique_candidate_saved_job"
+            )
+        ]
+
+    def clean(self):
+        if self.candidate_id and self.candidate.role != "candidate":
+            raise ValidationError(
+                {"candidate": "Saved jobs belong to candidate accounts."}
+            )

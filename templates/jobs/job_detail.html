@@ -8,10 +8,12 @@
             <p class="eyebrow">Job details</p>
             <h1>{{ job.title|site_text }}</h1>
             <p class="job-meta">
-                {{ job.company|site_text }} · {{ job.location }} <span class="status-pill status-{{ job.status }}">{{ job.get_status_display }}</span>
+                {{ job.company|site_text }} · {{ job.location }} <span class="status-pill status-{{ job.application_status_style }}">{{ job.application_status }}</span>
             </p>
+            <p class="small-copy">Posted {{ job.created_at|date:"j M Y" }}</p>
+            {% include "jobs/components/timeline.html" %}
         </div>
-        <div class="heading-actions">{% include "jobs/components/apply_action.html" %}</div>
+        <div class="heading-actions">{% include "jobs/components/apply_action.html" %}{% include "jobs/components/save_button.html" with saved=job.is_saved %}</div>
     </header>
     <div class="workspace-split">
         <div>

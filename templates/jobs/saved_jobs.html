@@ -1,0 +1,50 @@
+{% extends "candidates/base.html" %}
+{% load workspace_ui %}
+{% block title %}Saved jobs | KaziForce{% endblock %}
+{% block candidate_content %}
+<header class="page-heading">
+    <p class="eyebrow">My workspace / Saved jobs</p>
+    <h1>Your saved opportunities.</h1>
+    <p>Keep favourite roles here and return when you are ready. Saving a job does not submit an application.</p>
+</header>
+<nav class="view-links" aria-label="Job discovery">
+    <a href="{% url 'matches:jobs' %}">Recommended for you</a>
+    <a href="{% url 'jobs:opportunities' %}">Browse all jobs</a>
+    <a href="{% url 'jobs:saved' %}" aria-current="page">Saved jobs</a>
+</nav>
+<p class="small-copy">{{ page.paginator.count }} saved job{{ page.paginator.count|pluralize }}</p>
+<div class="opportunity-list">
+    {% for bookmark in page %}
+        {% with job=bookmark.job %}
+        <article class="opportunity-row browse-row">
+            <span class="company-avatar" aria-hidden="true">{{ job.company|site_text|initials }}</span>
+            <div class="opportunity-name">
+                <h2><a href="{% url 'jobs:detail' job.pk %}">{{ job.title|site_text }}</a></h2>
+                <p>{{ job.company|site_text }} · {{ job.location }}</p>
+                <span class="status-pill status-{{ job.application_status_style }}">{{ job.application_status }}</span>
+                <p class="small-copy">Saved {{ bookmark.created_at|date:"j M Y" }}</p>
+                {% if job.application_deadline %}{% include "jobs/components/timeline.html" %}{% endif %}
+                {% if not job.accepts_applications %}<p class="small-copy">This role is no longer accepting applications. You can still view it or remove it from your saved list.</p>{% endif %}
+            </div>
+            <div class="heading-actions">
+                <a class="button button-small" href="{% url 'jobs:detail' job.pk %}">View role →</a>
+                {% include "jobs/components/save_button.html" with saved=True %}
+            </div>
+        </article>
+        {% endwith %}
+    {% empty %}
+        <section class="workspace-panel empty-panel">
+            <h2>No saved jobs yet.</h2>
+            <p>Select Save job on an opportunity to keep it here.</p>
+            <a class="button button-small" href="{% url 'jobs:opportunities' %}">Explore jobs</a>
+        </section>
+    {% endfor %}
+</div>
+{% if page.has_other_pages %}
+<nav class="view-links" aria-label="Saved jobs pages">
+    {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">← Previous</a>{% endif %}
+    <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Next →</a>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}

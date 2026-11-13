@@ -14,8 +14,8 @@ Use the local demo or a separate disposable database with fictional data. Give e
 | --- | --- | --- |
 | Create a Candidate account and sign in | Candidate workspace opens; no recruiter controls | Pending |
 | Add headline, skills, education, certification, experience and portfolio | Entries save and appear in the professional profile | Pending |
-| Upload a CV, degree and certificate | Files remain private; no extraction or automatic profile changes | Pending |
-| Request matches and open match details | Up to ten roles scoring at least 60% appear; details show the overall score, public requirements and general guidance without calculation breakdowns | Pending |
+| Upload a CV, degree and certificate | Files remain private; optional CV import opens editable suggestions without saving a profile | Pending |
+| Request matches and open match details | The top ten available, unapplied scored roles appear with no minimum percentage; fewer appear when fewer are eligible; details show the overall score, public requirements and general guidance without calculation breakdowns | Pending |
 | View matches when none qualify | A clear empty state offers profile updates and browsing all open jobs without low-score filler | Pending |
 | Add a skill with an unfamiliar or ambiguous name | The entered name remains visible with a plain-language acknowledgement or suggestion to be more specific | Pending |
 | Open a job, tailor its application and save a draft | Application starts from the saved profile; tailoring leaves the main profile intact | Pending |
@@ -36,6 +36,8 @@ Use the local demo or a separate disposable database with fictional data. Give e
 | Change a skill priority and refresh | Requirements are saved, old results are marked stale and new explanations reflect the change | Pending |
 | Shortlist an applicant | Recruiter and candidate see the same updated status | Pending |
 | Set up, edit and cancel an interview | Candidate sees the current details; recruiter sees accurate email status and can retry a failed message | Pending |
+| Set, extend and remove an application deadline | Deadline is visible; applications stop after its EAT cutoff; expired jobs leave recommendations; existing applications remain accessible | Pending |
+| Reopen a manually closed job | Explicit confirmation and a current/future deadline or no deadline are required; extending a deadline alone keeps it closed | Pending |
 | Close the job | New applications stop; existing submissions remain available | Pending |
 
 ## Administrator session
@@ -90,3 +92,15 @@ Copy one record per session. Use participant codes rather than names in shared r
 | Participant/reviewer acceptance | Pending |
 
 Record blocking issues before optional refinements. After fixes, repeat the affected tasks and the automated evaluation. Gmail password-reset delivery remains a separate configuration and real-inbox test; this checklist does not claim it has been configured or delivered.
+
+## CV import acceptance checks
+
+| Task | Expected result | Human result |
+| --- | --- | --- |
+| Import a text-based PDF and a Word CV | Contact, skills and structured career suggestions can be reviewed and corrected | Pending |
+| Import into an existing profile | Existing details are preserved unless selected for replacement; repeated entries are not duplicated | Pending |
+| Correct uncertain dates and exclude an entry | Only selected valid details are saved; missing required dates are highlighted | Pending |
+| Import a scanned or password-protected PDF | Clear guidance appears; the file remains in the library and the profile is unchanged | Pending |
+| Discard suggestions or edit the profile in another tab | Discard makes no changes; stale import cannot overwrite the newer profile | Pending |
+
+Use consented CVs with varied layouts for these checks. Automated fixture tests do not establish accuracy on real candidates' CVs.

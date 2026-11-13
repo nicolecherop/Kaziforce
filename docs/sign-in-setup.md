@@ -63,3 +63,12 @@ Google setup reference: <https://developers.google.com/identity/gsi/web/guides/g
 - The added user field is `users.email_two_step_enabled`. Allauth's framework-owned `account_emailaddress`, `account_emailconfirmation` and `socialaccount_*` tables hold verified addresses and provider identity links; employment and freelance records are unchanged.
 
 This is email-based **two-step verification**, not phishing-resistant MFA. Google sign-in is separate from Gmail sending. Real-inbox receipt, Google consent/redirect behavior and deployment configuration still require checks with the actual connected accounts.
+
+
+## Account details and profile prefill
+
+New Google accounts retain the name and verified identity email supplied through the existing basic `profile`/`email` scopes. The candidate profile editor displays the account name as read-only identity information and suggests the account email when the contact email is empty. The same suggestion works for accounts created with the normal sign-up form. Existing contact emails and professional details are preserved; users can change or clear the suggested contact email before saving. Opening the editor does not create or update a profile, and submitted applications remain independent copies.
+
+The name comes from the saved KaziForce account, rather than replacing it on each Google login. Basic Google sign-in does not supply a professional headline, recruitment phone number, skills, work history, education or certificates. Those sections remain manually entered. Profile photos are not imported by this change. No additional Google permissions are requested.
+
+Google button artwork was checked against https://developers.google.com/identity/branding-guidelines on 12 November 2026. The existing local PNG matches Google's official current gradient G asset byte-for-byte. All Google entry buttons now share a white, dark-text, bordered pill style with fixed 20px artwork and consistent spacing. The existing server-side OAuth POST/CSRF flow remains in use.

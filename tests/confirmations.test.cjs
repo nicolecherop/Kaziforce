@@ -99,3 +99,22 @@ test('admin bulk actions prompt once; bulk deletion retains its existing review 
     assert.equal(page.submit().prevented, false);
     assert.equal(page.prompts.length, 1);
 });
+
+
+test('reopening a job requires confirmation while ordinary job edits do not', () => {
+    const field = { checked: false };
+    const page = setup({ dataset: { confirmJob: '' }, fields: { reopen_applications: field } });
+    assert.equal(page.submit().prevented, false);
+    field.checked = true;
+    assert.equal(page.submit().prevented, true);
+    assert.match(page.prompts[0], /reopen this job/);
+});
+
+test('admin deadline changes prompt before saving', () => {
+    const field = { value: '2026-11-20' };
+    const page = setup({ admin: true, fields: { application_deadline: field } });
+    assert.equal(page.submit('_save').prevented, false);
+    field.value = '2026-11-25';
+    assert.equal(page.submit('_save').prevented, true);
+    assert.match(page.prompts[0], /application deadline/);
+});

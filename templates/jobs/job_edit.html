@@ -17,6 +17,7 @@
     </nav>
     <form method="post"
           class="profile-form job-form"
+          data-confirm-job
           data-job-preview
           novalidate>
         {% csrf_token %}
@@ -44,6 +45,12 @@
                         {% include "components/form_field.html" with field=form.company %}
                         {% include "components/form_field.html" with field=form.location %}
                     </div>
+                    {% include "components/form_field.html" with field=form.application_deadline %}
+                    {% if form.reopen_applications %}
+                        {% include "components/checkbox_field.html" with field=form.reopen_applications %}
+                    {% elif job.is_expired %}
+                        <p class="small-copy">The deadline has passed. Choose today or a future date, or clear the deadline, to accept applications again.</p>
+                    {% endif %}
                     {% include "components/form_field.html" with field=form.description %}
                     {% include "components/form_field.html" with field=form.requirements %}
                 </section>
