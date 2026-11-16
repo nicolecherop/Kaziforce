@@ -9,6 +9,7 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 
 from matching.models import MatchingCorpus, SkillCatalogue
+from accounts.render_demo_listings import seed_demo_listings
 
 
 class Command(BaseCommand):
@@ -27,6 +28,7 @@ class Command(BaseCommand):
             )
         if not MatchingCorpus.objects.exists():
             call_command("build_matching_corpus")
+        seed_demo_listings()
         User = get_user_model()
         if User.objects.filter(is_superuser=True, is_active=True).exists():
             return

@@ -18,11 +18,12 @@
     <form class="workspace-panel action-row" method="get">
         <label for="project-search">Search projects</label>
         <input id="project-search"
-               name="q"
+               type="search" name="q"
                value="{{ q }}"
                maxlength="120"
-               placeholder="Title, location or description">
-        <button class="button button-small">Search</button>
+               placeholder="Title, skill, location or description">
+        <button class="button button-small" type="submit">Search</button>
+        {% if q %}<a href="{% url 'freelance:projects' %}">Clear search</a>{% endif %}
     </form>
     {% for project in page %}
         <article class="workspace-panel">
@@ -45,7 +46,7 @@
         </article>
     {% empty %}
         <section class="workspace-panel empty-panel">
-            <h2>No projects to show yet.</h2>
+            <h2>{% if q %}No projects match your search.{% else %}No projects to show yet.{% endif %}</h2>
             <p>
                 {% if own %}Post your first assignment to start receiving proposals.{% else %}Check back for new assignments or make your freelance profile available to recruiters.{% endif %}
             </p>

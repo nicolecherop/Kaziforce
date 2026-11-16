@@ -13,14 +13,15 @@
         <a href="{% url 'jobs:saved' %}">Saved jobs</a>
     </nav>
     <form class="job-search workspace-panel" method="get">
-        <label class="sr-only" for="job-search">Search jobs, companies or locations</label>
+        <label class="sr-only" for="job-search">Search jobs by title, company, skill or location</label>
         <span class="search-icon">{% include "workspace/icon.html" with name="search" %}</span>
         <input id="job-search"
                name="q"
                value="{{ query }}"
                maxlength="160"
-               placeholder="Job title, company or location">
+               type="search" placeholder="Job title, company, skill or location">
         <button class="button button-small" type="submit">Search</button>
+        {% if query %}<a href="{% url 'jobs:opportunities' %}">Clear search</a>{% endif %}
     </form>
     <div class="workspace-split">
         <div class="opportunity-list">
