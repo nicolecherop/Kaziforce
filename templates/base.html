@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="{% static 'css/site.css' %}">
         <link rel="stylesheet" href="{% static 'css/forms.css' %}">
         {% block extra_css %}{% endblock %}
+        {% block workspace_theme %}{% endblock %}
     </head>
     <body class="{% block body_class %} {% endblock %}">
         {% include "components/icons.html" %}

@@ -1,0 +1,30 @@
+{% extends "workspace/base.html" %}
+{% block title %}Delete account | KaziForce{% endblock %}
+{% block workspace_content %}
+<div class="security-settings">
+    <a href="{% url 'accounts:security' %}">← Back to account security</a>
+    <header class="page-heading"><h1>Delete your account</h1><p>Please review what happens before you continue.</p></header>
+    <section class="workspace-panel">
+        <h2>One account, both workspaces</h2>
+        <p>This permanently removes your sign-in access, professional profile, original uploaded documents, saved jobs and private application drafts. Your freelance profile is removed from discovery and your job and project listings are closed.</p>
+        <p><strong>Shared records remain:</strong> applications already submitted (including their attached document copies), listings, messages, booking agreements, reviews and payment records remain available to the other participants and authorised administrators. These records may contain your previous name and contact information. Deleting your account does not erase copies already shared or downloaded.</p>
+        <p>Future interviews are cancelled. You will be signed out on all devices. This affects both your candidate and recruiter workspaces and cannot be undone.</p>
+        {% if blockers %}
+        <div role="status"><h2>Before you can delete your account</h2><ul>{% for reason in blockers %}<li>{{ reason }}</li>{% endfor %}</ul></div>
+        {% else %}
+        <h2>Confirm with your email</h2>
+        <p>We will send a six-digit code to your sign-in email, {{ user.email }}. This also works if you sign in with Google.</p>
+        <form method="post">{% csrf_token %}<button class="button button-secondary" type="submit" name="action" value="send_code">{% if code_sent %}Send a new code{% else %}Send confirmation code{% endif %}</button></form>
+        {% if code_sent or form.is_bound %}
+        <form method="post" class="account-deletion-form" data-confirm="Are you sure you want to permanently delete your KaziForce account and both workspaces? This cannot be undone.">
+            {% csrf_token %}
+            {% include "components/form_errors.html" %}
+            {% include "components/form_field.html" with field=form.code %}
+            <p><label for="{{ form.confirm.id_for_label }}">{{ form.confirm }} {{ form.confirm.label }}</label>{{ form.confirm.errors }}</p>
+            <div class="action-row"><button class="button" name="action" value="delete" type="submit">Permanently delete my account</button><a class="button button-secondary" href="{% url 'accounts:security' %}">Keep my account</a></div>
+        </form>
+        {% endif %}
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

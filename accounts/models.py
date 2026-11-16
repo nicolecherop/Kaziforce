@@ -18,6 +18,7 @@ class User(AbstractUser):
     candidate_workspace_enabled = models.BooleanField(default=False)
     recruiter_workspace_enabled = models.BooleanField(default=False)
     email_updates = models.BooleanField(default=True)
+    deleted_at = models.DateTimeField(null=True, blank=True, editable=False)
 
     def has_workspace(self, workspace):
         return workspace in {"candidate", "recruiter"} and (
@@ -78,3 +79,17 @@ class Notification(models.Model):
                 fields=["recipient", "read_at"], name="notification_unread_idx"
             )
         ]
+
+
+class AccountDeletionCode(models.Model):
+    """One-use, hashed confirmation; never store the emailed code in plaintext."""
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    code_hash = models.CharField(max_length=128)
+    binding = models.CharField(max_length=64)
+    sent_at = models.DateTimeField()
+    expires_at = models.DateTimeField()
+    attempts = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        db_table = "account_deletion_codes"

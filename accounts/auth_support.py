@@ -33,6 +33,8 @@ def email_codes_ready():
         return False
     if settings.EMAIL_BACKEND == "django.core.mail.backends.locmem.EmailBackend":
         return True  # Explicit in-memory delivery for isolated automated tests only.
+    if settings.EMAIL_BACKEND == "accounts.brevo.EmailBackend":
+        return bool(getattr(settings, "BREVO_API_KEY", ""))
     return (
         settings.EMAIL_BACKEND == "django.core.mail.backends.smtp.EmailBackend"
         and bool(settings.EMAIL_HOST_USER and settings.EMAIL_HOST_PASSWORD)

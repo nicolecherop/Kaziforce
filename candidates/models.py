@@ -179,6 +179,11 @@ class PortfolioLink(models.Model):
         return self.title
 
 
+class PrivateDocumentBlob(models.Model):
+    name = models.CharField(max_length=255, primary_key=True)
+    content = models.BinaryField()
+
+
 class CandidateDocument(models.Model):
     class Kind(models.TextChoices):
         CV = "cv", "CV"

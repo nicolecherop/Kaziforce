@@ -1,8 +1,7 @@
 {% extends "workspace/base.html" %}
 {% block title %}Account security | KaziForce{% endblock %}
-{% block content %}
-    <div class="shell section-space">
-        {% if messages %}<div class="notice-list" role="status">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}
+{% block workspace_content %}
+    <div class="security-settings">
         <a href="{% url 'accounts:dashboard' %}">← Back to workspace</a>
         <header class="page-heading">
             <h1>Account security</h1>
@@ -38,6 +37,11 @@
             {% else %}
                 <p>You sign in through Google. Manage your Google account's security settings to protect that sign-in.</p>
             {% endif %}
+        </section>
+        <section class="workspace-panel" style="margin-top:24px;">
+            <h2>Delete account</h2>
+            <p>Permanently remove your profile and sign-in access across both workspaces. Review what happens to your shared records before confirming.</p>
+            <a class="button button-secondary" href="{% url 'accounts:delete_account' %}">Delete my account</a>
         </section>
     </div>
 {% endblock %}

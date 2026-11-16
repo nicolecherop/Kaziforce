@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load workspace_ui %}
 {% load static workspace_ui %}
 {% block body_class %}candidate-page workspace-page{% endblock %}
 {% block extra_css %}
@@ -10,13 +9,22 @@
     <link rel="stylesheet" href="{% static 'css/matching.css' %}">
     <link rel="stylesheet" href="{% static 'css/workspace.css' %}">
     <script src="{% static 'js/skills.js' %}" defer></script>
-    <script src="{% static 'js/workspace.js' %}" defer></script>
+    <script src="{% static 'js/workspace.js' %}?v=20261115" defer></script>
 {% endblock %}
+{% block workspace_theme %}<link rel="stylesheet" href="{% static 'css/workspace-brand.css' %}?v=20261115">{% endblock %}
 {% block header %}
     {% include "workspace/icons.html" %}
     <header class="workspace-topbar">
+        <button class="workspace-menu-toggle" type="button" aria-label="Open navigation" aria-controls="workspace-sidebar" aria-expanded="false" hidden>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </button>
         <a class="brand" href="{% url 'accounts:dashboard' %}">Kaziforce</a>
         <span class="descriptor">{{ user.active_workspace_label }} workspace</span>
+        <div class="workspace-header-actions">
+        <a class="notification-shortcut" href="{% url 'accounts:notifications' %}" aria-label="Notifications{% if unread_update_count %}, {{ unread_update_count }} unread{% endif %}" title="Notifications">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M9 21h6" /></svg>
+            {% if unread_update_count %}<span class="notification-dot" aria-hidden="true"></span>{% endif %}
+        </a>
         <details class="account-menu">
             <summary aria-label="Account menu for {{ user.get_full_name|default:'my account'|site_text }}">
                 <span class="initial-avatar">{{ user.get_full_name|site_text|initials }}</span>
@@ -47,11 +55,12 @@
                 </form>
             </div>
         </details>
+        </div>
     </header>
 {% endblock %}
 {% block content %}
     <div class="candidate-layout">
-        <aside class="candidate-sidebar" aria-label="Workspace">
+        <aside id="workspace-sidebar" class="candidate-sidebar" aria-label="Workspace">
             <p class="sidebar-caption">
                 {% if user.active_workspace == "candidate" %}Your career{% else %}Your team{% endif %}
             </p>
