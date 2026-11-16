@@ -42,7 +42,7 @@
             </div>
             <p class="panel-subheading">{{ project.start_date|date:"j M Y" }} – {{ project.end_date|date:"j M Y" }} · Budget KES {{ project.budget|floatformat:2 }}</p>
             <a href="{% url 'freelance:project_detail' pk=project.pk %}">
-            {% if own %}Manage project{% else %}View project &amp; send proposal{% endif %} →</a>
+            {% if own %}Manage project{% else %}View project &amp; send proposal{% endif %}</a>
         </article>
     {% empty %}
         <section class="workspace-panel empty-panel">

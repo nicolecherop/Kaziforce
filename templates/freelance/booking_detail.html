@@ -180,7 +180,7 @@
                 <h3>{{ payment_summary.label }}</h3>
                 <p>Received through M-Pesa: <strong>KES {{ payment_summary.mpesa_received|floatformat:2 }}</strong></p>
                 <p>Remaining booking balance: <strong>KES {{ payment_summary.remaining|floatformat:2 }}</strong></p>
-                <a class="panel-link" href="{% url 'mpesa:booking' booking_id=booking.pk %}">View M-Pesa payments →</a>
+                <a class="panel-link" href="{% url 'mpesa:booking' booking_id=booking.pk %}">View M-Pesa payments</a>
                 {% if booking.status != "completed" %}
                     <p class="small-copy">M-Pesa payments become available after the recruiter confirms work completion.</p>
                 {% endif %}

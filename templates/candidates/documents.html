@@ -36,7 +36,7 @@
                         {% include "components/form_field.html" %}
                     {% endif %}
                 {% endfor %}
-                <button class="button" type="submit">Upload document ↗</button>
+                <button class="button" type="submit">Upload document</button>
             </form>
         </section>
         <section class="profile-section" aria-labelledby="documents-title">
@@ -53,7 +53,7 @@
                         <div class="action-row">
                             <a href="{% url 'candidates:document_file' document.pk %}?view=1"
                                target="_blank"
-                               rel="noopener">Open document ↗</a>
+                               rel="noopener">Open document</a>
                             <a href="{% url 'candidates:document_file' document.pk %}">Download</a>
                             {% if document.kind == "cv" %}
                                 <form method="post" action="{% url 'candidates:cv_import' document.pk %}">

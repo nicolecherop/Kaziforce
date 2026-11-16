@@ -14,7 +14,7 @@
     <p>{{ item.body|linebreaksbr }}</p>
     <form method="post" action="{% url 'accounts:open_notification' item.pk %}">
         {% csrf_token %}
-        <button class="button button-small" type="submit">Open in {{ item.workspace }} workspace →</button>
+        <button class="button button-small" type="submit">Open in {{ item.workspace }} workspace</button>
     </form>
 </article>
 {% empty %}
@@ -24,7 +24,7 @@
 <nav class="view-links" aria-label="Notification pages">
     {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">← Previous</a>{% endif %}
     <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
-    {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Next →</a>{% endif %}
+    {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Next</a>{% endif %}
 </nav>
 {% endif %}
 {% endblock %}

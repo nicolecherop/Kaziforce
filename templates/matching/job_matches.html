@@ -35,11 +35,11 @@
                         {% if run %}
                             <h2>No available matches right now.</h2>
                             <p>Update your matches or browse available jobs.</p>
-                            <a href="{% url 'jobs:opportunities' %}">Browse all jobs →</a>
+                            <a href="{% url 'jobs:opportunities' %}">Browse all jobs</a>
                         {% else %}
                             <h2>Find a clearer direction.</h2>
                             <p>Add your professional information, then select “Update my matches” to find relevant opportunities.</p>
-                            <a href="{% url 'candidates:profile_edit' %}">Build your profile →</a>
+                            <a href="{% url 'candidates:profile_edit' %}">Build your profile</a>
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -51,7 +51,7 @@
             <div class="panel-divider"></div>
             <h3>A starting point for your review</h3>
             <p>Read the full requirements and consider your interests and experience before applying. You can also browse all available jobs.</p>
-            <a href="{% url 'candidates:profile_edit' %}">Improve your profile →</a>
+            <a href="{% url 'candidates:profile_edit' %}">Improve your profile</a>
         </aside>
     </div>
     {% include "matching/components/run_notice.html" %}
