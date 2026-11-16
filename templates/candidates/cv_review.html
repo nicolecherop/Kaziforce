@@ -60,7 +60,7 @@
     </form>
     <aside class="workspace-panel side-panel">
         <h2>Your original CV</h2>
-        <a href="{% url 'candidates:document_file' draft.document_id %}?view=1" target="_blank" rel="noopener">Open original CV ↗</a>
+        <a href="{% url 'candidates:document_file' draft.document_id %}?view=1" target="_blank" rel="noopener">Open original CV</a>
         {% for note in draft.suggestions.notes %}<p class="small-copy">{{ note }}</p>{% endfor %}
         {% for warning in draft.warnings %}<p class="small-copy">{{ warning }}</p>{% endfor %}
         <details>

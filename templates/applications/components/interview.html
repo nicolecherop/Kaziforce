@@ -15,7 +15,7 @@
             {% else %}
                 {% if interview.meeting_url %}<p><a href="{{ interview.meeting_url }}"
    target="_blank"
-   rel="noopener noreferrer">Open video meeting →</a></p>{% endif %}
+   rel="noopener noreferrer">Open video meeting</a></p>{% endif %}
                 {% if interview.location %}<p><strong>Address:</strong> {{ interview.location }}</p>{% endif %}
                 {% if interview.format == "phone" %}<p>Please use the contact details below to agree who will make the call.</p>{% endif %}
                 {% if interview.instructions %}<p class="long-copy">{{ interview.instructions|linebreaksbr }}</p>{% endif %}

@@ -36,12 +36,12 @@
                 </p>
                 <p class="small-copy">Based on your saved matching review.</p>
                 <a class="panel-link"
-                   href="{% url 'matches:detail' match_result.pk %}">View match details →</a>
+                   href="{% url 'matches:detail' match_result.pk %}">View match details</a>
                 <div class="panel-divider"></div>
             {% endif %}
             <h2>Your profile is a starting point.</h2>
             <p>Tailor your information for this role and choose which CV and supporting documents to send. Your main profile stays the same.</p>
-            <a href="{% url 'candidates:profile' %}">Review my profile →</a>
+            <a href="{% url 'candidates:profile' %}">Review my profile</a>
             <div class="panel-divider"></div>
             {% include "jobs/components/apply_action.html" %}
         </aside>

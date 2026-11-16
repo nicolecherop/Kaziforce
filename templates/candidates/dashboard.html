@@ -43,7 +43,7 @@
                 {% include "applications/components/upcoming_interviews.html" %}
                 <div class="section-title-row">
                     <h2 id="recommendations-title">Recommended jobs for you</h2>
-                    <a href="{% url 'matches:jobs' %}">View all matches →</a>
+                    <a href="{% url 'matches:jobs' %}">View all matches</a>
                 </div>
                 {% if matches_stale %}
                     <p class="inline-notice">Your saved matches need an update. <a href="{% url 'matches:jobs' %}">Refresh your matches</a> to use the latest information.</p>
@@ -73,9 +73,9 @@
                 <h3>Ready for your next application?</h3>
                 <p>Your saved profile is a starting point. Tailor a separate copy for each role.</p>
                 <div class="action-row">
-                    <a href="{% url 'jobs:opportunities' %}">Browse all jobs →</a>
+                    <a href="{% url 'jobs:opportunities' %}">Browse all jobs</a>
                     {% if draft_count %}
-                        <a href="{% url 'applications:mine' %}?status=draft">Continue {{ draft_count }} draft{{ draft_count|pluralize }} →</a>
+                        <a href="{% url 'applications:mine' %}?status=draft">Continue {{ draft_count }} draft{{ draft_count|pluralize }}</a>
                     {% endif %}
                 </div>
             </div>

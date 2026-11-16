@@ -24,7 +24,7 @@
                     <h2>Your draft is private.</h2>
                     <p>Continue editing your information and choose attachments before submitting to the recruiter.</p>
                     <a class="button button-small"
-                       href="{% url 'applications:edit' application.job_id %}">Continue draft →</a>
+                       href="{% url 'applications:edit' application.job_id %}">Continue draft</a>
                 </div>
             {% else %}
                 <div class="inline-notice">
@@ -54,7 +54,7 @@
                                 <div class="action-row">
                                     <a href="{% url 'applications:attachment_file' attachment.pk %}?view=1"
                                        target="_blank"
-                                       rel="noopener">Open document →</a>
+                                       rel="noopener">Open document</a>
                                     <a href="{% url 'applications:attachment_file' attachment.pk %}">Download</a>
                                 </div>
                             </div>
@@ -91,10 +91,10 @@
                     <button class="button button-small" data-confirm="Are you sure you want to update this application status? The candidate will see the change." type="submit">Update status</button>
                 </form>
                 <a class="panel-link"
-                   href="{% url 'matches:applicants' application.job_id %}">Back to candidate rankings →</a>
+                   href="{% url 'matches:applicants' application.job_id %}">Back to candidate rankings</a>
                 {% if match_result %}
                     <a class="panel-link"
-                       href="{% url 'matches:detail' match_result.pk %}">Review saved match explanation →</a>
+                       href="{% url 'matches:detail' match_result.pk %}">Review saved match explanation</a>
                 {% endif %}
             {% endif %}
             <div class="panel-divider"></div>

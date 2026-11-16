@@ -7,18 +7,18 @@
 <div class="kf-admin-dashboard">
     <header class="kf-dashboard-heading">
         <div><p class="kf-eyebrow">PLATFORM MANAGEMENT</p><h1>Administration overview</h1><p>People, opportunities and the work happening across KaziForce.</p></div>
-        <a class="kf-quiet-link" href="{% url 'accounts:security' %}">Account security <span aria-hidden="true">↗</span></a>
+        <a class="kf-quiet-link" href="{% url 'accounts:security' %}">Account security</a>
     </header>
     {% if not available_apps %}<section class="kf-panel"><p>Your account has no assigned administration permissions. Contact the system administrator to arrange access to the areas you need.</p></section>{% endif %}
     <div class="kf-summary-grid">
         {% for card in overview_cards %}
-        {% if forloop.counter <= 4 %}<a class="kf-metric" href="{{ card.url }}"><h2>{{ card.label }}</h2><strong>{{ card.value }}</strong><p>{{ card.detail }}</p><span class="kf-card-arrow" aria-hidden="true">↗</span></a>{% endif %}
+        {% if forloop.counter <= 4 %}<a class="kf-metric" href="{{ card.url }}"><h2>{{ card.label }}</h2><strong>{{ card.value }}</strong><p>{{ card.detail }}</p></a>{% endif %}
         {% endfor %}
     </div>
     <div class="kf-admin-columns">
         <div class="kf-admin-primary">
             {% if application_statuses %}
-            <section class="kf-panel"><div class="kf-section-heading"><h2>Application progress</h2><span>Current pipeline</span></div><div class="kf-status-grid">{% for status in application_statuses %}<a href="{{ status.url }}"><strong>{{ status.count }}</strong><span>{{ status.label }}</span><span aria-hidden="true">→</span></a>{% endfor %}</div></section>
+            <section class="kf-panel"><div class="kf-section-heading"><h2>Application progress</h2><span>Current pipeline</span></div><div class="kf-status-grid">{% for status in application_statuses %}<a href="{{ status.url }}"><strong>{{ status.count }}</strong><span>{{ status.label }}</span></a>{% endfor %}</div></section>
             {% endif %}
             {% if recent_applications %}
             <section class="kf-panel"><div class="kf-section-heading"><h2>Recent applications</h2><span>Latest submissions</span></div><div class="kf-table-wrap"><table><thead><tr><th>Candidate</th><th>Opportunity</th><th>Status</th></tr></thead><tbody>{% for application in recent_applications %}<tr><td><a href="{% url 'admin:applications_application_change' application.pk %}">{{ application.candidate_name|default:"Candidate"|site_text }}</a></td><td>{{ application.job_snapshot.title|default:application.job.title|site_text }}</td><td><span class="kf-status-pill">{{ application.get_status_display }}</span></td></tr>{% endfor %}</tbody></table></div></section>

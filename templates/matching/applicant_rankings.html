@@ -81,7 +81,7 @@
                 </div>
                 <div class="table-footnote">
                     <span>Rankings support your review. Recruitment decisions remain with you.</span>
-                    <a href="{% url 'applications:applicants' job.pk %}">View every application →</a>
+                    <a href="{% url 'applications:applicants' job.pk %}">View every application</a>
                 </div>
                 {% for result in unscored %}
                     <div class="workspace-panel compact-panel">
@@ -125,7 +125,7 @@
                     </div>
                     <div class="panel-divider"></div>
                     <a class="panel-link"
-                       href="{% url 'matches:detail' selected.pk %}">Review score explanation →</a>
+                       href="{% url 'matches:detail' selected.pk %}">Review score explanation</a>
                     <a class="button button-small button-full"
                        href="{% url 'applications:detail' selected.application_id %}">Review application</a>
                     <a class="panel-link small-copy"

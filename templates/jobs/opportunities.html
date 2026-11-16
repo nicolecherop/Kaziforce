@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     <div class="heading-actions">
-                        <a class="button button-secondary button-small" href="{% url 'jobs:detail' job.pk %}">View role →</a>
+                        <a class="button button-secondary button-small" href="{% url 'jobs:detail' job.pk %}">View role</a>
                         {% include "jobs/components/save_button.html" with saved=job.is_saved %}
                     </div>
                 </article>
@@ -63,7 +63,7 @@
             <div class="panel-divider"></div>
             <h3>Apply in your own words.</h3>
             <p>Your profile fills a separate application copy. Review it, tailor it and choose your supporting documents before submitting.</p>
-            <a href="{% url 'candidates:profile' %}">Review my profile →</a>
+            <a href="{% url 'candidates:profile' %}">Review my profile</a>
         </aside>
     </div>
 {% endblock %}

@@ -27,7 +27,7 @@
                 {% if not job.accepts_applications %}<p class="small-copy">This role is no longer accepting applications. You can still view it or remove it from your saved list.</p>{% endif %}
             </div>
             <div class="heading-actions">
-                <a class="button button-small" href="{% url 'jobs:detail' job.pk %}">View role →</a>
+                <a class="button button-small" href="{% url 'jobs:detail' job.pk %}">View role</a>
                 {% include "jobs/components/save_button.html" with saved=True %}
             </div>
         </article>
@@ -44,7 +44,7 @@
 <nav class="view-links" aria-label="Saved jobs pages">
     {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">← Previous</a>{% endif %}
     <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
-    {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Next →</a>{% endif %}
+    {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Next</a>{% endif %}
 </nav>
 {% endif %}
 {% endblock %}
