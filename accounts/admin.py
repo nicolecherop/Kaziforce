@@ -15,6 +15,7 @@ class KaziForceUserAdmin(UserAdmin):
                     "candidate_workspace_enabled",
                     "recruiter_workspace_enabled",
                     "email_updates",
+                    "deleted_at",
                 )
             },
         ),
@@ -23,7 +24,14 @@ class KaziForceUserAdmin(UserAdmin):
         ("KaziForce", {"fields": ("email", "role")}),
     )
     list_display = ("display_name", "email", "role", "is_staff", "is_active")
-    list_filter = ("role", "is_staff", "is_active")
+    list_filter = ("role", "is_staff", "is_active", "deleted_at")
+    readonly_fields = UserAdmin.readonly_fields + ("deleted_at",)
+
+    def has_change_permission(self, request, obj=None):
+        return not (obj and obj.deleted_at) and super().has_change_permission(
+            request, obj
+        )
+
     search_fields = ("email", "first_name", "last_name", "username")
 
     @admin.display(description="Name", ordering="first_name")

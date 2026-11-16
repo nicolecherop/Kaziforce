@@ -3,6 +3,8 @@
 import hashlib
 import json
 import subprocess
+import shutil
+from tempfile import TemporaryDirectory
 import sys
 import uuid
 from pathlib import Path
@@ -43,20 +45,24 @@ def profile_version(user):
 
 def extract_text(document):
     try:
-        completed = subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "candidates.cv_text",
-                document.file.path,
-                Path(document.original_name).suffix.lower(),
-            ],
-            cwd=settings.BASE_DIR,
-            capture_output=True,
-            timeout=15,
-            check=True,
-            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
-        )
+        with TemporaryDirectory() as directory:
+            local_path = Path(directory) / "document"
+            with document.file.open("rb") as original, local_path.open("wb") as copy:
+                shutil.copyfileobj(original, copy)
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "candidates.cv_text",
+                    str(local_path),
+                    Path(document.original_name).suffix.lower(),
+                ],
+                cwd=settings.BASE_DIR,
+                capture_output=True,
+                timeout=15,
+                check=True,
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+            )
         if len(completed.stdout) > 1_000_000:
             raise CVReadError(
                 "This CV contains too much text to import. Choose a shorter copy."

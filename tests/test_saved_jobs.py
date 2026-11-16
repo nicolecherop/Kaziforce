@@ -46,7 +46,7 @@ class SavedJobTests(TestCase):
         self.assertFalse(Application.objects.exists())
         response = self.client.get(self.list_url)
         self.assertContains(response, self.job.title)
-        self.assertContains(response, "Saved ✓")
+        self.assertContains(response, 'aria-pressed="true"')
         for _ in range(2):
             self.client.post(self.url, {"action": "remove"})
         self.assertFalse(SavedJob.objects.exists())

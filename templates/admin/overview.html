@@ -1,33 +1,38 @@
 {% extends "admin/index.html" %}
-{% load workspace_ui %}
+{% load workspace_ui log %}
+{% block coltype %}colM{% endblock %}
+{% block content_title %}{% endblock %}
+{% block sidebar %}{% endblock %}
 {% block content %}
-    <section class="kf-overview" aria-label="Administration overview">
-        <p class="kf-introduction">Monitor the platform, review recruitment records and manage the areas available to your account.</p>
-        {% if not available_apps %}<p>Your account has no assigned administration permissions. Contact the system administrator to arrange access to the areas you need.</p>{% endif %}
-        <div class="kf-summary-grid">
-            {% for card in overview_cards %}
-                <a class="kf-metric" href="{{ card.url }}"><strong>{{ card.value }}</strong>
-                    <h2>{{ card.label }}</h2>
-                    <p>{{ card.detail }}</p>
-                </a>
-            {% endfor %}
-        </div>
-        {% if application_statuses %}
-            <section class="kf-panel"><h2>Application progress</h2><div class="kf-status-grid">{% for status in application_statuses %}<a href="{{ status.url }}"><strong>{{ status.count }}</strong> {{ status.label }}</a>{% endfor %}</div></section>
-        {% endif %}
-        {% if email_statuses %}
-            <section class="kf-panel">
-                <h2>Interview email delivery</h2>
-                <p>{% if email_connected %}Email delivery is connected. Sent records confirm sending, rather than receipt or reading.{% else %}Email delivery is not connected. Interview invitations remain available to candidates in My applications.{% endif %}</p>
-                <div class="kf-status-grid">{% for status in email_statuses %}<a href="{{ status.url }}"><strong>{{ status.count }}</strong> {{ status.label }}</a>{% endfor %}</div>
+<div class="kf-admin-dashboard">
+    <header class="kf-dashboard-heading">
+        <div><p class="kf-eyebrow">PLATFORM MANAGEMENT</p><h1>Administration overview</h1><p>People, opportunities and the work happening across KaziForce.</p></div>
+        <a class="kf-quiet-link" href="{% url 'accounts:security' %}">Account security <span aria-hidden="true">↗</span></a>
+    </header>
+    {% if not available_apps %}<section class="kf-panel"><p>Your account has no assigned administration permissions. Contact the system administrator to arrange access to the areas you need.</p></section>{% endif %}
+    <div class="kf-summary-grid">
+        {% for card in overview_cards %}
+        {% if forloop.counter <= 4 %}<a class="kf-metric" href="{{ card.url }}"><h2>{{ card.label }}</h2><strong>{{ card.value }}</strong><p>{{ card.detail }}</p><span class="kf-card-arrow" aria-hidden="true">↗</span></a>{% endif %}
+        {% endfor %}
+    </div>
+    <div class="kf-admin-columns">
+        <div class="kf-admin-primary">
+            {% if application_statuses %}
+            <section class="kf-panel"><div class="kf-section-heading"><h2>Application progress</h2><span>Current pipeline</span></div><div class="kf-status-grid">{% for status in application_statuses %}<a href="{{ status.url }}"><strong>{{ status.count }}</strong><span>{{ status.label }}</span><span aria-hidden="true">→</span></a>{% endfor %}</div></section>
+            {% endif %}
+            {% if recent_applications %}
+            <section class="kf-panel"><div class="kf-section-heading"><h2>Recent applications</h2><span>Latest submissions</span></div><div class="kf-table-wrap"><table><thead><tr><th>Candidate</th><th>Opportunity</th><th>Status</th></tr></thead><tbody>{% for application in recent_applications %}<tr><td><a href="{% url 'admin:applications_application_change' application.pk %}">{{ application.candidate_name|default:"Candidate"|site_text }}</a></td><td>{{ application.job_snapshot.title|default:application.job.title|site_text }}</td><td><span class="kf-status-pill">{{ application.get_status_display }}</span></td></tr>{% endfor %}</tbody></table></div></section>
+            {% endif %}
+            <section class="kf-management" aria-label="Management sections"><div class="kf-section-heading"><h2>Manage KaziForce</h2><span>Choose an area to get started</span></div>
+                <div class="kf-management-grid">{% for app in app_list %}<section class="kf-management-group"><h3><a href="{{ app.app_url }}">{{ app.name }}</a><span>{{ app.models|length }}</span></h3><ul>{% for model in app.models %}<li><span>{% if model.admin_url %}<a href="{{ model.admin_url }}">{{ model.name }}</a>{% else %}{{ model.name }}{% endif %}</span>{% if model.add_url %}<a class="kf-add-link" href="{{ model.add_url }}" aria-label="Add {{ model.name }}">+ Add</a>{% else %}<span class="kf-read-label">View</span>{% endif %}</li>{% endfor %}</ul></section>{% endfor %}</div>
             </section>
-        {% endif %}
-        {% if upcoming_interviews %}
-            <section class="kf-panel"><h2>Next interviews</h2><div class="kf-table-wrap"><table><thead><tr><th>Job</th><th>Date and time (EAT)</th><th>Format</th></tr></thead><tbody>{% for interview in upcoming_interviews %}<tr><td><a href="{% url 'admin:applications_interview_change' interview.pk %}">{{ interview.application.job.title|site_text }}</a></td><td>{{ interview.starts_at|date:"j M Y, H:i" }}</td><td>{{ interview.get_format_display }}</td></tr>{% endfor %}</tbody></table></div></section>
-        {% endif %}
-        {% if recent_applications %}
-            <section class="kf-panel"><h2>Recent applications</h2><div class="kf-table-wrap"><table><thead><tr><th>Candidate</th><th>Job</th><th>Status</th></tr></thead><tbody>{% for application in recent_applications %}<tr><td><a href="{% url 'admin:applications_application_change' application.pk %}">{{ application.candidate_name|default:"Candidate"|site_text }}</a></td><td>{{ application.job_snapshot.title|default:application.job.title|site_text }}</td><td>{{ application.get_status_display }}</td></tr>{% endfor %}</tbody></table></div></section>
-        {% endif %}
-    </section>
-    {{ block.super }}
+        </div>
+        <aside class="kf-admin-aside" aria-label="Platform activity">
+            {% if overview_cards|length > 4 %}<section class="kf-panel"><h2>Platform activity</h2><div class="kf-activity-list">{% for card in overview_cards %}{% if forloop.counter > 4 %}<a href="{{ card.url }}"><span><strong>{{ card.label }}</strong><small>{{ card.detail }}</small></span><b>{{ card.value }}</b></a>{% endif %}{% endfor %}</div></section>{% endif %}
+            {% if upcoming_interviews %}<section class="kf-panel"><h2>Next interviews</h2><ul class="kf-interview-list">{% for interview in upcoming_interviews %}<li><span class="kf-date-tile"><strong>{{ interview.starts_at|date:"d" }}</strong>{{ interview.starts_at|date:"M" }}</span><div><a href="{% url 'admin:applications_interview_change' interview.pk %}">{{ interview.application.job.title|site_text }}</a><p>{{ interview.starts_at|date:"H:i" }} EAT · {{ interview.get_format_display }}</p></div></li>{% endfor %}</ul></section>{% endif %}
+            {% if email_statuses %}<section class="kf-panel"><h2>Interview email delivery</h2><p>{% if email_connected %}Email delivery is connected. Sent records confirm sending, rather than receipt or reading.{% else %}Email delivery is not connected. Interview invitations remain available to candidates in My applications.{% endif %}</p><div class="kf-email-list">{% for status in email_statuses %}<a href="{{ status.url }}"><span>{{ status.label }}</span><strong>{{ status.count }}</strong></a>{% endfor %}</div></section>{% endif %}
+            <section class="kf-panel"><h2>Your recent actions</h2>{% get_admin_log 5 as admin_log for_user user %}<ul class="kf-audit-list">{% for entry in admin_log %}<li>{% if entry.is_deletion or not entry.get_admin_url %}{{ entry.object_repr }}{% else %}<a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>{% endif %}<small>{{ entry.get_action_flag_display }} · {{ entry.action_time|date:"j M, H:i" }}</small></li>{% empty %}<li class="kf-empty-copy">Your administration activity will appear here.</li>{% endfor %}</ul></section>
+        </aside>
+    </div>
+</div>
 {% endblock %}

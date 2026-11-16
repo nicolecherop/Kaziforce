@@ -36,3 +36,110 @@ body, button, input, select, textarea { font-family: "Century Gothic", "Avenir N
 .kf-table-wrap table { width: 100%; }
 .kf-table-wrap th, .kf-table-wrap td { padding: 12px 10px; }
 @media (max-width: 600px) { #site-name span { display: block; margin: 4px 0 0; } .kf-panel { padding: 14px; } }
+
+/* Rounded brand treatment retains Django's native admin controls and themes. */
+#header { margin: 16px 20px; border-radius: 28px; border: 1px solid var(--hairline-color); box-shadow: 0 8px 28px #101a3108; }
+#header button { border: 1px solid var(--hairline-color); border-radius: 100px; padding: 8px 14px; margin: 4px; cursor: pointer; background: var(--body-bg); color: var(--link-fg); }
+div.breadcrumbs { padding: 15px 30px; background: var(--body-bg); color: var(--body-quiet-color); }
+div.breadcrumbs a { color: var(--link-fg); }
+#content { padding: 30px; }
+.module, .kf-panel, .kf-metric, #changelist-filter { border-radius: 18px; overflow: hidden; }
+.kf-panel, .kf-metric { box-shadow: 0 6px 24px #101a3106; }
+.submit-row { border-radius: 18px; padding: 18px; }
+.submit-row input, .button, input[type=submit], input[type=button], .object-tools a { border-radius: 100px; }
+input:not([type=checkbox]):not([type=radio]):not([type=submit]), textarea, select { border-radius: 9px; }
+@media(max-width:767px) { #header { margin: 10px; padding: 18px; } #content { padding: 20px 14px; } }
+
+/* Administration layout: native permissions and controls, KaziForce presentation. */
+:root { --kf-surface: var(--header-bg); --kf-soft: var(--darkened-bg); }
+body { font-size: 14px; line-height: 1.55; }
+#container { min-width: 0; }
+#header { gap: 20px; flex-wrap: wrap; padding: 20px 26px; }
+#header #user-tools { font-size: 12px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0; }
+#header #user-tools a { border: 0; }
+#header .kf-workspace-links { display: flex; gap: 8px; flex-wrap: wrap; margin: 0; }
+#header .kf-workspace-links button { margin: 0; font-size: 12px; }
+#content { box-sizing: border-box; min-width: 0; padding: 24px 32px 48px; }
+#content h1 { font-size: 30px; font-weight: 700; letter-spacing: -1px; line-height: 1.25; color: var(--body-fg); }
+body.dashboard #content { width: auto; }
+.kf-admin-dashboard { max-width: 1640px; margin: 0 auto; }
+.kf-dashboard-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 4px 0 28px; }
+.kf-dashboard-heading h1 { margin: 8px 0 10px; }
+.kf-dashboard-heading p { margin: 0; color: var(--body-quiet-color); font-size: 14px; }
+.kf-dashboard-heading .kf-eyebrow { color: var(--link-fg); font-size: 11px; font-weight: 700; letter-spacing: 2px; }
+.kf-quiet-link { border: 1px solid var(--border-color); background: var(--kf-surface); padding: 11px 18px; border-radius: 30px; white-space: nowrap; }
+.kf-summary-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin: 0 0 26px; }
+.kf-metric { position: relative; padding: 24px; border-radius: 22px; transition: border-color .15s, box-shadow .15s; }
+.kf-metric h2 { margin: 0 22px 12px 0; font-size: 13px; font-weight: 600; }
+.kf-metric > strong { font-size: 38px; line-height: 1.2; letter-spacing: -1px; }
+.kf-metric p { margin: 10px 0 0; font-size: 12px; }
+.kf-card-arrow { position: absolute; right: 20px; top: 20px; color: var(--body-quiet-color); }
+.kf-admin-columns { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 24px; align-items: start; }
+.kf-admin-primary, .kf-admin-aside { min-width: 0; }
+.kf-panel { padding: 24px; border-radius: 22px; margin-bottom: 24px; }
+.kf-panel h2, .kf-section-heading h2 { font-size: 17px; font-weight: 700; margin: 0; color: var(--body-fg); }
+.kf-section-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.kf-section-heading > span { color: var(--body-quiet-color); font-size: 12px; }
+.kf-status-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+.kf-status-grid a { display: flex; align-items: center; gap: 10px; padding: 14px; border: 1px solid var(--hairline-color); border-radius: 14px; color: var(--body-fg); }
+.kf-status-grid strong { font-size: 22px; color: var(--link-fg); min-width: 28px; }
+.kf-status-grid a > span:last-child { margin-left: auto; color: var(--link-fg); }
+.kf-table-wrap { margin: 0; }
+.kf-table-wrap table { min-width: 480px; }
+.kf-table-wrap thead th { background: var(--kf-soft); color: var(--body-quiet-color); font-size: 11px; text-transform: uppercase; letter-spacing: .6px; }
+.kf-table-wrap td { padding: 16px 12px; vertical-align: middle; font-size: 13px; }
+.kf-status-pill { display: inline-block; background: var(--kf-soft); color: var(--link-fg); border-radius: 20px; padding: 5px 10px; font-size: 11px; white-space: nowrap; }
+.kf-management-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+.kf-management-group { background: var(--kf-surface); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden; }
+.kf-management-group h3 { display: flex; align-items: center; justify-content: space-between; margin: 0; padding: 18px 20px; border-bottom: 1px solid var(--hairline-color); font-size: 15px; }
+.kf-management-group h3 > span { border-radius: 20px; padding: 3px 9px; background: var(--kf-soft); color: var(--body-quiet-color); font-size: 11px; }
+.kf-management-group ul, .kf-interview-list, .kf-audit-list { list-style: none; margin: 0; padding: 0; }
+.kf-management-group li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 20px; border-bottom: 1px solid var(--hairline-color); }
+.kf-management-group li:last-child { border: 0; }
+.kf-management-group li > span:first-child { font-size: 13px; }
+.kf-add-link { font-size: 11px; white-space: nowrap; padding: 4px 8px; background: var(--kf-soft); border-radius: 12px; }
+.kf-read-label { color: var(--body-quiet-color); font-size: 11px; }
+.kf-activity-list a, .kf-email-list a { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--hairline-color); }
+.kf-activity-list a:last-child, .kf-email-list a:last-child { border: 0; padding-bottom: 0; }
+.kf-activity-list strong { font-size: 12px; color: var(--body-fg); display: block; }
+.kf-activity-list small { font-size: 11px; color: var(--body-quiet-color); display: block; margin-top: 3px; }
+.kf-activity-list b { font-size: 22px; }
+.kf-email-list { font-size: 12px; }
+.kf-interview-list li { display: flex; align-items: center; gap: 12px; padding-top: 18px; font-size: 12px; }
+.kf-date-tile { text-align: center; padding: 7px 10px; border-radius: 12px; background: var(--kf-soft); color: var(--link-fg); min-width: 30px; font-size: 10px; }
+.kf-date-tile strong { display: block; font-size: 20px; }
+.kf-interview-list p { margin-top: 4px; font-size: 11px; }
+.kf-audit-list li { padding-top: 14px; font-size: 12px; overflow-wrap: anywhere; }
+.kf-audit-list small { display: block; color: var(--body-quiet-color); margin-top: 4px; font-size: 11px; }
+.kf-empty-copy { color: var(--body-quiet-color); }
+/* Lists and edit forms retain Django's sorting, bulk actions, filters and widgets. */
+#changelist { border: 1px solid var(--border-color); border-radius: 20px; background: var(--kf-surface); }
+#changelist #toolbar { padding: 18px; border-bottom: 1px solid var(--border-color); background: var(--kf-surface); }
+#changelist .actions { padding: 14px 18px; background: var(--kf-soft); }
+#changelist table thead th { padding-block: 14px; background: var(--kf-soft); }
+#changelist table tbody th, #changelist table tbody td { padding-block: 15px; vertical-align: middle; }
+#changelist table tbody tr:hover { background: var(--kf-soft); }
+#changelist-filter { border-left: 1px solid var(--border-color); border-radius: 0; background: var(--kf-surface); }
+#changelist-filter h2 { background: var(--kf-soft); color: var(--body-fg); padding: 18px; }
+#changelist-filter h3 { font-size: 13px; }
+.paginator { padding: 18px !important; background: var(--kf-surface); }
+fieldset.module { border: 1px solid var(--border-color); background: var(--kf-surface); margin-bottom: 22px; }
+.module h2, .module caption, .inline-group h2 { background: var(--kf-soft); color: var(--body-fg); padding: 16px 20px; font-size: 14px; }
+.module caption a.section:link, .module caption a.section:visited { color: var(--link-fg); }
+.form-row { padding: 18px 20px; }
+.form-row label { font-size: 13px; }
+input[type=text], input[type=email], input[type=password], input[type=number], input[type=url], select, textarea { padding: 9px 11px; border: 1px solid var(--border-color); }
+textarea { box-sizing: border-box; max-width: 100%; }
+.submit-row { background: var(--kf-surface); border: 1px solid var(--border-color); }
+.submit-row input, .object-tools a { padding: 11px 18px; }
+#nav-sidebar { background: var(--kf-surface); border-right: 1px solid var(--border-color); padding: 12px; box-sizing: border-box; }
+#nav-sidebar .module { border: 1px solid var(--border-color); margin-bottom: 14px; border-radius: 14px; }
+#nav-sidebar th, #nav-sidebar td { padding: 10px; }
+#nav-filter { border-radius: 12px; margin-bottom: 14px; padding: 12px; box-sizing: border-box; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--link-fg); outline-offset: 3px; }
+.login #header { margin: 0; border-radius: 20px 20px 0 0; box-shadow: none; }
+.login #container { border-radius: 22px; box-shadow: 0 18px 55px #101a3110; }
+.login #content { padding: 28px; }
+@media(max-width: 1150px) { .kf-admin-columns { grid-template-columns: minmax(0,1fr) 285px; gap: 18px; } .kf-summary-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .kf-management-grid { grid-template-columns: 1fr; } }
+@media(max-width: 850px) { .kf-admin-columns { grid-template-columns: 1fr; } .kf-management-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .kf-admin-aside { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; } .kf-admin-aside .kf-panel { margin: 0; } }
+@media(max-width: 600px) { #content { padding: 18px 14px 36px; } #header { padding: 18px; gap: 14px; } #content h1 { font-size: 26px; } .kf-dashboard-heading { align-items: flex-start; flex-direction: column; gap: 14px; } .kf-summary-grid { gap: 12px; } .kf-metric { padding: 18px; } .kf-metric > strong { font-size: 30px; } .kf-card-arrow { display: none; } .kf-panel { padding: 18px; } .kf-management-grid, .kf-admin-aside, .kf-status-grid { grid-template-columns: 1fr; } .kf-metric h2 { margin-right: 0; font-size: 12px; } .kf-metric p { font-size: 11px; } #header .kf-workspace-links { width: 100%; } }

@@ -1,5 +1,25 @@
 /* Progressive workspace navigation and a text-only job preview. */
 (() => {
+  const menuToggle = document.querySelector('.workspace-menu-toggle');
+  const sidebar = document.getElementById('workspace-sidebar');
+  if (menuToggle && sidebar) {
+    document.body.classList.add('has-workspace-menu');
+    menuToggle.hidden = false;
+    const setMenu = (open) => {
+      document.body.classList.toggle('menu-open', open);
+      menuToggle.setAttribute('aria-expanded', String(open));
+      menuToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    };
+    menuToggle.addEventListener('click', () => setMenu(menuToggle.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && document.body.classList.contains('menu-open')) {
+        setMenu(false);
+        menuToggle.focus();
+      }
+    });
+    sidebar.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setMenu(false)));
+  }
+
   document.querySelectorAll('[data-auto-submit]').forEach((select) => {
     const form = select.closest('form');
     if (!form) return;
