@@ -1,10 +1,12 @@
 """Create fictional listings for the hosted school demo."""
 
 import json
+import os
 from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
 from django.utils import timezone
 
@@ -48,3 +50,46 @@ def seed_demo_listings():
             budget=budget, skills=skills, work_mode="remote" if location == "Remote" else "on_site",
             start_date=today + timedelta(days=7), end_date=today + timedelta(days=60),
         )
+
+
+@transaction.atomic
+def seed_demo_profiles():
+    """Import a small representative cohort from the fictional evaluation data."""
+    from scripts.import_evaluation_data import account_plan, create_batch
+
+    source = settings.BASE_DIR / "evaluation/dataset-v2.json"
+    dataset = json.loads(source.read_text(encoding="utf-8"))
+    freelancer_ids = {row["profile_id"] for row in dataset["freelancers"]}
+    selected = []
+    by_domain = {}
+    for profile in sorted(
+        dataset["profiles"], key=lambda row: row["id"] not in freelancer_ids
+    ):
+        domain = profile["domain"]
+        count = by_domain.get(domain, 0)
+        if count < 3:
+            selected.append(profile)
+            by_domain[domain] = count + 1
+    selected_ids = {row["id"] for row in selected}
+    dataset["profiles"] = selected
+    dataset["freelancers"] = [
+        row for row in dataset["freelancers"] if row["profile_id"] in selected_ids
+    ]
+    password = os.getenv("DEMO_ACCOUNT_PASSWORD") or None
+    if password:
+        validate_password(password)
+    User = get_user_model()
+    usernames = [row["username"] for row in account_plan(dataset)]
+    # The original publisher is provisioned first and serializes concurrent starts.
+    User.objects.select_for_update().get(username="render-demo-listings")
+    if not User.objects.filter(username__in=usernames).exists():
+        create_batch(dataset, password, timezone.localdate())
+    elif password:
+        # Allow first-time login setup on a later deploy without resetting accounts.
+        for user in User.objects.filter(
+            username__in=usernames, email__endswith="@people.kaziforce.test",
+            is_active=True, is_staff=False, is_superuser=False,
+        ):
+            if not user.has_usable_password():
+                user.set_password(password)
+                user.save(update_fields=["password"])
