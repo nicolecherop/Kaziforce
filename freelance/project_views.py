@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, TextField
+from django.db.models.functions import Cast
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.http import require_http_methods
 from candidates.access import candidate_required
@@ -19,10 +20,11 @@ def projects(request):
     qs = request.user.freelance_projects.all() if own else visible_projects()
     q = request.GET.get("q", "")[:120].strip()
     if q:
-        qs = qs.filter(
+        qs = qs.alias(search_skills=Cast("skills", TextField())).filter(
             Q(title__icontains=q)
             | Q(description__icontains=q)
             | Q(location__icontains=q)
+            | Q(search_skills__icontains=q)
         )
     results = list(qs)
     if not own:

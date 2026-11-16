@@ -30,3 +30,20 @@
 .commission-breakdown dt { color: var(--muted); }
 .commission-breakdown dd { margin: 0; text-align: right; white-space: nowrap; }
 @media (max-width: 440px) { .commission-breakdown { grid-template-columns: 1fr; gap: 5px; } .commission-breakdown dd { text-align: left; margin-bottom: 8px; } }
+
+
+.freelance-page .freelance-thread.freelance-thread-unread,
+.workspace-page .freelance-thread.freelance-thread-unread {
+  background: #eef4ff;
+  border-inline-start: 4px solid #2256d3;
+}
+
+.freelance-unread-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #1947b8;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}

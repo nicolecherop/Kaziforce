@@ -29,7 +29,10 @@ def opportunities(request):
             | Q(company__icontains=query)
             | Q(location__icontains=query)
             | Q(company__in=company_search_labels(query))
-        )
+            | Q(skills__name__icontains=query)
+            | Q(description__icontains=query)
+            | Q(requirements__icontains=query)
+        ).distinct()
     return render(
         request, "jobs/opportunities.html", {"jobs": jobs[:100], "query": query}
     )
